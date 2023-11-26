@@ -2,8 +2,7 @@
 
 #	calibre2jellyfin.py
 #
-#	A program to create jellyfin-compatible directory and file
-#	structures from a live Calibre repository.
+#	Python script to construct a Jellyfin ebook library from a Calibre library.
 #
 #	2023-11-17 initial revision
 #   author Shawn C. Powell
