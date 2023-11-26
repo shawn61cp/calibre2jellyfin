@@ -21,15 +21,17 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   </thead>
  <tbody>
   <tr>
-   <td>Author/
-      Book A/
-       book A.ext
-       cover.jpg
-       metadata.opf
-      Book B/
-       book B.ext
-       cover.jpg
-       metadata.opf
+   <td><pre>
+Author/
+   Book A/
+      book A.ext
+      cover.jpg
+      metadata.opf
+   Book B/
+      book B.ext
+      cover.jpg
+      metadata.opf
+   </pre>
    </td>
    <td></td>
   </tr>
