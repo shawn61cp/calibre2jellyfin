@@ -3,7 +3,7 @@
 #	calibre2jellyfin.py
 #
 #	A program to create jellyfin-compatible directory and file
-#	structures "on top" of a live Calibre repository.
+#	structures from a live Calibre repository.
 #
 #	2023-11-17 initial revision
 #   author Shawn C. Powell
