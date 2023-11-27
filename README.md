@@ -14,7 +14,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
 * Series handling
   * When foldermode is author/series/book, the script will extract series and series index from Calibre's metadata file.  If found, the target book folder name will be prepended with the series index.  The \<dc:title\> element in the metadata file.
 
-##### Example author/series/book layout 
+##### Example author/series/book structure 
 <table>
   <thead>
     <tr><th>Calibre store</th><th>Jellyfin store</th></tr>
@@ -33,7 +33,19 @@ Author/
       metadata.opf
    </pre>
    </td>
-   <td></td>
+   <td><pre>
+Author/
+   Lorem ipsum dolor sit amet (i.e. the series) /
+      001 - Book A/
+         book A.ext
+         cover.jpg
+         metadata.opf   <- title modified "001 - Book A"
+      002 - Book B/
+         book B.ext
+         cover.jpg
+         metadata.opf   <- title modified "002 - Book B"
+   </pre>    
+   </td>
   </tr>
  </tbody>
 </table>
