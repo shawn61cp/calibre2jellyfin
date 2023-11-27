@@ -49,3 +49,4 @@ Author/
   </tr>
  </tbody>
 </table>
+Jellyfin will display a drillable folder structure similarly to the way it does for movies, shows, and music.  Jellyfin will extract and display the mangled book title that is prepended with the series index as the book title.
