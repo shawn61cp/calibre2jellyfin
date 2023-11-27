@@ -40,11 +40,11 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
     └── Lorem ipsum dolor sit amet Series/
         ├── 001 - Book A/
         │   ├── cover.jpg      <- symlink
-        │   ├── metadata.opf   <- copy, possibly modified
+        │   ├── metadata.opf   <- modified copy
         │   └── Book A.epub    <- symlink
         ├── 002 - Book B/
         │   ├── cover.jpg      <- symlink
-        │   ├── metadata.opf   <- copy, possibly modified
+        │   ├── metadata.opf   <- modified copy
         │   └── Book B.epub    <- symlink
    </pre>    
    </td>
