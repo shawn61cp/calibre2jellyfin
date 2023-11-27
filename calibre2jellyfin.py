@@ -239,7 +239,12 @@ def doConstruct(section):
         authorSrcPath = pathlib.Path(os.path.join(section['calibreStore'], authorFolder))
         authorDstPath = pathlib.Path(os.path.join(jellyfinStore, authorFolder))
         if foldermode == 'author,series,book':
-            authorDstPath.mkdir(parents=True, exist_ok=True)
+            try:
+                authorDstPath.mkdir(parents=True, exist_ok=True)
+            except Exception as e:
+                print(f'Could not create author folder {authorDstPath}', file=sys.stderr, flush=True)
+                print(e, file=sys.stderr, flush=True)
+                continue
 
         # for each book folder in source author folder
         for bookFolderSrcPath in authorSrcPath.iterdir():
