@@ -130,96 +130,96 @@ def getSeries(metadataFilePath):
 
 
 def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, foldermode, jellyfinStore):
-    """Creates folder, files and symlinks for one book.
+	"""Creates folder, files and symlinks for one book.
 
-        authorSrcPath       pathlib.Path, full path to source author folder
-        authorDstPath       pathlib.Path, full path to destination author folder
-        bookFolderSrcPath   pathlib.Path, full path to source book folder
-        bookfiletypes       list, extensions identifying book files (exclude periods)
-        foldermode          str, one of 'author,series,book' or 'book'
-        jellyfinStore       pathlib.Path, full path top level output storage location (i.e. will be jellyfin library folder)
-    """
+		authorSrcPath       pathlib.Path, full path to source author folder
+		authorDstPath       pathlib.Path, full path to destination author folder
+		bookFolderSrcPath   pathlib.Path, full path to source book folder
+		bookfiletypes       list, extensions identifying book files (exclude periods)
+		foldermode          str, one of 'author,series,book' or 'book'
+		jellyfinStore       pathlib.Path, full path top level output storage location (i.e. will be jellyfin library folder)
+	"""
     
-    # find first instance of configured book file types
-    bookFileSrcPath = findBook(bookfiletypes, bookFolderSrcPath)
-    if not bookFileSrcPath:
-        return
-    print(bookFolderSrcPath)
+	# find first instance of configured book file types
+	bookFileSrcPath = findBook(bookfiletypes, bookFolderSrcPath)
+	if not bookFileSrcPath:
+		return
+	print(bookFolderSrcPath)
 
     # locate related book files
-    bookFolder = bookFolderSrcPath.name
-    metadataSrcFilePath = findMetadata(bookFolderSrcPath)
-    coverSrcFilePath = findCover(bookFolderSrcPath)
-    metadatadoc, series, series_index = getSeries(metadataSrcFilePath)
+	bookFolder = bookFolderSrcPath.name
+	metadataSrcFilePath = findMetadata(bookFolderSrcPath)
+	coverSrcFilePath = findCover(bookFolderSrcPath)
+	metadatadoc, series, series_index = getSeries(metadataSrcFilePath)
 
-    # Output is organized as '.../author/series/book/book.ext' or '.../book/book.ext' depending on foldermode.
-    # If series info was expected but not found, output structure will be '.../author/book/book.ext'.
-    # If series info was expected and found, then mangle the book's folder name by prepending the book's index.
-    # Once the folder structure has been determined, create the destination folder(s) if they do not exist.
-    if series > '' and foldermode == 'author,series,book':
-        if series_index == '':
-            series_index = '99'
-        bookFolder = '{:>03s} - {}'.format(series_index,bookFolder)
-        bookFolderDstPath = authorDstPath.joinpath(series + ' Series',bookFolder)
-    elif foldermode == 'book':
-        bookFolderDstPath = jellyfinStore.joinpath(bookFolder)
-    else:
-        bookFolderDstPath = authorDstPath.joinpath(bookFolder)
-    try:
-	pathlib.Path(bookFolderDstPath).mkdir(parents=True, exist_ok=True)
-    except Exception as e:
-        print(f'Could not create destination folder {bookFolderDstPath}', file=sys.stderr, flush=True)
-        print(e, file=sys.stderr, flush=True)
-        if metadatadoc is not None:
-	    metadatadoc.unlink()
-        return
+	# Output is organized as '.../author/series/book/book.ext' or '.../book/book.ext' depending on foldermode.
+	# If series info was expected but not found, output structure will be '.../author/book/book.ext'.
+	# If series info was expected and found, then mangle the book's folder name by prepending the book's index.
+	# Once the folder structure has been determined, create the destination folder(s) if they do not exist.
+	if series > '' and foldermode == 'author,series,book':
+		if series_index == '':
+			series_index = '99'
+		bookFolder = '{:>03s} - {}'.format(series_index,bookFolder)
+		bookFolderDstPath = authorDstPath.joinpath(series + ' Series',bookFolder)
+	elif foldermode == 'book':
+		bookFolderDstPath = jellyfinStore.joinpath(bookFolder)
+	else:
+		bookFolderDstPath = authorDstPath.joinpath(bookFolder)
+	try:
+		pathlib.Path(bookFolderDstPath).mkdir(parents=True, exist_ok=True)
+	except Exception as e:
+		print(f'Could not create destination folder {bookFolderDstPath}', file=sys.stderr, flush=True)
+		print(e, file=sys.stderr, flush=True)
+		if metadatadoc is not None:
+			metadatadoc.unlink()
+		return
 
-    # Create a symlink to the source book if it does not exist
-    bookFileDstPath = bookFolderDstPath.joinpath(bookFileSrcPath.name)
-    if not bookFileDstPath.exists():
-        try:
-            os.symlink(bookFileSrcPath, bookFileDstPath)
-        except Exception as e:
-            print(f'Could not create book symlink {bookFileDstPath}', file=sys.stderr, flush=True)
-            print(e, file=sys.stderr, flush=True)
+	# Create a symlink to the source book if it does not exist
+	bookFileDstPath = bookFolderDstPath.joinpath(bookFileSrcPath.name)
+	if not bookFileDstPath.exists():
+		try:
+			os.symlink(bookFileSrcPath, bookFileDstPath)
+		except Exception as e:
+			print(f'Could not create book symlink {bookFileDstPath}', file=sys.stderr, flush=True)
+			print(e, file=sys.stderr, flush=True)
 
-    # Create a symlink to the cover image if it does not exist
-    if coverSrcFilePath is not None:
-        coverDstFilePath = bookFolderDstPath.joinpath(coverSrcFilePath.name)
-        if not coverDstFilePath.exists():
-            try:
-                os.symlink(coverSrcFilePath, coverDstFilePath)
-            except Exception as e:
-                print(f'Could not create cover image symlink {coverDstFilePath}', file=sys.stderr, flush=True)
-                print(e, file=sys.stderr, flush=True)
+	# Create a symlink to the cover image if it does not exist
+	if coverSrcFilePath is not None:
+		coverDstFilePath = bookFolderDstPath.joinpath(coverSrcFilePath.name)
+		if not coverDstFilePath.exists():
+			try:
+				os.symlink(coverSrcFilePath, coverDstFilePath)
+			except Exception as e:
+				print(f'Could not create cover image symlink {coverDstFilePath}', file=sys.stderr, flush=True)
+				print(e, file=sys.stderr, flush=True)
 
-    # Output a metadata xml (.opf) file into the destination book folder.
-    # If folder mode is 'author,series,book' and series info was found,
-    # mangle the book title (<dc:title>) by prepending the book's index
-    # to it's title.
-    # Otherwise, just write out a copy of the original metadata.
-    if metadatadoc is not None:
-        metadataDstFilePath = bookFolderDstPath.joinpath(metadataSrcFilePath.name)
-        if series > '' and foldermode == 'author,series,book':
-            titleel = metadatadoc.getElementsByTagName('dc:title')[0]
-            titleel.firstChild.data = '{:>03s} - {}'.format(series_index, titleel.firstChild.data)
-        try:
-            docfile = open(metadataDstFilePath, 'w')
-        except Exception as e:
-            print(f'Could not create (or truncate existing) metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
-            print(e, file=sys.stderr, flush=True)
-            #print(traceback.format_exc(), file=sys.stderr, flush=True)
+	# Output a metadata xml (.opf) file into the destination book folder.
+	# If folder mode is 'author,series,book' and series info was found,
+	# mangle the book title (<dc:title>) by prepending the book's index
+	# to it's title.
+	# Otherwise, just write out a copy of the original metadata.
+	if metadatadoc is not None:
+		metadataDstFilePath = bookFolderDstPath.joinpath(metadataSrcFilePath.name)
+		if series > '' and foldermode == 'author,series,book':
+			titleel = metadatadoc.getElementsByTagName('dc:title')[0]
+			titleel.firstChild.data = '{:>03s} - {}'.format(series_index, titleel.firstChild.data)
+		try:
+			docfile = open(metadataDstFilePath, 'w')
+		except Exception as e:
+			print(f'Could not create (or truncate existing) metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
+			print(e, file=sys.stderr, flush=True)
+			#print(traceback.format_exc(), file=sys.stderr, flush=True)
 
-        try:
-            metadatadoc.writexml(docfile)
-        except Exception as e:
-            print(f'Could not write metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
-            print(e, file=sys.stderr, flush=True)
-            #print(traceback.format_exc(), file=sys.stderr, flush=True)
-        finally:
-            docfile.close()
-            
-        metadatadoc.unlink()
+		try:
+			metadatadoc.writexml(docfile)
+		except Exception as e:
+			print(f'Could not write metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
+			print(e, file=sys.stderr, flush=True)
+			#print(traceback.format_exc(), file=sys.stderr, flush=True)
+		finally:
+			docfile.close()
+
+		metadatadoc.unlink()
             
 def doConstruct(section):
     """Create (or update) one target book library that will be presented by jellyfin.
