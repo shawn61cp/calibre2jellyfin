@@ -17,7 +17,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
 ##### Example author/series/book structure 
 <table>
   <thead>
-    <tr><th>Calibre store</th><th>Jellyfin store</th></tr>
+    <tr><th>Calibre store</th><th>Created Jellyfin store</th></tr>
   </thead>
  <tbody>
   <tr>
@@ -35,7 +35,7 @@ Author/
    </td>
    <td><pre>
 Author/
-   Lorem ipsum dolor sit amet (i.e. the series) /
+   Lorem ipsum dolor sit amet Series /
       001 - Book A/
          book A.ext
          cover.jpg
