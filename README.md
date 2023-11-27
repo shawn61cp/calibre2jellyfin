@@ -70,13 +70,12 @@ Jellyfin will display a drillable folder structure similarly to the way it does 
 
 #### Usage
 
-<pre>
 * Edit the ~/.config/calibre2jellyfin.cfg file before first use.
     * Following the comments in the .cfg, set up your source and destination storage locations (libraries), your folder mode, and your list of authors.
 * If you added the calibre2jellyfin.py script to a location on your path, in a terminal:
     * <code>$ calibre2jellyfin.py</code>
 * If not, include the full path to the script:
     * <code>$ INSTALL_FOLDER/calibre2jellyfin.py</code>
-</pre>
+
 
 
