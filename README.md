@@ -58,13 +58,13 @@ Jellyfin will display a drillable folder structure similarly to the way it does 
 1. In your browser navigate to "https://github.com/shawn61cp/calibre2jellyfin"
 2. Click the green "Code" button
 3. In the resulting dropdown, just over halfway down, find and click on "Download ZIP".
-4. Save the zip file somewhere convenient and extract it.  We will call this <extract folder>.
-5. Change to directory <extract folder>/calibre2jellyfin-main
+4. Save the zip file somewhere convenient and extract it.  We will call this EXTRACT_FOLDER.
+5. Change to directory EXTRACT_FOLDER/calibre2jellyfin-main
 6. In a terminal:
 7.      <code>$ chmod 755 calibre2jellyfin.py</code>
-8. Choose a location to install the script.  You may want to add this location to your path.  We will call this <install folder>.
+8. Choose a location to install the script.  You may want to add this location to your path.  We will call this INSTALL_FOLDER.
 9. In a terminal:
-10.     <code>$ cp calibre2jellyfin.py <install folder>/</code>
+10.     <code>$ cp calibre2jellyfin.py INSTALL_FOLDER/</code>
 11.     <code>$ cp calibre2jellyfin.cfg ~/.config/</code>
 </pre>
 
@@ -76,7 +76,7 @@ Jellyfin will display a drillable folder structure similarly to the way it does 
 * If you added the calibre2jellyfin.py script to a location on your path, in a terminal:
     * <code>$ calibre2jellyfin.py</code>
 * If not, include the full path to the script:
-    * <code>$ <install folder>/calibre2jellyfin.py</code>
+    * <code>$ INSTALL_FOLDER/calibre2jellyfin.py</code>
 </pre>
 
 
