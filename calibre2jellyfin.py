@@ -165,7 +165,14 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         bookFolderDstPath = jellyfinStore.joinpath(bookFolder)
     else:
         bookFolderDstPath = authorDstPath.joinpath(bookFolder)
-    pathlib.Path(bookFolderDstPath).mkdir(parents=True, exist_ok=True)
+    try:
+	pathlib.Path(bookFolderDstPath).mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        print(f'Could not create destination folder {bookFolderDstPath}', file=sys.stderr, flush=True)
+        print(e, file=sys.stderr, flush=True)
+        if metadatadoc is not None:
+	    metadatadoc.unlink()
+        return
 
     # Create a symlink to the source book if it does not exist
     bookFileDstPath = bookFolderDstPath.joinpath(bookFileSrcPath.name)
