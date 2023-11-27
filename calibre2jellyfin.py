@@ -128,7 +128,26 @@ def getSeries(metadataFilePath):
     docfile.close()
     return  doc, series, series_index
 
+def writeMetadata(metadatadoc, metadataDstFilePath):
+    """Writes out the book metadata
+    """
+    try:
+        docfile = open(metadataDstFilePath, 'w')
+    except Exception as e:
+        print(f'Could not create (or truncate existing) metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
+        print(e, file=sys.stderr, flush=True)
+        return
+        #print(traceback.format_exc(), file=sys.stderr, flush=True)
 
+    try:
+        metadatadoc.writexml(docfile)
+    except Exception as e:
+        print(f'Could not write metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
+        print(e, file=sys.stderr, flush=True)
+        #print(traceback.format_exc(), file=sys.stderr, flush=True)
+    finally:
+        docfile.close()
+    
 def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, foldermode, jellyfinStore):
     """Creates folder, files and symlinks for one book.
 
@@ -203,22 +222,8 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         if series > '' and foldermode == 'author,series,book':
             titleel = metadatadoc.getElementsByTagName('dc:title')[0]
             titleel.firstChild.data = '{:>03s} - {}'.format(series_index, titleel.firstChild.data)
-        try:
-            docfile = open(metadataDstFilePath, 'w')
-        except Exception as e:
-            print(f'Could not create (or truncate existing) metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
-            print(e, file=sys.stderr, flush=True)
-            #print(traceback.format_exc(), file=sys.stderr, flush=True)
 
-        try:
-            metadatadoc.writexml(docfile)
-        except Exception as e:
-            print(f'Could not write metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
-            print(e, file=sys.stderr, flush=True)
-            #print(traceback.format_exc(), file=sys.stderr, flush=True)
-        finally:
-            docfile.close()
-
+        writeMetadata(metadatadoc, metadataDstFilePath)
         metadatadoc.unlink()
             
 def doConstruct(section):
