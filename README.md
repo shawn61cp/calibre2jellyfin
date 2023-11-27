@@ -78,5 +78,11 @@ Jellyfin will display a drillable folder structure similarly to the way it does 
 * If not, include the full path to the script:
     * <code>$ INSTALL_FOLDER/calibre2jellyfin.py</code>
 
+## Windows
 
+The script does not yet support windows.  Some things that will differ are:
+
+* Because of the complications surrounding symlinks, file will probably be copied instead of creating symlinks.
+    * The above will then probably require some command line options or date comparison logic to control whether files are overwritten when the script is re-run.
+* The configuration file will probably be expected to be found in the same folder where the script is installed.
 
