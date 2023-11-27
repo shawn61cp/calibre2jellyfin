@@ -103,14 +103,19 @@ def getSeries(metadataFilePath):
         print(f'Could not open metadata file {metadataFilePath}', file=sys.stderr, flush=True)
         print(e, file=sys.stderr, flush=True)
         #print(traceback.format_exc(), file=sys.stderr, flush=True)
+        return doc, series, series_index
 
     # create a document object from the metadata file
     try:
         doc = minidom.parse(docfile)
     except Exception as e:
+        dod = None
         print(f'Could not read metadata file {metadataFilePath}', file=sys.stderr, flush=True)
         print(e, file=sys.stderr, flush=True)
         #print(traceback.format_exc(), file=sys.stderr, flush=True)
+        return doc, series, series_index
+    finally:
+        docfile.close()
 
     # get series info
     metas  = doc.getElementsByTagName('meta')
@@ -165,13 +170,21 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     # Create a symlink to the source book if it does not exist
     bookFileDstPath = bookFolderDstPath.joinpath(bookFileSrcPath.name)
     if not bookFileDstPath.exists():
-        os.symlink(bookFileSrcPath, bookFileDstPath)
+        try:
+            os.symlink(bookFileSrcPath, bookFileDstPath)
+        except Exception as e:
+            print(f'Could not create book symlink {bookFileDstPath}', file=sys.stderr, flush=True)
+            print(e, file=sys.stderr, flush=True)
 
     # Create a symlink to the cover image if it does not exist
     if coverSrcFilePath is not None:
         coverDstFilePath = bookFolderDstPath.joinpath(coverSrcFilePath.name)
         if not coverDstFilePath.exists():
-            os.symlink(coverSrcFilePath, coverDstFilePath)
+            try:
+                os.symlink(coverSrcFilePath, coverDstFilePath)
+            except Exception as e:
+                print(f'Could not create cover image symlink {coverDstFilePath}', file=sys.stderr, flush=True)
+                print(e, file=sys.stderr, flush=True)
 
     # Output a metadata xml (.opf) file into the destination book folder.
     # If folder mode is 'author,series,book' and series info was found,
