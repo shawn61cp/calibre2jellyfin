@@ -3,7 +3,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
 
 ## Linux 
 
-#### Features
+#### Overview
 * Created folder structure (foldermode in .cfg) is one of:
   * .../author/series/book/...
   * .../book/...
