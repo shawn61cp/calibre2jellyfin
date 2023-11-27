@@ -109,7 +109,7 @@ def getSeries(metadataFilePath):
     try:
         doc = minidom.parse(docfile)
     except Exception as e:
-        dod = None
+        doc = None
         print(f'Could not read metadata file {metadataFilePath}', file=sys.stderr, flush=True)
         print(e, file=sys.stderr, flush=True)
         #print(traceback.format_exc(), file=sys.stderr, flush=True)
