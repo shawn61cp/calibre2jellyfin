@@ -37,12 +37,12 @@ Author/
 Author/
    Lorem ipsum dolor sit amet Series /
       001 - Book A/
-         book A.ext
-         cover.jpg
+         book A.ext     <- symlink
+         cover.jpg      <- symlink
          metadata.opf   <- title modified "001 - Book A"
       002 - Book B/
-         book B.ext
-         cover.jpg
+         book B.ext     <- symlink
+         cover.jpg      <- symlink
          metadata.opf   <- title modified "002 - Book B"
    </pre>    
    </td>
