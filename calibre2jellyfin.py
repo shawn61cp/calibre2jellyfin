@@ -201,7 +201,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         bookFolderDstPath = authorDstPath / bookFolder
 
     try:
-        Path(bookFolderDstPath).mkdir(parents=True, exist_ok=True)
+        bookFolderDstPath.mkdir(parents=True, exist_ok=True)
     except Exception as e:
         logError(
             f'Could not create book\'s destination folder (or a parent folder thereof) {bookFolderDstPath}',
