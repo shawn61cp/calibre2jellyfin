@@ -194,11 +194,11 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         if series_index == '':
             series_index = '99'
         bookFolder = '{:>03s} - {}'.format(series_index, bookFolder)
-        bookFolderDstPath = authorDstPath.joinpath(series + ' Series', bookFolder)
+        bookFolderDstPath = authorDstPath / (series + ' Series') / bookFolder
     elif foldermode == 'book':
-        bookFolderDstPath = jellyfinStore.joinpath(bookFolder)
+        bookFolderDstPath = jellyfinStore / bookFolder
     else:
-        bookFolderDstPath = authorDstPath.joinpath(bookFolder)
+        bookFolderDstPath = authorDstPath / bookFolder
 
     try:
         Path(bookFolderDstPath).mkdir(parents=True, exist_ok=True)
@@ -212,7 +212,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         return
 
     # Create a symlink to the source book if it does not exist
-    bookFileDstPath = bookFolderDstPath.joinpath(bookFileSrcPath.name)
+    bookFileDstPath = bookFolderDstPath / bookFileSrcPath.name
     if not bookFileDstPath.exists():
         try:
             bookFileDstPath.symlink_to(bookFileSrcPath)
@@ -221,7 +221,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
 
     # Create a symlink to the cover image if it does not exist
     if coverSrcFilePath is not None:
-        coverDstFilePath = bookFolderDstPath.joinpath(coverSrcFilePath.name)
+        coverDstFilePath = bookFolderDstPath / coverSrcFilePath.name
         if not coverDstFilePath.exists():
             try:
                 coverDstFilePath.symlink_to(coverSrcFilePath)
@@ -234,7 +234,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     # to it's title.
     # Otherwise, just write out a copy of the original metadata.
     if metadatadoc is not None:
-        metadataDstFilePath = bookFolderDstPath.joinpath(metadataSrcFilePath.name)
+        metadataDstFilePath = bookFolderDstPath / metadataSrcFilePath.name
         if series > '' and foldermode == 'author,series,book':
             titleel = metadatadoc.getElementsByTagName('dc:title')[0]
             titleel.firstChild.data = '{:>03s} - {}'.format(series_index, titleel.firstChild.data)
