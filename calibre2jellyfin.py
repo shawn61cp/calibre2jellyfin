@@ -8,12 +8,10 @@
 #   author Shawn C. Powell
 #
 
-import sys
-import os
 import configparser
 import argparse
-import pathlib
-import traceback
+from sys import stderr, exit
+from pathlib import Path
 from xml.dom import minidom
 
 
@@ -28,13 +26,11 @@ def logError(msg, e):
         msg                 str, error message
         e                   Exception
     """
-    print(msg, file=sys.stderr, flush=True)
-    print(e, file=sys.stderr, flush=True)
+    print(msg, file=stderr, flush=True)
+    print(e, file=stderr, flush=True)
 
 
-homepath = os.path.expanduser('~')
-configfilename = os.path.splitext(os.path.basename(__file__))[0] + '.cfg'
-configfilepath = os.path.join(homepath, '.config', configfilename)
+configfilepath = Path.home() / '.config' / (Path(__file__).stem + '.cfg')
 
 # Parse command line arguments
 
@@ -50,14 +46,14 @@ try:
     configfile = open(configfilepath, 'r')
 except Exception as e:
     logError(f'Could not open configuration {configfilepath}', e)
-    sys.exit(-1)
+    exit(-1)
 
 try:
     config = configparser.ConfigParser()
     config.read_file(configfile)
 except Exception as e:
     logError(f'Could not read configuration {configfilepath}', e)
-    sys.exit(-1)
+    exit(-1)
 finally:
     configfile.close()
 
@@ -145,6 +141,9 @@ def getSeries(metadataFilePath):
 
 def writeMetadata(metadatadoc, metadataDstFilePath):
     """Writes out the book metadata
+
+        metadatadoc             minidom doc, doc object from source metadata
+        metadataDstFilePath     pathlib.Path(), full path to destination metadata file
     """
     try:
         docfile = open(metadataDstFilePath, 'w')
@@ -202,7 +201,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         bookFolderDstPath = authorDstPath.joinpath(bookFolder)
 
     try:
-        pathlib.Path(bookFolderDstPath).mkdir(parents=True, exist_ok=True)
+        Path(bookFolderDstPath).mkdir(parents=True, exist_ok=True)
     except Exception as e:
         logError(
             f'Could not create book\'s destination folder (or a parent folder thereof) {bookFolderDstPath}',
@@ -216,7 +215,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     bookFileDstPath = bookFolderDstPath.joinpath(bookFileSrcPath.name)
     if not bookFileDstPath.exists():
         try:
-            os.symlink(bookFileSrcPath, bookFileDstPath)
+            bookFileDstPath.symlink_to(bookFileSrcPath)
         except Exception as e:
             logError(f'Could not create book symlink {bookFileDstPath}', e)
 
@@ -225,7 +224,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         coverDstFilePath = bookFolderDstPath.joinpath(coverSrcFilePath.name)
         if not coverDstFilePath.exists():
             try:
-                os.symlink(coverSrcFilePath, coverDstFilePath)
+                coverDstFilePath.symlink_to(coverSrcFilePath)
             except Exception as e:
                 logError(f'Could not create cover image symlink {coverDstFilePath}', e)
 
@@ -246,21 +245,24 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
 
 def doConstruct(section):
     """Create (or update) one target book library that will be presented by jellyfin.
+
+        section             config parser section obj
     """
 
     # convert multiline parameters to lists
     authorFolders = section['authorFolders'][1:].split('\n')
     bookfiletypes = section['bookfiletypes'][1:].split('\n')
 
-    jellyfinStore = pathlib.Path(section['jellyfinStore'])
+    calibreStore = Path(section['calibreStore'])
+    jellyfinStore = Path(section['jellyfinStore'])
     foldermode = section['foldermode']
 
     # for each configured author
     for authorFolder in authorFolders:
 
         # get and create destination author folder
-        authorSrcPath = pathlib.Path(os.path.join(section['calibreStore'], authorFolder))
-        authorDstPath = pathlib.Path(os.path.join(jellyfinStore, authorFolder))
+        authorSrcPath = calibreStore / authorFolder
+        authorDstPath = jellyfinStore / authorFolder
         if foldermode == 'author,series,book':
             try:
                 authorDstPath.mkdir(parents=True, exist_ok=True)
@@ -285,6 +287,6 @@ for section in config:
             doConstruct(config[section])
         except Exception as e:
             logError(f'Unexpected error encountered constructing {section}', e)
-            sys.exit(-1)
+            exit(-1)
 
-sys.exit(0)
+exit(0)
