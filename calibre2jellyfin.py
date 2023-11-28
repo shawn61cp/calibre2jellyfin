@@ -7,7 +7,7 @@
 #   2023-11-17 initial revision
 #   author Shawn C. Powell
 #
-            
+
 import sys
 import os
 import configparser
@@ -16,38 +16,53 @@ import pathlib
 import traceback
 from xml.dom import minidom
 
+
 # ------------------
 #   Set up
 # ------------------
 
+
+def logError(msg, e):
+    """Disposes error messages
+
+        msg                 str, error message
+        e                   Exception
+    """
+    print(msg, file=sys.stderr, flush=True)
+    print(e, file=sys.stderr, flush=True)
+
+
 homepath = os.path.expanduser('~')
+configfilename = os.path.splitext(os.path.basename(__file__))[0] + '.cfg'
+configfilepath = os.path.join(homepath, '.config', configfilename)
 
 # Parse command line arguments
 
-cmdparser = argparse.ArgumentParser(description='A utility to maintain jellyfin-compatible file structure and metadata beside a Calibre repository.')   
+cmdparser = argparse.ArgumentParser(
+    description='A utility to construct a Jellyfin ebook library from a Calibre library.'
+    f' Configuration file {configfilepath} is required.'
+)
 cmdargs = cmdparser.parse_args()
 
 # read configuration
 
 try:
-    configfilename = os.path.splitext(os.path.basename(__file__))[0] + '.cfg'
-    configfilepath = os.path.join(homepath,'.config',configfilename)
-    configfile = open(configfilepath,'r')
-except:
-    print(f'Could not open configuration {configfilepath}', file=sys.stderr, flush=True)
+    configfile = open(configfilepath, 'r')
+except Exception as e:
+    logError(f'Could not open configuration {configfilepath}', e)
     sys.exit(-1)
 
 try:
     config = configparser.ConfigParser()
     config.read_file(configfile)
-except:
-    print(f'Could not read configuration {configfilepath}', file=sys.stderr, flush=True)
+except Exception as e:
+    logError(f'Could not read configuration {configfilepath}', e)
     sys.exit(-1)
 finally:
     configfile.close()
 
+print('Using configuration', configfilepath, sep=' ', flush=True)
 
-print('Using configuration', configfilepath, sep=' ', flush=True)   
 
 # ------------------
 #   Functions
@@ -64,6 +79,7 @@ def findBook(bookfiletypes, bookFolderSrcPath):
             return bookFilePath
     return None
 
+
 def findMetadata(bookFolderSrcPath):
     """Locates first instance of a metadata file (one w an .opf extension)
 
@@ -73,6 +89,7 @@ def findMetadata(bookFolderSrcPath):
         return metadataFilePath
     return None
 
+
 def findCover(bookFolderSrcPath):
     """Locates instance of a book cover image
 
@@ -81,6 +98,7 @@ def findCover(bookFolderSrcPath):
     for coverFilePath in bookFolderSrcPath.glob('cover.jpg'):
         return coverFilePath
     return None
+
 
 def getSeries(metadataFilePath):
     """Extracts series and series index from book metadata file
@@ -94,15 +112,13 @@ def getSeries(metadataFilePath):
     series_index = ''
     doc = None
     if not metadataFilePath:
-        return  doc, series, series_index
+        return doc, series, series_index
 
     # open the metadata file
     try:
         docfile = open(metadataFilePath)
     except Exception as e:
-        print(f'Could not open metadata file {metadataFilePath}', file=sys.stderr, flush=True)
-        print(e, file=sys.stderr, flush=True)
-        #print(traceback.format_exc(), file=sys.stderr, flush=True)
+        logError(f'Could not open metadata file {metadataFilePath}', e)
         return doc, series, series_index
 
     # create a document object from the metadata file
@@ -110,15 +126,13 @@ def getSeries(metadataFilePath):
         doc = minidom.parse(docfile)
     except Exception as e:
         doc = None
-        print(f'Could not read metadata file {metadataFilePath}', file=sys.stderr, flush=True)
-        print(e, file=sys.stderr, flush=True)
-        #print(traceback.format_exc(), file=sys.stderr, flush=True)
+        logError(f'Could not read metadata file {metadataFilePath}', e)
         return doc, series, series_index
     finally:
         docfile.close()
 
     # get series info
-    metas  = doc.getElementsByTagName('meta')
+    metas = doc.getElementsByTagName('meta')
     for m in metas:
         if m.getAttribute('name') == 'calibre:series':
             series = m.getAttribute('content')
@@ -126,7 +140,8 @@ def getSeries(metadataFilePath):
             series_index = m.getAttribute('content')
 
     docfile.close()
-    return  doc, series, series_index
+    return doc, series, series_index
+
 
 def writeMetadata(metadatadoc, metadataDstFilePath):
     """Writes out the book metadata
@@ -134,20 +149,20 @@ def writeMetadata(metadatadoc, metadataDstFilePath):
     try:
         docfile = open(metadataDstFilePath, 'w')
     except Exception as e:
-        print(f'Could not create (or truncate existing) metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
-        print(e, file=sys.stderr, flush=True)
+        logError(
+            f'Could not create (or truncate existing) metadata file {metadataDstFilePath}',
+            e
+        )
         return
-        #print(traceback.format_exc(), file=sys.stderr, flush=True)
 
     try:
         metadatadoc.writexml(docfile)
     except Exception as e:
-        print(f'Could not write metadata file {metadataDstFilePath}', file=sys.stderr, flush=True)
-        print(e, file=sys.stderr, flush=True)
-        #print(traceback.format_exc(), file=sys.stderr, flush=True)
+        logError(f'Could not write metadata file {metadataDstFilePath}', e)
     finally:
         docfile.close()
-    
+
+
 def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, foldermode, jellyfinStore):
     """Creates folder, files and symlinks for one book.
 
@@ -156,9 +171,10 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         bookFolderSrcPath   pathlib.Path, full path to source book folder
         bookfiletypes       list, extensions identifying book files (exclude periods)
         foldermode          str, one of 'author,series,book' or 'book'
-        jellyfinStore       pathlib.Path, full path top level output storage location (i.e. will be jellyfin library folder)
+        jellyfinStore       pathlib.Path, full path top level output storage location
+                            (i.e. will be jellyfin library folder)
     """
-    
+
     # find first instance of configured book file types
     bookFileSrcPath = findBook(bookfiletypes, bookFolderSrcPath)
     if not bookFileSrcPath:
@@ -172,23 +188,26 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     metadatadoc, series, series_index = getSeries(metadataSrcFilePath)
 
     # Output is organized as '.../author/series/book/book.ext' or '.../book/book.ext' depending on foldermode.
-    # If series info was expected but not found, output structure will be '.../author/book/book.ext'.
-    # If series info was expected and found, then mangle the book's folder name by prepending the book's index.
+    # If series info was expected but not found, output structure collapses to '.../author/book/book.ext'.
+    # If series info was expected and found, then mangle the book's folder name by prepending the book's series index.
     # Once the folder structure has been determined, create the destination folder(s) if they do not exist.
     if series > '' and foldermode == 'author,series,book':
         if series_index == '':
             series_index = '99'
-        bookFolder = '{:>03s} - {}'.format(series_index,bookFolder)
-        bookFolderDstPath = authorDstPath.joinpath(series + ' Series',bookFolder)
+        bookFolder = '{:>03s} - {}'.format(series_index, bookFolder)
+        bookFolderDstPath = authorDstPath.joinpath(series + ' Series', bookFolder)
     elif foldermode == 'book':
         bookFolderDstPath = jellyfinStore.joinpath(bookFolder)
     else:
         bookFolderDstPath = authorDstPath.joinpath(bookFolder)
+
     try:
         pathlib.Path(bookFolderDstPath).mkdir(parents=True, exist_ok=True)
     except Exception as e:
-        print(f'Could not create destination folder {bookFolderDstPath}', file=sys.stderr, flush=True)
-        print(e, file=sys.stderr, flush=True)
+        logError(
+            f'Could not create book\'s destination folder (or a parent folder thereof) {bookFolderDstPath}',
+            e
+        )
         if metadatadoc is not None:
             metadatadoc.unlink()
         return
@@ -199,8 +218,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         try:
             os.symlink(bookFileSrcPath, bookFileDstPath)
         except Exception as e:
-            print(f'Could not create book symlink {bookFileDstPath}', file=sys.stderr, flush=True)
-            print(e, file=sys.stderr, flush=True)
+            logError(f'Could not create book symlink {bookFileDstPath}', e)
 
     # Create a symlink to the cover image if it does not exist
     if coverSrcFilePath is not None:
@@ -209,8 +227,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
             try:
                 os.symlink(coverSrcFilePath, coverDstFilePath)
             except Exception as e:
-                print(f'Could not create cover image symlink {coverDstFilePath}', file=sys.stderr, flush=True)
-                print(e, file=sys.stderr, flush=True)
+                logError(f'Could not create cover image symlink {coverDstFilePath}', e)
 
     # Output a metadata xml (.opf) file into the destination book folder.
     # If folder mode is 'author,series,book' and series info was found,
@@ -225,7 +242,8 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
 
         writeMetadata(metadatadoc, metadataDstFilePath)
         metadatadoc.unlink()
-            
+
+
 def doConstruct(section):
     """Create (or update) one target book library that will be presented by jellyfin.
     """
@@ -236,7 +254,7 @@ def doConstruct(section):
 
     jellyfinStore = pathlib.Path(section['jellyfinStore'])
     foldermode = section['foldermode']
-    
+
     # for each configured author
     for authorFolder in authorFolders:
 
@@ -247,28 +265,26 @@ def doConstruct(section):
             try:
                 authorDstPath.mkdir(parents=True, exist_ok=True)
             except Exception as e:
-                print(f'Could not create author folder {authorDstPath}', file=sys.stderr, flush=True)
-                print(e, file=sys.stderr, flush=True)
+                logError(f'Could not create author folder {authorDstPath}', e)
                 continue
 
         # for each book folder in source author folder
         for bookFolderSrcPath in authorSrcPath.iterdir():
             doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, foldermode, jellyfinStore)
-                
+
+
 # ------------------
 #   Main
 # ------------------
 
-# iterate over configured Construct sections
 
+# for each configured Construct
 for section in config:
     if section[0:9] == 'Construct':
         try:
             doConstruct(config[section])
         except Exception as e:
-            print(f'Unexpected error encountered constructing {section}', file=sys.stderr, flush=True)
-            print(e, file=sys.stderr, flush=True)
-            print(traceback.format_exc(), file=sys.stderr, flush=True)
+            logError(f'Unexpected error encountered constructing {section}', e)
             sys.exit(-1)
-        
+
 sys.exit(0)
