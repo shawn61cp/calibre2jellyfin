@@ -91,7 +91,7 @@ The usage/installation steps described above yield a Jellyfin store that is owne
 
 If your situation is like mine, cleaning up my Calibre library, ensuring the right metadata and covers got downloaded etc., is an ongoing task.  If you discover an issue while browsing your books within Jellyfin, you can delete the Jellyfin book (within Jellyfin), go back to your Calibre library, clean things up, and then re-run the script. Et voilà! Depending on the issue, you might not even have to delete the book from Jellyfin; Rerunning the script might be sufficient. However, deleting the book, or even the author folder if there were many changes, from Jellyfin does guarantee a clean re-creation.
 
-Note that because the book and cover files are symlinked, and the folders and metadata file are copies, when you delete a book or author through the Jellyfin interface, you are only affecting the Jellyfin library and not your precious Calibre library.
+Note that because the book and cover files are soft linked, and the folders and metadata file are copies, when you delete a book or author through the Jellyfin interface, you are only affecting the Jellyfin library and not your precious Calibre library.
 
 For myself, I arrange to run the script under the <code>jellyfin</code> account.  This will result in the files and folders output by the script being owned by <code>jellyfin</code>.  The default home directory for the <code>jellyfin</code> user is <code>/var/lib/jellyfin</code>.  I create the path and install the script to <code>/var/lib/jellyfin/.local/bin/calibre2jellyfin.py</code>.  Similarly I install the configuration file to <code>/var/lib/jellyfin/.config/calibre2jellyfin.cfg</code>.
 
