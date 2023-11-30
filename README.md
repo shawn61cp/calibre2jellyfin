@@ -110,7 +110,7 @@ Create the paths for the script and its configuration
  \# mkdir -p /var/lib/jellyfin/.config
 </code>
 
-Copy the script and configuration.  Note: If you already have a .cfg set up, copy that instead of the sample .cfg from the EXTRACT_FOLDER.
+Copy the script and configuration.  Note: If you set up a .cfg earlier, **copy that instead** of the sample .cfg from the EXTRACT_FOLDER.
 <code>
  \# cp EXTRACT_FOLDER/calibre2jellyfin-main/calibre2jellyfin.py /var/lib/jellyfin/.local/bin/
  \# cp EXTRACT_FOLDER/calibre2jellyfin-main/calibre2jellyfin.cfg /var/lib/jellyfin/.config/
