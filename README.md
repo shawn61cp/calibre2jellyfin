@@ -122,6 +122,10 @@ Change ownership of the files and paths created above to <code>jellyfin</code>.
  \# chown -R jellyfin:jellyfin /var/lib/jellyfin/.config 
 </code>
 
+If you did not do so during the installation steps, make the script executable.
+
+<code>\# chmod 755 /var/lib/jellyfin/.local/bin/calibre2jellyfin.py</code>
+
 Now, if you did not already have a .cfg set up, continue as <code>root</code> and edit the configuration file <code>/var/lib/jellyfin/.config/calibre2jellyfin.cfg</code> as described under Usage above.
 
 Finally, exit from the root shell.
