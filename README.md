@@ -146,16 +146,19 @@ $ sudo runuser -u jellyfin -- /var/lib/jellyfin/.local/bin/calibre2jellyfin.py
 You can use CRON to run the script regularly to keep your Jellyfin library updated.  The steps below assume the script has been set up under the <code>jellyfin</code> user as described above.  The cron job is set up under the root account but again uses <code>runuser</code> to execute it as <code>jellyfin</code>.
 
 Change to the root account
-
-<code>$ sudo su -</code>
+<code>
+$ sudo su -
+</code>
 
 Start the cron editor  
-
-<code>\# crontab -e</code>
+<code>
+\# crontab -e
+</code>
 
 Add a line like this to the cron file.  The redirection causes any error messages to be included in the mailed log (if you have that enabled).  The example below runs the script every night at 11:00 PM.
-
-<code>0 23 * * * runuser -u jellyfin -- /var/lib/jellyfin/.local/bin/calibre2jellyfin.py 2\>&1</code>
+<code>
+0 23 * * * runuser -u jellyfin -- /var/lib/jellyfin/.local/bin/calibre2jellyfin.py 2\>&1
+</code>
 
 Save the file, exit the editor, and exit the root shell.
 
