@@ -270,7 +270,7 @@ def doConstruct(section):
         if authorFolders[0] == '':
             raise ValueError('authorFolders must contain at least one entry')
         if bookfiletypes[0] == '':
-            raise ValueError('bookfiletypes must contain at least one eentry')
+            raise ValueError('bookfiletypes must contain at least one entry')
     except Exception as e:
         logError(f'Inappropriate parameter value in configuration file {configfilepath}', e)
         exit(-1)
