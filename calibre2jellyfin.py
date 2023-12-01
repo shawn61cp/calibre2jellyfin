@@ -257,6 +257,24 @@ def doConstruct(section):
     jellyfinStore = Path(section['jellyfinStore'])
     foldermode = section['foldermode']
 
+    # sanity check configuration parameters
+    try:
+        if not calibreStore.is_dir():
+            raise ValueError(f'calibreStore value ("{calibreStore}") is not a directory')
+        if not jellyfinStore.is_dir():
+            raise ValueError(f'jellyfinStore value ("{jellyfinStore}") is not a directlry')
+        if jellyfinStore.samefile(calibreStore):
+            raise ValueError(f'jellyfinStore and calibreStore values must be different locations')
+        if foldermode != 'book' and foldermode != 'author,series,book':
+            raise ValueError(f'foldermode value must be "book" or "author,series,book"')
+        if authorFolders[0] == '':
+            raise ValueError('authorFolders must contain at least one entry')
+        if bookfiletypes[0] == '':
+            raise ValueError('bookfiletypes must contain at least one eentry')
+    except Exception as e:
+        logError(f'Inappropriate parameter value in configuration file {configfilepath}', e)
+        exit(-1)
+
     # for each configured author
     for authorFolder in authorFolders:
 
