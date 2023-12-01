@@ -112,31 +112,34 @@ Create the paths for the script and its configuration
 
 Copy the script and configuration.  Note: If you set up a .cfg earlier, **copy that instead** of the sample .cfg from the EXTRACT_FOLDER.
 <code>
- \# cp EXTRACT_FOLDER/calibre2jellyfin-main/calibre2jellyfin.py /var/lib/jellyfin/.local/bin/
- \# cp EXTRACT_FOLDER/calibre2jellyfin-main/calibre2jellyfin.cfg /var/lib/jellyfin/.config/
+\# cp EXTRACT_FOLDER/calibre2jellyfin-main/calibre2jellyfin.py /var/lib/jellyfin/.local/bin/
+\# cp EXTRACT_FOLDER/calibre2jellyfin-main/calibre2jellyfin.cfg /var/lib/jellyfin/.config/
 </code>
 
 Change ownership of the files and paths created above to <code>jellyfin</code>.
 <code>
 \# chown -R jellyfin:jellyfin /var/lib/jellyfin/.local
- \# chown -R jellyfin:jellyfin /var/lib/jellyfin/.config 
+\# chown -R jellyfin:jellyfin /var/lib/jellyfin/.config 
 </code>
 
 If you did not do so during the installation steps, make the script executable.
-
-<code>\# chmod 755 /var/lib/jellyfin/.local/bin/calibre2jellyfin.py</code>
+<code>\
+\# chmod 755 /var/lib/jellyfin/.local/bin/calibre2jellyfin.py
+</code>
 
 Now, if you did not already have a .cfg set up, continue as <code>root</code> and edit the configuration file <code>/var/lib/jellyfin/.config/calibre2jellyfin.cfg</code> as described under Usage above.
 
 Finally, exit from the root shell.
-
-<code># exit</code>
+<code>
+\# exit
+</code>
 
 ###### Running the installed script
 
 I find that when dealing with accounts that do not permit login that the <code>runuser</code> utility is convenient.  _Possibly this is habit. :)_  To run the script I execute the following from my own account.
-
-<code>$ sudo runuser -u jellyfin -- /var/lib/jellyfin/.local/bin/calibre2jellyfin.py</code>
+<code>
+$ sudo runuser -u jellyfin -- /var/lib/jellyfin/.local/bin/calibre2jellyfin.py
+</code>
 
 #### Scheduling the script to run automatically
 
