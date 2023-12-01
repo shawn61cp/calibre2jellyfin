@@ -150,7 +150,7 @@ Change to the root account
 $ sudo su -
 </code>
 
-Start the cron editor  
+Start the cron editor
 <code>
 \# crontab -e
 </code>
