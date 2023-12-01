@@ -25,6 +25,8 @@ def logError(msg, e):
 
         msg                 str, error message
         e                   Exception
+
+        returns            None
     """
     print(msg, file=stderr, flush=True)
     print(e, file=stderr, flush=True)
@@ -69,6 +71,9 @@ def findBook(bookfiletypes, bookFolderSrcPath):
 
         bookfiletypes       [], list of file extensions identifying books (exclude periods)
         bookFolderSrcPath   pathlib.Path, full path to book folder to search
+
+        returns             pathlib.Path, full path to located book file
+                            None if not found
     """
     for typeExt in bookfiletypes:
         for bookFilePath in bookFolderSrcPath.glob('*.' + typeExt):
@@ -80,6 +85,9 @@ def findMetadata(bookFolderSrcPath):
     """Locates first instance of a metadata file (one w an .opf extension)
 
         bookFolderSrcPath   pathlib.Path, full path to book folder to search
+
+        returns             pathlib.Path, full path to metadata file
+                            None if not found
     """
     for metadataFilePath in bookFolderSrcPath.glob('*.opf'):
         return metadataFilePath
@@ -90,6 +98,9 @@ def findCover(bookFolderSrcPath):
     """Locates instance of a book cover image
 
         bookFolderSrcPath   pathlib.Path, full path to book folder to search
+
+        returns             pathlib.Path, full path to cover image
+                            None if not found
     """
     for coverFilePath in bookFolderSrcPath.glob('cover.jpg'):
         return coverFilePath
@@ -144,6 +155,8 @@ def writeMetadata(metadatadoc, metadataDstFilePath):
 
         metadatadoc             minidom doc, doc object from source metadata
         metadataDstFilePath     pathlib.Path(), full path to destination metadata file
+
+        returns                 None
     """
     try:
         docfile = open(metadataDstFilePath, 'w')
@@ -172,6 +185,8 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         foldermode          str, one of 'author,series,book' or 'book'
         jellyfinStore       pathlib.Path, full path top level output storage location
                             (i.e. will be jellyfin library folder)
+
+        returns             None
     """
 
     # find first instance of configured book file types
@@ -247,6 +262,8 @@ def doConstruct(section):
     """Create (or update) one target book library that will be presented by jellyfin.
 
         section             config parser section obj
+
+        returns             None
     """
 
     # convert multiline parameters to lists
