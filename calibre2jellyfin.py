@@ -175,6 +175,27 @@ def writeMetadata(metadatadoc, metadataDstFilePath):
         docfile.close()
 
 
+def sanitizeFilename(s):
+    """Removes illegal characters from strings that will be incorporated in
+    file names.
+
+        s                   string to sanitize
+        returns             sanitized string
+
+    From: stackoverflow thread https://stackoverflow.com/questions/7406102/create-sane-safe-filename-from-any-unsafe-string
+    By: Mitch McMabers https://stackoverflow.com/users/8874388/mitch-mcmabers and others
+    """
+    
+    # illegal chars
+    z = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "-", s)
+#    # windows illegal file names
+#    z = re.sub(r"^(CON|CONIN\$|CONOUT\$|PRN|AUX|CLOCK\$|NUL|COM0|COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|LPT0|LPT1|LPT2|LPT3|LPT4|LPT5|LPT6|LPT7|LPT8|LPT9|LST|KEYBD\$|SCREEN\$|\$IDLE\$|CONFIG\$)(\.|$)", '-', z, flags=re.IGNORECASE)
+#    # windows illegal chars at start/end
+#    z = re.sub(r"^ |[. ]$", '-', z)
+    
+    return z
+
+
 def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, foldermode, jellyfinStore):
     """Creates folder, files and symlinks for one book.
 
@@ -208,8 +229,8 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     if series > '' and foldermode == 'author,series,book':
         if series_index == '':
             series_index = '99'
-        bookFolder = '{:>03s} - {}'.format(series_index, bookFolder)
-        bookFolderDstPath = authorDstPath / (series + ' Series') / bookFolder
+        bookFolder = sanitizeFilename('{:>03s} - {}'.format(series_index, bookFolder))
+        bookFolderDstPath = authorDstPath / sanitizeFilename(series + ' Series') / bookFolder
     elif foldermode == 'book':
         bookFolderDstPath = jellyfinStore / bookFolder
     else:
