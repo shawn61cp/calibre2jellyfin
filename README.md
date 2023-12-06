@@ -2,6 +2,7 @@
 Python script to construct a Jellyfin ebook library from a Calibre library.
 
 ## Linux 
+<em>(The Windows version of this script is maintained as a separate project.  Please see [wincalibre2jellyfin](https://github.com/shawn61cp/wincalibre2jellyfin).)</em>
 
 #### Overview
 * Created folder structure (foldermode in .cfg) is one of:
@@ -169,12 +170,3 @@ Typically the Calibre author folder is named exactly as the author appears in th
 If you find that an expected author does not show up in the created Jellyfin library, double check that the author as listed in the .cfg file matches the actual folder name in the Calibre library.
 
 Another thing I have encountered is when multiple versions of the author name exist, such as "Public, John Q." and "John Q. Public", and they are then consolidated, Calibre actually moves the books into the folder matching the consolidated name.  If the author name configured for calibre2jellyfin happened to match the author name that "went away", updates to that author's books may appear to die, or you might see two different versions of the same author in Jellyfin.  The solution is to just delete, in Jellyfin, one or both authors, ensure that the author configured in the .cfg file matches the Calibre author folder, then re-run the script to have them cleanly re-created.  Jellyfin will eventually detect the changes and update the display contents.  You can also right-click on an item within Jellyfin and request an immediate metadata refresh.  Even so sometimes it will take a few minutes  for Jellyfin to recognize the changes.
-
-## Windows
-
-The script does not yet support windows.  Some things that will differ are:
-
-* Because of the complications surrounding symlinks, file will probably be copied instead of creating symlinks.
-    * The above will then probably require some command line options or date comparison logic to control whether files are overwritten when the script is re-run.
-* The configuration file will probably be expected to be found in the same folder where the script is installed.
-
