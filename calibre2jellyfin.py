@@ -13,7 +13,7 @@ import argparse
 from sys import stderr, exit
 from pathlib import Path
 from xml.dom import minidom
-
+import re
 
 # ------------------
 #   Set up
@@ -300,7 +300,7 @@ def doConstruct(section):
         if not calibreStore.is_dir():
             raise ValueError(f'calibreStore value ("{calibreStore}") is not a directory')
         if not jellyfinStore.is_dir():
-            raise ValueError(f'jellyfinStore value ("{jellyfinStore}") is not a directlry')
+            raise ValueError(f'jellyfinStore value ("{jellyfinStore}") is not a directory')
         if jellyfinStore.samefile(calibreStore):
             raise ValueError(f'jellyfinStore and calibreStore values must be different locations')
         if foldermode != 'book' and foldermode != 'author,series,book':
