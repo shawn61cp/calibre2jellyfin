@@ -189,7 +189,7 @@ def sanitizeFilename(s):
     # illegal chars
     z = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "-", s)
 #    # windows illegal file names
-#    z = re.sub(r"^(CON|CONIN\$|CONOUT\$|PRN|AUX|CLOCK\$|NUL|COM0|COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|LPT0|LPT1|LPT2|LPT3|LPT4|LPT5|LPT6|LPT7|LPT8|LPT9|LST|KEYBD\$|SCREEN\$|\$IDLE\$|CONFIG\$)(\.|$)", '-', z, flags=re.IGNORECASE)
+#    z = re.sub(r"^ ?(CON|CONIN\$|CONOUT\$|PRN|AUX|CLOCK\$|NUL|COM0|COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|LPT0|LPT1|LPT2|LPT3|LPT4|LPT5|LPT6|LPT7|LPT8|LPT9|LST|KEYBD\$|SCREEN\$|\$IDLE\$|CONFIG\$)([. ]|$)", '-', z, flags=re.IGNORECASE)
 #    # windows illegal chars at start/end
 #    z = re.sub(r"^ |[. ]$", '-', z)
     
