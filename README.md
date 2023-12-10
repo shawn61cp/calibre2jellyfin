@@ -52,7 +52,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   </tr>
  </tbody>
 </table>
-Jellyfin will display a drillable folder structure similarly to the way it does for movies, shows, and music.  Jellyfin will extract and display the mangled book title that is prepended with the series index as the book title.
+Jellyfin will display a drillable folder structure similarly to the way it does for movies, shows, and music.  Jellyfin will extract, display, and sort by the mangled book title that is prepended with the series index.
 
 #### Dependencies
 * Python 3
