@@ -174,3 +174,5 @@ Another thing I have encountered is when multiple versions of the author name ex
 ## Thoughts from the Edge?
 
 * I suppose it is just possible that you might be running the Linux version of this script on a Linux system, but be writing to a Windows filesystem (e.g. NTFS/FAT/XFAT etc.).  If so I recommend that, in the <code>sanitizeFilename(s):</code> function, you uncomment the last four lines above the return statement.  This will clean up folder/file names generated from metadata that would be otherwise illegal on these filesystems.
+
+* Heh heh.  I will share a secret (not so much really granted the code is open):  The script does not enforce the type extension options.   One could for instance add CBR and CBZ.  I myself do not have an e-comic collection and therefore lack the experience with such a library to notice the <em>small things</em> in the way that I do with my e-book library and have no way to really test.  If someone out there does have a comic library and is interested in experimenting I would be interested to hear what you find.
