@@ -14,6 +14,7 @@ from sys import stderr, exit
 from pathlib import Path
 from xml.dom import minidom
 import re
+from os import stat
 
 # ------------------
 #   Set up
@@ -271,11 +272,20 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     # Otherwise, just write out a copy of the original metadata.
     if metadatadoc is not None:
         metadataDstFilePath = bookFolderDstPath / metadataSrcFilePath.name
-        if series > '' and foldermode == 'author,series,book':
-            titleel = metadatadoc.getElementsByTagName('dc:title')[0]
-            titleel.firstChild.data = '{:>03s} - {}'.format(series_index, titleel.firstChild.data)
+        copyMetadata = False
+        if metadataDstFilePath.exists():
+            if stat(metadataDstFilePath).st_mtime < stat(metadataSrcFilePath).st_mtime:
+                copyMetadata = True
+        else:
+            copyMetadata = True
 
-        writeMetadata(metadatadoc, metadataDstFilePath)
+        if copyMetadata:
+            if series > '' and foldermode == 'author,series,book':
+                titleel = metadatadoc.getElementsByTagName('dc:title')[0]
+                titleel.firstChild.data = '{:>03s} - {}'.format(series_index, titleel.firstChild.data)
+
+            writeMetadata(metadatadoc, metadataDstFilePath)
+
         metadatadoc.unlink()
 
 
