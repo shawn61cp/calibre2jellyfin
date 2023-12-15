@@ -14,7 +14,7 @@ from sys import stderr, exit
 from pathlib import Path
 from xml.dom import minidom
 import re
-from os import stat
+from os import stat, utime
 
 # ------------------
 #   Set up
@@ -250,7 +250,13 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
 
     # Create a symlink to the source book if it does not exist
     bookFileDstPath = bookFolderDstPath / bookFileSrcPath.name
-    if not bookFileDstPath.exists():
+    if bookFileDstPath.exists():
+        if stat(bookFileDstPath, follow_symlinks=False).st_mtime < stat(bookFileSrcPath).st_mtime:
+            try:
+                utime(bookFileDstPath, follow_symlinks=False)
+            except Exception as e:
+                logError('Could not touch book symlink {bookFileDstPath}', e)
+    else:
         try:
             bookFileDstPath.symlink_to(bookFileSrcPath)
         except Exception as e:
@@ -259,7 +265,13 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     # Create a symlink to the cover image if it does not exist
     if coverSrcFilePath is not None:
         coverDstFilePath = bookFolderDstPath / coverSrcFilePath.name
-        if not coverDstFilePath.exists():
+        if coverDstFilePath.exists():
+            if stat(coverDstFilePath, follow_symlinks=False).st_mtime < stat(coverSrcFilePath).st_mtime:
+                try:
+                    utime(coverDstFilePath, follow_symlinks=False)
+                except Exception as e:
+                    logError('Could not touch cover image symlink {coverFileDstPath}', e)
+        else:
             try:
                 coverDstFilePath.symlink_to(coverSrcFilePath)
             except Exception as e:
