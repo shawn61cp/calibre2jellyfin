@@ -15,7 +15,6 @@ from pathlib import Path
 from xml.dom import minidom
 import re
 from os import stat, utime
-from html import escape
 
 # ------------------
 #   Set up
@@ -250,6 +249,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
         return
 
     # Create a symlink to the source book if it does not exist
+    # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
     bookFileDstPath = bookFolderDstPath / bookFileSrcPath.name
     if bookFileDstPath.exists():
         if stat(bookFileDstPath, follow_symlinks=False).st_mtime < stat(bookFileSrcPath).st_mtime:
@@ -264,6 +264,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
             logError(f'Could not create book symlink {bookFileDstPath}', e)
 
     # Create a symlink to the cover image if it does not exist
+    # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
     if coverSrcFilePath is not None:
         coverDstFilePath = bookFolderDstPath / coverSrcFilePath.name
         if coverDstFilePath.exists():
@@ -281,7 +282,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     # Output a metadata xml (.opf) file into the destination book folder.
     # If folder mode is 'author,series,book' and series info was found,
     # mangle the book title (<dc:title>) by prepending the book's index
-    # to it's title.
+    # to it's title. Also prepend a "Book X of Lorem Ipsum" header to the book description.
     # Otherwise, just write out a copy of the original metadata.
     if metadatadoc is not None:
         metadataDstFilePath = bookFolderDstPath / metadataSrcFilePath.name
