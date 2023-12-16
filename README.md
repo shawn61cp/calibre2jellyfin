@@ -14,7 +14,10 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   * copy, possibly modified, of Calibre's metadata file
 * Books are selected for inclusion by listing author folders in the .cfg file
 * Series handling
-  * When foldermode is author/series/book, the script will extract series and series index from Calibre's metadata file.  If found, the target book folder name will be prepended with the series index.  So will the \<dc:title\> element in the metadata file.  Additionally, a short header identifying the index and series is prepended to the book description.  If series info is expected but not found, the structure collapses to .../author/book/....
+  * When foldermode is author/series/book, the script will extract series and series index from Calibre's metadata file.
+  * If found, the target book folder name will be prepended with the series index.  So will the \<dc:title\> element in the metadata file.
+  * A short header identifying the index and series is prepended to the book description.
+  * If series info is expected but not found, the structure collapses to .../author/book/....
 * Multiple output libraries may be configured 
 
 #### Example author/series/book structure 
