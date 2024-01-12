@@ -180,4 +180,4 @@ Another thing I have encountered is when multiple versions of the author name ex
 
 * Heh heh.  I will share a secret (not so much really granted the code is open):  The script does not enforce the type extension options.   One could for instance add CBR and CBZ.  I myself do not have an e-comic collection and therefore lack the experience with such a library to notice the <em>small things</em> in the way that I do with my e-book library and have no way to really test.  If someone out there does have a comic library and is interested in experimenting I would be interested to hear what you find.
 
-* I have noticed that Jellyfin does not re-paginate if you resize the browser window or change the zoom factor <em>after</em> you have opened the book.  However if do these <em>before</em> opening the book it does so nicely.
+* I have noticed that Jellyfin does not re-paginate if you resize the browser window or change the zoom factor <em>after</em> you have opened the book.  However if you do these <em>before</em> opening the book it does so nicely.
