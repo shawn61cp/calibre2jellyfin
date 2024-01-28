@@ -43,9 +43,9 @@ cmdparser = argparse.ArgumentParser(
 )
 cmdparser.add_argument(
     '--update-all-metadata',
-    dest = 'updateAllMetadata',
-    action = 'store_true',
-    help = 'Useful to force a one-time update of all metadata files, for instance when configurable metadata mangling options have changed. (Normally metadata files are only updated when missing or out-of-date.)'
+    dest='updateAllMetadata',
+    action='store_true',
+    help='Useful to force a one-time update of all metadata files, for instance when configurable metadata mangling options have changed. (Normally metadata files are only updated when missing or out-of-date.)'
 )
 cmdargs = cmdparser.parse_args()
 
@@ -142,7 +142,6 @@ def getMetadata(metadataFilePath):
         logError(f'Could not open metadata file "{metadataFilePath}"', e)
         return doc, series, series_index, titleel, sortel, descel
 
-
     # create a document object from the metadata file
     try:
         doc = minidom.parse(docfile)
@@ -155,13 +154,13 @@ def getMetadata(metadataFilePath):
         docfile.close()
 
     # get series info / objects
-    
+
     titleel = doc.getElementsByTagName('dc:title')[0]
 
     descels = doc.getElementsByTagName('dc:description')
     if descels:
         descel = descels[0]
-    
+
     metas = doc.getElementsByTagName('meta')
     for m in metas:
         if m.getAttribute('name') == 'calibre:series':
@@ -173,7 +172,6 @@ def getMetadata(metadataFilePath):
 
     docfile.close()
     return doc, series, series_index, titleel, sortel, descel
-
 
 
 def writeMetadata(metadatadoc, metadataDstFilePath):
@@ -211,14 +209,14 @@ def sanitizeFilename(s):
     From: stackoverflow thread https://stackoverflow.com/questions/7406102/create-sane-safe-filename-from-any-unsafe-string
     By: Mitch McMabers https://stackoverflow.com/users/8874388/mitch-mcmabers and others
     """
-    
+
     # illegal chars
     z = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "-", s)
     # windows illegal file names
     z = re.sub(r"^ ?(CON|CONIN\$|CONOUT\$|PRN|AUX|CLOCK\$|NUL|COM0|COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|LPT0|LPT1|LPT2|LPT3|LPT4|LPT5|LPT6|LPT7|LPT8|LPT9|LST|KEYBD\$|SCREEN\$|\$IDLE\$|CONFIG\$)([. ]|$)", '-', z, flags=re.IGNORECASE)
     # windows illegal chars at start/end
     z = re.sub(r"^ |[. ]$", '-', z)
-    
+
     return z
 
 
@@ -313,7 +311,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     # mangle the book title (<dc:title>) by prepending the book's index
     # to it's title. Also prepend a "Book X of Lorem Ipsum" header to the book description.
     # Otherwise, just write out a copy of the original metadata.
-    
+
     if metadatadoc is not None:
 
         metadataDstFilePath = bookFolderDstPath / metadataSrcFilePath.name
