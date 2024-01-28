@@ -114,7 +114,7 @@ def findCover(bookFolderSrcPath):
     return None
 
 
-def getSeries(metadataFilePath):
+def getMetadata(metadataFilePath):
     """Extracts series and series index, title element, title sort attribute,
     and a DOM object from book metadata file
 
@@ -122,8 +122,8 @@ def getSeries(metadataFilePath):
         Returns ()          doc, minidom xml doc object
                             str, name of series, empty str if none
                             str, book index in series, empty str if none
-                            element, <dc:title> element
-                            element, <meta name="calibre:title_sort" content="001 - Book Title"/> element
+                            element, <dc:title>
+                            element, <meta name="calibre:title_sort" content="001 - Book Title"/>
                             element, <dc:description>
     """
     series = ''
@@ -250,7 +250,7 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
     bookFolder = bookFolderSrcPath.name
     metadataSrcFilePath = findMetadata(bookFolderSrcPath)
     coverSrcFilePath = findCover(bookFolderSrcPath)
-    metadatadoc, series, series_index, titleel, sortel, descel = getSeries(metadataSrcFilePath)
+    metadatadoc, series, series_index, titleel, sortel, descel = getMetadata(metadataSrcFilePath)
 
     # Output is organized as '.../author/series/book/book.ext' or '.../book/book.ext' depending on foldermode.
     # If series info was expected but not found, output structure collapses to '.../author/book/book.ext'.
@@ -321,8 +321,9 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
 
         if cmdargs.updateAllMetadata:
             copyMetadata = True
-        elif metadataDstFilePath.exists() and stat(metadataDstFilePath).st_mtime < stat(metadataSrcFilePath).st_mtime:
-            copyMetadata = True
+        elif metadataDstFilePath.exists():
+            if stat(metadataDstFilePath).st_mtime < stat(metadataSrcFilePath).st_mtime:
+                copyMetadata = True
         else:
             copyMetadata = True
 
