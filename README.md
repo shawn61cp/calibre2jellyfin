@@ -58,7 +58,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
 Jellyfin will display a drillable folder structure similarly to the way it does for movies, shows, and music.  Jellyfin will extract, display, and sort by the mangled book title that is prepended with the series index.
 
 #### Changes
-* 2024-01-27 (main branch)
+* 2024-01-27
     * Add support for mangling the metadata title sort value
     * Make metadata mangling behavior configurable (new configuration parameters)
         * mangleMetaTitle = [1 | 0]
