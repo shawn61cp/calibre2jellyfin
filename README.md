@@ -94,6 +94,14 @@ Jellyfin will display a drillable folder structure similarly to the way it does 
 * If not, include the full path to the script:
     * <code>$ INSTALL_FOLDER/calibre2jellyfin.py</code>
 
+#### Upgrading
+
+Two things need to be accomplished:
+1. Replace your current script, wherever it was originally installed, with the new one.
+    * This can be done basically by following installation steps 1 - 10.  Do not perform step 11 since that would destroy your current configuration.
+2. Add any new config options to your existing configuration file.
+    * This can be done by copying and pasting any new configuration parameters from the new sample configuration into your current configuration, or even just editing your current configuration.  New configuration options are listed in the *Changes* section and also in the sample .cfg file.
+
 #### Command line  options
 <pre>
 usage: calibre2jellyfin.py [-h] [--update-all-metadata]

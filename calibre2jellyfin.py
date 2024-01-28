@@ -137,7 +137,7 @@ def getMetadata(metadataFilePath):
 
     # open the metadata file
     try:
-        docfile = open(metadataFilePath)
+        docfile = open(metadataFilePath, 'r')
     except Exception as e:
         logError(f'Could not open metadata file "{metadataFilePath}"', e)
         return doc, series, series_index, titleel, sortel, descel
@@ -307,10 +307,11 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
                 logError(f'Could not create cover image symlink "{coverDstFilePath}"', e)
 
     # Output a metadata xml (.opf) file into the destination book folder.
-    # If folder mode is 'author,series,book' and series info was found,
-    # mangle the book title (<dc:title>) by prepending the book's index
-    # to it's title. Also prepend a "Book X of Lorem Ipsum" header to the book description.
-    # Otherwise, just write out a copy of the original metadata.
+    # If folder mode is 'author,series,book', series info was found,
+    # and mangling is enabled, mangle the book title (<dc:title>) and/or title_sort
+    # elements by prepending the book's index to it's title.
+    # Also prepend a "Book X of Lorem Ipsum" header to the book description.
+    # Otherwise, write out the original metadata unchanged.
 
     if metadatadoc is not None:
 
@@ -351,7 +352,7 @@ def doConstruct(section):
         # convert multiline configs to lists
         authorFolders = section['authorFolders'][1:].split('\n')
         bookfiletypes = section['bookfiletypes'][1:].split('\n')
-        # get general configs
+        # get simple configs
         calibreStore = Path(section['calibreStore'])
         jellyfinStore = Path(section['jellyfinStore'])
         foldermode = section['foldermode']
