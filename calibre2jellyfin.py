@@ -348,6 +348,8 @@ def doConstruct(section):
         returns             None
     """
 
+    global configfilepath
+
     try:
         # convert multiline configs to lists
         authorFolders = section['authorFolders'][1:].split('\n')
@@ -358,8 +360,8 @@ def doConstruct(section):
         foldermode = section['foldermode']
         mangleMetaTitle = section.getboolean('mangleMetaTitle')
         mangleMetaTitleSort = section.getboolean('mangleMetaTitleSort')
-    except configparser.NoOptionError as e:
-        logError('A required parameter is missing from configuration file "{configfilepath}".  Please review the sampe configuration.', e)
+    except Exception as e:
+        logError(f'A required parameter is missing from configuration file "{configfilepath}".  Please review the sample configuration.', e)
         exit(-1)
 
     # sanity check configuration parameters
