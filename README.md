@@ -14,10 +14,10 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   * copy, possibly modified, of Calibre's metadata file
 * Books are selected for inclusion by listing author folders in the .cfg file
 * Series handling
-  * When foldermode is author/series/book, the script will extract series and series index from Calibre's metadata file.
-  * If found, the target book folder name will be prepended with the series index.  So will the \<dc:title\> element in the metadata file.
+  * When foldermode is author/series/book, the script will attempt to extract series and series index from Calibre's metadata file.
+  * If found, the target book folder name will be prepended with the series index.  Optionally, the metadata \<dc:title\> and the \<meta name="calibre:title_sort" content="...sort title..."\> may be treated in the same way.
   * A short header identifying the index and series is prepended to the book description.
-  * If series info is expected but not found, the structure collapses to .../author/book/....
+  * If series info is expected but not found, the structure collapses to .../author/book/.... and no mangling is performed.
 * Multiple output libraries may be configured 
 
 #### Example author/series/book structure 
@@ -57,6 +57,15 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
 </table>
 Jellyfin will display a drillable folder structure similarly to the way it does for movies, shows, and music.  Jellyfin will extract, display, and sort by the mangled book title that is prepended with the series index.
 
+#### Changes
+* 2024-01-27
+    * Add support for mangling the metadata title sort value
+    * Make metadata mangling behavior configurable (new configuration parameters)
+        * mangleMetaTitle = [1 | 0]
+        * mangleMetaTitleSort = [1 | 0]
+    * Add command line option to force update of all metadata files.
+        * -\-update-all-metadata
+
 #### Dependencies
 * Python 3
   
@@ -79,19 +88,40 @@ Jellyfin will display a drillable folder structure similarly to the way it does 
 #### Usage
 
 * Edit the ~/.config/calibre2jellyfin.cfg file before first use.
-    * Following the comments in the .cfg, set up your source and destination storage locations (libraries), your folder mode, and your list of authors.
+    * Following the comments in the .cfg, set up your source and destination storage locations (libraries), your folder mode, your list of authors, and title mangling.
 * If you added the calibre2jellyfin.py script to a location on your path, in a terminal:
     * <code>$ calibre2jellyfin.py</code>
 * If not, include the full path to the script:
     * <code>$ INSTALL_FOLDER/calibre2jellyfin.py</code>
 
+#### Upgrading
+
+Two things need to be accomplished:
+1. Replace your current script, wherever it was originally installed, with the new one.
+    * This can be done basically by following installation steps 1 - 10.  Do not perform step 11 since that would destroy your current configuration.
+2. Add any new config options to your existing configuration file.
+    * This can be done by copying and pasting any new configuration parameters from the new sample configuration into your current configuration, or even just editing your current configuration.  New configuration options are listed in the *Changes* section and also in the sample .cfg file.
+
+#### Command line  options
+<pre>
+usage: calibre2jellyfin.py [-h] [--update-all-metadata]
+
+A utility to construct a Jellyfin ebook library from a Calibre library. Configuration file "/home/shawn/.config/calibre2jellyfin.cfg" is required.
+
+options:
+  -h, --help            show this help message and exit
+  --update-all-metadata
+                        Useful to force a one-time update of all metadata files, for instance when configurable metadata mangling options have changed. (Normally metadata files are
+                        only updated when missing or out-of-date.)
+</pre>
+
 ## Real Life
 
-The installation and usage instructions above work fine but there may be other situations encountered or other conveniences desired.
+The installation and usage instructions above work fine but other situations may be encountered or other conveniences desired.
 
 #### Permissions on created Jellyfin library
 
-The usage/installation steps described above yield a Jellyfin store that is owned by whatever user ran the script.  Jellyfin can serve up this library because Calibre generally makes its folders and files world readable and so does the script.  If you make the library owned by Jellyfin (the <code>jellyfin</code> Linux user/service account), you will be able to delete books through the Jellyfin interface assuming you have administrative permission on the library within the Jellyfin app itself.  
+The usage/installation steps described above yield a Jellyfin store that is owned by whatever user ran the script.  Jellyfin can serve up this library because most default user configurations under Linux create files as world-readable.  However, if you make the library owned by Jellyfin (the <code>jellyfin</code> Linux user/service account), you will be able to delete books through the Jellyfin interface assuming you have administrative permission on the library within the Jellyfin app itself.  
 
 If your situation is like mine, cleaning up my Calibre library, ensuring the right metadata and covers got downloaded etc., is an ongoing task.  If you discover an issue while browsing your books within Jellyfin, you can delete the Jellyfin book (within Jellyfin), go back to your Calibre library, clean things up, and then re-run the script. Et voilà! Depending on the issue, you might not even have to delete the book from Jellyfin; Rerunning the script might be sufficient. However, deleting the book, or even the author folder if there were many changes, from Jellyfin does guarantee a clean re-creation.
 
@@ -176,7 +206,7 @@ Another thing I have encountered is when multiple versions of the author name ex
 
 ## Thoughts from the Edge?
 
-* I suppose it is just possible that you might be running the Linux version of this script on a Linux system, but be writing to a Windows filesystem (e.g. NTFS/FAT/XFAT etc.).  If so I recommend that, in the <code>sanitizeFilename(s):</code> function, you uncomment the last four lines above the return statement.  This will clean up folder/file names generated from metadata that would be otherwise illegal on these filesystems.
+* I suppose it is just possible that you might be running the Linux version of this script on a Linux system, but be writing to a Windows filesystem (e.g. NTFS/FAT/XFAT etc.).  If so I recommend that, in the <code>sanitizeFilename(s):</code> function, you uncomment the last four lines above the return statement.  This will perform additional clean up of folder/file names generated from metadata that would be otherwise illegal on these filesystems.  **[2024-01-28]: _This is no longer necessary._**  The extra cleanup for Windows file systems even when performed on Linux file systems seems unlikely to be of great impact and so was permanently enabled.
 
 * Heh heh.  I will share a secret (not so much really granted the code is open):  The script does not enforce the type extension options.   One could for instance add CBR and CBZ.  I myself do not have an e-comic collection and therefore lack the experience with such a library to notice the <em>small things</em> in the way that I do with my e-book library and have no way to really test.  If someone out there does have a comic library and is interested in experimenting I would be interested to hear what you find.
 
