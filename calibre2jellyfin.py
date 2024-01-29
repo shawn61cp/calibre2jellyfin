@@ -115,8 +115,8 @@ def findCover(bookFolderSrcPath):
 
 
 def getMetadata(metadataFilePath):
-    """Extracts series and series index, title element, title sort attribute,
-    and a DOM object from book metadata file
+    """Creates a miniDOM object from the metadata file and extracts
+        various strings and elements of interest.
 
         metadataFilePath    pathlib.Path, full path to metadata file
         Returns ()          doc, minidom xml doc object
@@ -126,12 +126,14 @@ def getMetadata(metadataFilePath):
                             element, <meta name="calibre:title_sort" content="001 - Book Title"/>
                             element, <dc:description>
     """
+    
     series = ''
     series_index = ''
     doc = None
     titleel = None
     sortel = None
     descel = None
+    
     if not metadataFilePath:
         return doc, series, series_index, titleel, sortel, descel
 
@@ -149,11 +151,10 @@ def getMetadata(metadataFilePath):
         doc = None
         logError(f'Could not read metadata file "{metadataFilePath}"', e)
         return doc, series, series_index, titleel, sortel, descel
-
     finally:
         docfile.close()
 
-    # get series info / objects
+    # get series info and other elements
 
     titleel = doc.getElementsByTagName('dc:title')[0]
 
@@ -170,7 +171,6 @@ def getMetadata(metadataFilePath):
         elif m.getAttribute('name') == 'calibre:title_sort':
             sortel = m
 
-    docfile.close()
     return doc, series, series_index, titleel, sortel, descel
 
 
