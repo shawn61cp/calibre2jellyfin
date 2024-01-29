@@ -119,6 +119,7 @@ def getMetadata(metadataFilePath):
         various strings and elements of interest.
 
         metadataFilePath    pathlib.Path, full path to metadata file
+        
         Returns ()          doc, minidom xml doc object
                             str, name of series, empty str if none
                             str, book index in series, empty str if none
@@ -204,6 +205,7 @@ def sanitizeFilename(s):
     file names.
 
         s                   string to sanitize
+        
         returns             sanitized string
 
     From: stackoverflow thread https://stackoverflow.com/questions/7406102/create-sane-safe-filename-from-any-unsafe-string
