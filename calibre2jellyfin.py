@@ -361,7 +361,7 @@ def doConstruct(section):
         mangleMetaTitle = section.getboolean('mangleMetaTitle')
         mangleMetaTitleSort = section.getboolean('mangleMetaTitleSort')
     except Exception as e:
-        logError(f'A required parameter is missing from configuration file "{configfilepath}".  Please review the sample configuration.', e)
+        logError(f'A required parameter is missing from {section} in configuration file "{configfilepath}".  Please review the sample configuration.', e)
         exit(-1)
 
     # sanity check configuration parameters
