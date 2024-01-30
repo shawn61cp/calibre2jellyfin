@@ -332,9 +332,9 @@ def doBook(authorSrcPath, authorDstPath, bookFolderSrcPath, bookfiletypes, folde
             if series > '' and foldermode == 'author,series,book':
                 if mangleMetaTitle:
                     titleel.firstChild.data = '{:>03s} - {}'.format(series_index, titleel.firstChild.data)
-                if mangleMetaTitleSort:
+                if mangleMetaTitleSort and sortel is not None:
                     sortel.setAttribute('content', '{:>03s} - {}'.format(series_index, sortel.getAttribute('content')))
-                if descel:
+                if descel and descel is not None:
                     descel.firstChild.data = f'<H4>Book {series_index} of <em>{series}</em></H4>{descel.firstChild.data}'
 
             writeMetadata(metadatadoc, metadataDstFilePath)
