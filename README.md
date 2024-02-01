@@ -9,7 +9,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   * .../author/series/book/...
   * .../book/...
 * Destination book folder contains
-  * symlink to book file in Calibre library
+  * symlink to (single) book file in Calibre library (based on configured order of preference)
   * symlink to cover image in Calibre library
   * copy, possibly modified, of Calibre's metadata file
 * Books are selected for inclusion by listing author folders in the .cfg file
@@ -20,7 +20,8 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   * If series info is expected but not found, the structure collapses to .../author/book/.... and no mangling is performed.
 * Multiple output libraries may be configured 
 
-#### Example author/series/book structure 
+#### Example author/series/book structure
+_Example assumes script has been configured to prefer .epub types over .azw and .mobi._
 <table>
   <thead>
     <tr><th>Calibre store</th><th>Created Jellyfin store</th></tr>
@@ -32,10 +33,12 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
     └── Book A/
     │   ├── cover.jpg
     │   ├── metadata.opf
+    │   ├── Book A.azw
     │   └── Book A.epub
     ├── Book B/
     │   ├── cover.jpg
     │   ├── metadata.opf
+    │   ├── Book B.mobi
     │   └── Book B.epub
    </pre>
    </td>
