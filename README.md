@@ -61,6 +61,8 @@ _Example assumes script has been configured to prefer .epub types over .azw and 
 Jellyfin will display a drillable folder structure similarly to the way it does for movies, shows, and music.  Jellyfin will extract, display, and sort by the mangled book title that is prepended with the series index.
 
 #### Changes
+* 2024-02-21
+    * Coding/style improvements and lint cleanup only.  No functional changes.  If you already have the 2024-01-27 version installed there is no real reason to download this version.
 * 2024-01-27
     * Add support for mangling the metadata title sort value
     * Make metadata mangling behavior configurable (new configuration parameters)
