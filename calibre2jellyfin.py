@@ -16,6 +16,7 @@ import logging
 from pathlib import Path
 from xml.dom import minidom
 from os import stat, utime
+from typing import Tuple
 
 # ------------------
 #   Globals
@@ -23,7 +24,7 @@ from os import stat, utime
 
 
 CONFIG_FILE_PATH = Path.home() / '.config' / (Path(__file__).stem + '.cfg')
-CMDARGS = None
+CMDARGS: argparse.Namespace
 
 
 # ------------------
@@ -31,7 +32,7 @@ CMDARGS = None
 # ------------------
 
 
-def find_book(book_file_types, book_folder_src_path):
+def find_book(book_file_types: list[str], book_folder_src_path: Path) -> Path | None:
 
     """Locates first instance of a file having an configured book extension
 
@@ -48,7 +49,7 @@ def find_book(book_file_types, book_folder_src_path):
     return None
 
 
-def find_metadata(book_folder_src_path):
+def find_metadata(book_folder_src_path: Path) -> Path | None:
 
     """Locates first instance of a metadata file (one w an .opf extension)
 
@@ -63,7 +64,7 @@ def find_metadata(book_folder_src_path):
     return None
 
 
-def find_cover(book_folder_src_path):
+def find_cover(book_folder_src_path: Path) -> Path | None:
 
     """Locates instance of a book cover image
 
@@ -78,7 +79,16 @@ def find_cover(book_folder_src_path):
     return None
 
 
-def get_metadata(metadata_file_path):
+def get_metadata(
+    metadata_file_path: Path | None
+) -> Tuple[
+    minidom.Document | None,
+    str,
+    str,
+    minidom.Element | None,
+    minidom.Element | None,
+    minidom.Element | None
+]:
 
     """Creates a miniDOM object from the metadata file and extracts
         various strings and elements of interest.
@@ -134,7 +144,7 @@ def get_metadata(metadata_file_path):
     return doc, series, series_index, titleel, sortel, descel
 
 
-def write_metadata(metadatadoc, metadata_file_dst_path):
+def write_metadata(metadatadoc: minidom.Document, metadata_file_dst_path: Path) -> None:
 
     """Writes out the book metadata
 
@@ -152,7 +162,7 @@ def write_metadata(metadatadoc, metadata_file_dst_path):
         logging.warning('Could not (over) write metadata file "%s": %s', metadata_file_dst_path, excep)
 
 
-def sanitize_filename(sani):
+def sanitize_filename(sani: str) -> str:
 
     """Removes illegal characters from strings that will be incorporated in
     file names.
@@ -183,10 +193,14 @@ def sanitize_filename(sani):
 
 
 def do_book(
-    author_folder_dst_path, book_folder_src_path, book_file_types,
-    foldermode, jellyfin_store,
-    mangle_meta_title, mangle_meta_title_sort
-):
+    author_folder_dst_path: Path,
+    book_folder_src_path: Path,
+    book_file_types: list[str],
+    foldermode: str,
+    jellyfin_store: Path,
+    mangle_meta_title: bool,
+    mangle_meta_title_sort: bool
+) -> None:
 
     """Creates folder, files and symlinks for one book.
 
@@ -279,7 +293,7 @@ def do_book(
     # Also prepend a "Book X of Lorem Ipsum" header to the book description.
     # Otherwise, write out the original metadata unchanged.
 
-    if metadatadoc:
+    if metadatadoc and metadata_file_src_path:
 
         metadata_file_dst_path = book_folder_dst_path / metadata_file_src_path.name
         copy_metadata = False
@@ -306,7 +320,7 @@ def do_book(
         metadatadoc.unlink()
 
 
-def do_construct(section):
+def do_construct(section: configparser.SectionProxy):
 
     """Create (or update) one target Jellyfin e-book library as defined by a configured Construct section
 
@@ -381,7 +395,7 @@ def do_construct(section):
 # ------------------
 
 
-def main(clargs=None):
+def main(clargs: list[str] | None = None):
 
     """Main
 
