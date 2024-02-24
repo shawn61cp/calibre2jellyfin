@@ -203,8 +203,6 @@ def do_book(
         returns                 None
     """
 
-    global CMDARGS
-
     # find first instance of configured book file types
     book_file_src_path = find_book(book_file_types, book_folder_src_path)
     if not book_file_src_path:
@@ -316,8 +314,6 @@ def do_construct(section):
 
         returns             None
     """
-
-    global CONFIG_FILE_PATH
 
     try:
         # convert multiline configs to lists
