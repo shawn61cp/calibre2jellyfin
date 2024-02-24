@@ -412,10 +412,7 @@ def main(clargs=None):
         'for instance when configurable metadata mangling options have changed. '
         '(Normally metadata files are only updated when missing or out-of-date.)'
     )
-    if clargs:
-        CMDARGS = cmdparser.parse_args(clargs)
-    else:
-        CMDARGS = cmdparser.parse_args()
+    CMDARGS = cmdparser.parse_args(clargs)
 
     # read configuration
     try:
