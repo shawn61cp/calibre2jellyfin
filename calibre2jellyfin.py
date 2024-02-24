@@ -204,7 +204,6 @@ def do_book(
 
     """Creates folder, files and symlinks for one book.
 
-        author_folder_src_path      pathlib.Path, full path to source author folder
         author_folder_dst_path      pathlib.Path, full path to destination author folder
         book_folder_src_path        pathlib.Path, full path to source book folder
         book_file_types             list, extensions identifying book files (exclude periods)
