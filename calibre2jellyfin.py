@@ -319,7 +319,7 @@ def do_book(
         metadatadoc.unlink()
 
 
-def do_construct(section: configparser.SectionProxy):
+def do_construct(section: configparser.SectionProxy) -> None:
 
     """Create (or update) one target Jellyfin e-book library as defined by a configured Construct section
 
