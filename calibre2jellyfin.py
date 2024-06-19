@@ -207,7 +207,7 @@ def do_book(
         author_folder_dst_path      pathlib.Path, full path to destination author folder
         book_folder_src_path        pathlib.Path, full path to source book folder
         book_file_types             list, extensions identifying book files (exclude periods)
-        foldermode                  str, one of 'author,series,book' or 'book'
+        foldermode                  str, one of 'author,series,book', 'series,book' or 'book'
         jellyfin_store              pathlib.Path, full path top level output storage location
                                     (i.e. will be jellyfin library folder)
         mangle_meta_title           boolean, true if metadata title should be mangled
@@ -233,11 +233,14 @@ def do_book(
     # If series info was expected and found, then mangle the book's folder name by prepending the book's series index.
     # Once the folder structure has been determined, create the destination folder(s) if they do not exist.
 
-    if series > '' and foldermode == 'author,series,book':
+    if series > '' and foldermode in ['author,series,book', 'series,book']:
         if series_index == '':
             series_index = '99'
         book_folder = sanitize_filename(f'{series_index:>03s} - {book_folder}')
-        book_folder_dst_path = author_folder_dst_path / sanitize_filename(f'{series} Series') / book_folder
+        if foldermode == 'author,series,book':
+            book_folder_dst_path = author_folder_dst_path / sanitize_filename(f'{series} Series') / book_folder
+        else:
+            book_folder_dst_path =  jellyfin_store / sanitize_filename(f'{series} Series') / book_folder
     elif foldermode == 'book':
         book_folder_dst_path = jellyfin_store / book_folder
     else:
@@ -306,7 +309,7 @@ def do_book(
             copy_metadata = True
 
         if copy_metadata:
-            if series > '' and foldermode == 'author,series,book':
+            if series > '' and foldermode in ['author,series,book', 'series,book']:
                 if titleel and mangle_meta_title:
                     titleel.firstChild.data = f'{series_index:>03s} - {titleel.firstChild.data}'
                 if sortel and mangle_meta_title_sort:
@@ -354,8 +357,8 @@ def do_construct(section: configparser.SectionProxy) -> None:
             raise ValueError(f'jellyfinStore value "{jellyfin_store}" is not a directory')
         if jellyfin_store.samefile(calibre_store):
             raise ValueError('jellyfinStore and calibreStore must be different locations')
-        if foldermode not in ('book', 'author,series,book'):
-            raise ValueError('foldermode value must be "book" or "author,series,book"')
+        if foldermode not in ('book', 'series,book', 'author,series,book'):
+            raise ValueError('foldermode value must be "book", "series,book" or "author,series,book"')
         if author_folders[0] == '':
             raise ValueError('authorFolders must contain at least one entry')
         if book_file_types[0] == '':
