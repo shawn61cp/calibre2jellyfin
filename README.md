@@ -72,15 +72,16 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
  <tbody>
   <tr>
    <td><pre>
-└── Author/
+└── Author M/
     └── Comic A/
-    │   ├── cover.jpg
-    │   ├── metadata.opf
-    │   └── Comic A.cbz
-    ├── Comic B/
-    │   ├── cover.jpg
-    │   ├── metadata.opf
-    │   └── Comic B.cbz
+        ├── cover.jpg
+        ├── metadata.opf
+        └── Comic A.cbz
+└── Author N/
+    └── Comic B/
+        ├── cover.jpg
+        ├── metadata.opf
+        └── Comic B.cbz
    </pre>
    </td>
    <td><pre>
