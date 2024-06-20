@@ -14,10 +14,13 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   * copy, possibly modified, of Calibre's metadata file
 * Books are selected for inclusion by listing author folders in the .cfg file
 * Series handling
-  * When foldermode is author/series/book, the script will attempt to extract series and series index from Calibre's metadata file.
-  * If found, the target book folder name will be prepended with the series index.  Optionally, the metadata \<dc:title\> and the \<meta name="calibre:title_sort" content="...sort title..."\> may be treated in the same way.
-  * A short header identifying the index and series is prepended to the book description.
-  * If series info is expected but not found, the structure collapses to .../author/book/.... and no mangling is performed.
+  * Foldermode is author/series/book
+    * The script will attempt to extract series and series index from Calibre's metadata file.
+    * If found, the target book folder name will be prepended with the series index.  Optionally, the metadata \<dc:title\> and the \<meta name="calibre:title_sort" content="...sort title..."\> may be treated in the same way.
+    * A short header identifying the index and series is prepended to the book description.
+    * If series info is expected but not found, the structure collapses to .../author/book/.... and no mangling is performed.
+  * Foldermode is series/book
+    * This mode is similar to author/series/book above except there is no grouping by author, only by series, unless the series info is missing in which case the script again falls back to .../author/book/...
 * Multiple output libraries may be configured 
 
 #### Example author/series/book structure
@@ -60,8 +63,46 @@ _Example assumes script has been configured to prefer .epub types over .azw and 
 </table>
 Jellyfin will display a drillable folder structure similarly to the way it does for movies, shows, and music.  Jellyfin will extract, display, and sort by the mangled book title that is prepended with the series index.
 
+#### Example series/book structure
+_The "series/book" option is intended for use with eComics, thanks for this go to [Cudail](https://github.com/cudail)._
+<table>
+  <thead>
+    <tr><th>Calibre store</th><th>Created Jellyfin store</th></tr>
+  </thead>
+ <tbody>
+  <tr>
+   <td><pre>
+└── Author/
+    └── Comic A/
+    │   ├── cover.jpg
+    │   ├── metadata.opf
+    │   └── Comic A.cbz
+    ├── Comic B/
+    │   ├── cover.jpg
+    │   ├── metadata.opf
+    │   └── Comic B.cbz
+   </pre>
+   </td>
+   <td><pre>
+└── Lorem ipsum dolor sit amet Series/
+    ├── 001 - Comic A/
+    │   ├── cover.jpg      <- symlink
+    │   ├── metadata.opf   <- modified copy
+    │   └── Comic A.cbz    <- symlink
+    ├── 002 - Comic B/
+    │   ├── cover.jpg      <- symlink
+    │   ├── metadata.opf   <- modified copy
+    │   └── Comic B.cbz    <- symlink
+   </pre>    
+   </td>
+  </tr>
+ </tbody>
+</table>
+
 #### Changes
-* 2024-02-21 (Current version) (Main branch)
+* 2024-06-19 (Current version) (Main branch)
+    * Add support for "series/book" mode, thanks to [Cudail](https://github.com/cudail)
+* 2024-02-21
     * Coding/style improvements and lint cleanup only.  No functional changes.  If you already have the 2024-01-27 version installed there is no real reason to download this version.
 * 2024-01-27
     * Add support for mangling the metadata title sort value
