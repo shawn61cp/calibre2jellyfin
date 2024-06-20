@@ -15,12 +15,17 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
 * Books are selected for inclusion by listing author folders in the .cfg file
 * Series handling
   * Foldermode is author/series/book
+    * <em>Suitable for fiction libraries</em>
     * The script will attempt to extract series and series index from Calibre's metadata file.
     * If found, the target book folder name will be prepended with the series index.  Optionally, the metadata \<dc:title\> and the \<meta name="calibre:title_sort" content="...sort title..."\> may be treated in the same way.
     * A short header identifying the index and series is prepended to the book description.
     * If series info is expected but not found, the structure collapses to .../author/book/.... and no mangling is performed.
   * Foldermode is series/book
-    * This mode is similar to author/series/book above except there is no grouping by author, only by series, unless the series info is missing in which case the script again falls back to .../author/book/...
+    * <em>Suitable for eComic libraries</em>
+    * This mode is similar to author/series/book above except there is no grouping by author, only by series and book, unless the series info is missing in which case the script again falls back to .../author/book/...
+  * Foldermode is book
+    * <em>Suitable for non-fiction libraries</em>
+    * Books are organized strictly by book title
 * Multiple output libraries may be configured 
 
 #### Example author/series/book structure
