@@ -228,10 +228,13 @@ def do_book(
     cover_file_src_path = find_cover(book_folder_src_path)
     metadatadoc, series, series_index, titleel, sortel, descel = get_metadata(metadata_file_src_path)
 
-    # Output is organized as '.../author/series/book/book.ext' or '.../book/book.ext' depending on foldermode.
-    # If series info was expected but not found, output structure collapses to '.../author/book/book.ext'.
-    # If series info was expected and found, then mangle the book's folder name by prepending the book's series index.
-    # Once the folder structure has been determined, create the destination folder(s) if they do not exist.
+    # Output is organized as '.../author/series/book/book.ext', '.../series/book/book.ext'
+    # or '.../book/book.ext' depending on foldermode.  If series info was expected but not found,
+    # output structure collapses to '.../author/book/book.ext' in author,series,book mode
+    # or '.../book/book.ext' in series,book mode.
+    # If series info was expected and found, then mangle the book's folder name by prepending
+    # the book's series index. Once the folder structure has been determined,
+    # create the destination folder(s) if they do not exist.
 
     if series > '' and foldermode in ['author,series,book', 'series,book']:
         if series_index == '':
