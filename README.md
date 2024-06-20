@@ -23,7 +23,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
     * If series info is expected but not found, the structure collapses to .../author/book/.... and no mangling is performed.
   * Foldermode is series/book
     * <em>Suitable for eComic libraries</em>
-    * This mode is similar to author/series/book above except there is no grouping by author, only by series and book, unless the series info is missing in which case the collapses to .../book/...
+    * This mode is similar to author/series/book above except there is no grouping by author, only by series and book, unless the series info is missing in which case the structure collapses to .../book/...
   * Foldermode is book
     * <em>Suitable for non-fiction libraries</em>
     * Books are organized strictly by book title
