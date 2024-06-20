@@ -241,7 +241,7 @@ def do_book(
             book_folder_dst_path = author_folder_dst_path / sanitize_filename(f'{series} Series') / book_folder
         else:
             book_folder_dst_path =  jellyfin_store / sanitize_filename(f'{series} Series') / book_folder
-    elif foldermode == 'book':
+    elif foldermode in ['book', 'series,book']:
         book_folder_dst_path = jellyfin_store / book_folder
     else:
         book_folder_dst_path = author_folder_dst_path / book_folder
