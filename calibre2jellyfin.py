@@ -292,7 +292,7 @@ def do_book(
                 logging.warning('Could not create cover image symlink "%s": %s', cover_file_dst_path, excep)
 
     # Output a metadata xml (.opf) file into the destination book folder.
-    # If folder mode is 'author,series,book', series info was found,
+    # If folder mode is 'author,series,book' or 'series,book', series info was found,
     # and mangling is enabled, mangle the book title (<dc:title>) and/or title_sort
     # elements by prepending the book's index to it's title.
     # Also prepend a "Book X of Lorem Ipsum" header to the book description.
