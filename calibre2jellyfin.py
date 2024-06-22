@@ -378,6 +378,9 @@ def do_construct(section: configparser.SectionProxy) -> None:
 
         # get and create destination author folder
         author_folder_src_path = calibre_store / author_folder
+        if not author_folder_src_path.exists():
+            logging.warning(f'Author folder "{author_folder}" not found in Calibre store "{calibre_store}".')
+            continue
         author_folder_dst_path = jellyfin_store / author_folder
         if foldermode == 'author,series,book':
             try:
