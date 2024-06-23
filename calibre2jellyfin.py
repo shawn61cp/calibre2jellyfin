@@ -376,18 +376,12 @@ def do_construct(section: configparser.SectionProxy) -> None:
     # for each configured author
     for author_folder in author_folders:
 
-        # get and create destination author folder
+        # get/check author paths
         author_folder_src_path = calibre_store / author_folder
+        author_folder_dst_path = jellyfin_store / author_folder
         if not author_folder_src_path.exists():
             logging.warning(f'Author folder "{author_folder}" not found in Calibre store "{calibre_store}".')
             continue
-        author_folder_dst_path = jellyfin_store / author_folder
-        if foldermode == 'author,series,book':
-            try:
-                author_folder_dst_path.mkdir(parents=True, exist_ok=True)
-            except OSError as excep:
-                logging.warning('Could not create author folder "%s": %s', author_folder_dst_path, excep)
-                continue
 
         # for each book folder in source author folder
         for book_folder_src_path in author_folder_src_path.iterdir():
