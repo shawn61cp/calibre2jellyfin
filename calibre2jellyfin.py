@@ -355,9 +355,9 @@ def do_construct(section: configparser.SectionProxy) -> None:
     # sanity check configuration parameters
     try:
         if not calibre_store.is_dir():
-            raise ValueError(f'calibreStore value "{calibre_store}" is not a directory')
+            raise ValueError(f'calibreStore value "{calibre_store}" is not a directory or does not exist')
         if not jellyfin_store.is_dir():
-            raise ValueError(f'jellyfinStore value "{jellyfin_store}" is not a directory')
+            raise ValueError(f'jellyfinStore value "{jellyfin_store}" is not a directory or does not exist')
         if jellyfin_store.samefile(calibre_store):
             raise ValueError('jellyfinStore and calibreStore must be different locations')
         if foldermode not in ('book', 'series,book', 'author,series,book'):
