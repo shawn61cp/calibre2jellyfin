@@ -238,7 +238,7 @@ def do_book(
 
     if series > '' and foldermode in ['author,series,book', 'series,book']:
         if series_index == '':
-            series_index = '99'
+            series_index = '999'
         book_folder = sanitize_filename(f'{series_index:>03s} - {book_folder}')
         if foldermode == 'author,series,book':
             book_folder_dst_path = author_folder_dst_path / sanitize_filename(f'{series} Series') / book_folder
