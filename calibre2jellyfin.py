@@ -385,11 +385,12 @@ def do_construct(section: configparser.SectionProxy) -> None:
 
         # for each book folder in source author folder
         for book_folder_src_path in author_folder_src_path.iterdir():
-            do_book(
-                author_folder_dst_path, book_folder_src_path,
-                book_file_types, foldermode, jellyfin_store,
-                mangle_meta_title, mangle_meta_title_sort
-            )
+            if book_folder_src_path.is_dir():
+                do_book(
+                    author_folder_dst_path, book_folder_src_path,
+                    book_file_types, foldermode, jellyfin_store,
+                    mangle_meta_title, mangle_meta_title_sort
+                )
 
 
 # ------------------
