@@ -267,7 +267,7 @@ def do_book(
     # create the destination folder(s) if they do not exist.
 
     if series > '' and foldermode in ['author,series,book', 'series,book']:
-        book_folder = sanitize_filename(f'{format_series_index(series_index):>03s} - {book_folder}')
+        book_folder = sanitize_filename(f'{format_series_index(series_index)} - {book_folder}')
         if foldermode == 'author,series,book':
             book_folder_dst_path = author_folder_dst_path / sanitize_filename(f'{series} Series') / book_folder
         else:
@@ -342,9 +342,9 @@ def do_book(
         if copy_metadata:
             if series > '' and foldermode in ['author,series,book', 'series,book']:
                 if titleel and mangle_meta_title:
-                    titleel.firstChild.data = f'{format_series_index(series_index):>03s} - {titleel.firstChild.data}'
+                    titleel.firstChild.data = f'{format_series_index(series_index)} - {titleel.firstChild.data}'
                 if sortel and mangle_meta_title_sort:
-                    sortel.setAttribute('content', f'{format_series_index(series_index):>03s} - {sortel.getAttribute("content")}')
+                    sortel.setAttribute('content', f'{format_series_index(series_index)} - {sortel.getAttribute("content")}')
                 if descel:
                     descel.firstChild.data = f'<H4>Book {series_index} of <em>{series}</em>, by {author}</H4>{descel.firstChild.data}'
 
