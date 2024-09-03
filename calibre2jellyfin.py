@@ -79,10 +79,37 @@ def find_cover(book_folder_src_path: Path) -> Path | None:
     return None
 
 
+def format_series_index(series_index: str) -> str:
+
+    """Formats series index string
+
+        series_index            str, series index str extracted from metadata, may be empty
+
+        returns                 str, formatted series index
+                                examples:
+                                ''          ->  '999'
+                                '3'         ->  '003'
+                                '34'        ->  '034'
+                                '345'       ->  '345'
+                                '3456'      ->  '3456'
+                                '3.2'       ->  '003.02'
+    """
+
+    if not series_index:
+        return '999'
+
+    if '.' in series_index:
+        i = series_index.index('.')
+        return f'{series_index[0:i]:>03s}.{series_index[i+1:]:>02s}'
+
+    return f'{series_index:>03s}'
+        
+
 def get_metadata(
     metadata_file_path: Path | None
 ) -> Tuple[
     minidom.Document | None,
+    str,
     str,
     str,
     minidom.Element | None,
@@ -98,6 +125,7 @@ def get_metadata(
         Returns ()              doc, minidom xml doc object
                                 str, name of series, empty str if none
                                 str, book index in series, empty str if none
+                                str, author (<dc:creator>)
                                 element, <dc:title>
                                 element, <meta name="calibre:title_sort" content="001 - Book Title"/>
                                 element, <dc:description>
@@ -105,13 +133,14 @@ def get_metadata(
 
     series = ''
     series_index = ''
+    author = ''
     doc = None
     titleel = None
     sortel = None
     descel = None
 
     if not metadata_file_path:
-        return doc, series, series_index, titleel, sortel, descel
+        return doc, series, series_index, author, titleel, sortel, descel
 
     # open the metadata file and create a document object
     try:
@@ -119,14 +148,15 @@ def get_metadata(
             doc = minidom.parse(docfile)
     except OSError as excep:
         logging.warning('Could not read metadata file "%s": %s', metadata_file_path, excep)
-        return doc, series, series_index, titleel, sortel, descel
+        return doc, series, series_index, author, titleel, sortel, descel
     except Exception as excep:
         logging.warning('Could not parse metadata file "%s": %s', metadata_file_path, excep)
-        return doc, series, series_index, titleel, sortel, descel
+        return doc, series, series_index, author, titleel, sortel, descel
 
     # get series info and other elements
 
     titleel = doc.getElementsByTagName('dc:title')[0]
+    author = doc.getElementsByTagName('dc:creator')[0].firstChild.data
 
     descels = doc.getElementsByTagName('dc:description')
     if descels:
@@ -141,7 +171,8 @@ def get_metadata(
         elif metatag.getAttribute('name') == 'calibre:title_sort':
             sortel = metatag
 
-    return doc, series, series_index, titleel, sortel, descel
+    series_index = format_series_index(series_index)
+    return doc, series, series_index, author, titleel, sortel, descel
 
 
 def write_metadata(metadatadoc: minidom.Document, metadata_file_dst_path: Path) -> None:
@@ -226,7 +257,7 @@ def do_book(
     book_folder = book_folder_src_path.name
     metadata_file_src_path = find_metadata(book_folder_src_path)
     cover_file_src_path = find_cover(book_folder_src_path)
-    metadatadoc, series, series_index, titleel, sortel, descel = get_metadata(metadata_file_src_path)
+    metadatadoc, series, series_index, author, titleel, sortel, descel = get_metadata(metadata_file_src_path)
 
     # Output is organized as '.../author/series/book/book.ext', '.../series/book/book.ext'
     # or '.../book/book.ext' depending on foldermode.  If series info was expected but not found,
@@ -318,7 +349,7 @@ def do_book(
                 if sortel and mangle_meta_title_sort:
                     sortel.setAttribute('content', f'{series_index:>03s} - {sortel.getAttribute("content")}')
                 if descel:
-                    descel.firstChild.data = f'<H4>Book {series_index} of <em>{series}</em></H4>{descel.firstChild.data}'
+                    descel.firstChild.data = f'<H4>Book {series_index} of <em>{series}</em>, by {author}</H4>{descel.firstChild.data}'
 
             write_metadata(metadatadoc, metadata_file_dst_path)
 
