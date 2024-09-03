@@ -107,7 +107,16 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 </table>
 
 #### Changes
-* 2024-06-19 (Current version) (Main branch)
+* 2024-09-02 (Current version) (Main branch)
+    * Add author's name to book description.
+    * Add support for fractional series indices maintaining sort
+        * ''          ->  '999'
+        * '3'         ->  '003'
+        * '34'        ->  '034'
+        * '345'       ->  '345'
+        * '3456'      ->  '3456'
+        * '3.2'       ->  '003.02'    <<<
+* 2024-06-19
     * Add support for "series/book" mode, thanks to [Cudail](https://github.com/cudail)
 * 2024-02-21
     * Coding/style improvements and lint cleanup only.  No functional changes.  If you already have the 2024-01-27 version installed there is no real reason to download this version.
