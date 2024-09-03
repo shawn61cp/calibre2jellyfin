@@ -116,6 +116,8 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
         * '345'       ->  '345'
         * '3456'      ->  '3456'
         * '3.2'       ->  '003.02'    <<<
+        * Notes
+            * Any series books that had fractional indices prior to this version will appear in the new format leaving the prior formatted versions as duplicates.  You will probably want to delete, in Jellyfin, the old versions.
 * 2024-06-19
     * Add support for "series/book" mode, thanks to [Cudail](https://github.com/cudail)
 * 2024-02-21
