@@ -155,8 +155,13 @@ def get_metadata(
 
     # get series info and other elements
 
-    titleel = doc.getElementsByTagName('dc:title')[0]
-    author = doc.getElementsByTagName('dc:creator')[0].firstChild.data
+    titleels = doc.getElementsByTagName('dc:title')
+    if titleels:
+        titleel = titleels[0]
+
+    authorels = doc.getElementsByTagName('dc:creator')
+    if authorels:
+        author = authorels[0].firstChild.data
 
     descels = doc.getElementsByTagName('dc:description')
     if descels:
@@ -257,6 +262,12 @@ def do_book(
     metadata_file_src_path = find_metadata(book_folder_src_path)
     cover_file_src_path = find_cover(book_folder_src_path)
     metadatadoc, series, series_index, author, titleel, sortel, descel = get_metadata(metadata_file_src_path)
+
+    if metadatadoc and not titleel:
+        logging.warning('Missing normally required <dc:title> element in metadata for "%s"', book_folder_src_path)
+
+    if metadatadoc and not author:
+        logging.warning('Missing normally required <dc:creator> (i.e. author) element in metadata for "%s"', book_folder_src_path)
 
     # Output is organized as '.../author/series/book/book.ext', '.../series/book/book.ext'
     # or '.../book/book.ext' depending on foldermode.  If series info was expected but not found,
