@@ -487,11 +487,7 @@ def main(clargs: list[str] | None = None):
     # for each configured Construct
     for section in config:
         if section[0:9] == 'Construct':
-            try:
-                do_construct(config[section])
-            except Exception as unexpected:
-                logging.critical('Unexpected error encountered constructing [%s]: %s', section, unexpected)
-                sys.exit(-1)
+            do_construct(config[section])
 
 
 if __name__ == '__main__':
