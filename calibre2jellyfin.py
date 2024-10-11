@@ -256,6 +256,7 @@ def do_book(
     # find first instance of configured book file types
     book_file_src_path = find_book(book_file_types, book_folder_src_path)
     if not book_file_src_path:
+        logging.warning('No book file of configured type was found in "%s"', book_folder_src_path)
         return
     print(book_folder_src_path, flush=True)
 
