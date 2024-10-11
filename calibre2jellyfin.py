@@ -4,8 +4,10 @@
 
    Python script to construct a Jellyfin ebook library from a Calibre library.
 
-   2023-11-17 initial revision
+   2023-11-17 initial revision, https://github.com/shawn61cp/calibre2jellyfin
    author Shawn C. Powell
+   contributors Cudail
+   license GPL3
 """
 
 import sys
@@ -103,7 +105,7 @@ def format_series_index(series_index: str) -> str:
         return f'{series_index[0:i]:>03s}.{series_index[i+1:]:>02s}'
 
     return f'{series_index:>03s}'
-        
+
 
 def get_metadata(
     metadata_file_path: Path | None
@@ -282,7 +284,7 @@ def do_book(
         if foldermode == 'author,series,book':
             book_folder_dst_path = author_folder_dst_path / sanitize_filename(f'{series} Series') / book_folder
         else:
-            book_folder_dst_path =  jellyfin_store / sanitize_filename(f'{series} Series') / book_folder
+            book_folder_dst_path = jellyfin_store / sanitize_filename(f'{series} Series') / book_folder
     elif foldermode in ['book', 'series,book']:
         book_folder_dst_path = jellyfin_store / book_folder
     else:
