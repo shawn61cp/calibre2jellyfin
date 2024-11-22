@@ -16,6 +16,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
 * Books are selected for inclusion by listing author folders in the .cfg file
   * Allows you to exclude from Jellyfin those messy persistent remnants from the years when your library was scattered over multiple proprietary platforms.
   * Allows you to separate differing levels of mature content into separate Jellyfin libraries, access to which can be restricted within Jellyfin.
+  * If series info is expected but not found, the structure collapses to ...\author\book\\... and no mangling is performed.
 * Series handling
   * Foldermode is author/series/book
     * <em>Suitable for fiction libraries</em>
