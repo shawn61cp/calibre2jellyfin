@@ -114,6 +114,7 @@ def get_metadata(
     str,
     str,
     str,
+    list[str],
     minidom.Element | None,
     minidom.Element | None,
     minidom.Element | None
@@ -128,6 +129,7 @@ def get_metadata(
                                 str, name of series, empty str if none
                                 str, book index in series, empty str if none
                                 str, author (<dc:creator>)
+                                [str], list of subjects (<dc:subject>)
                                 element, <dc:title>
                                 element, <meta name="calibre:title_sort" content="001 - Book Title"/>
                                 element, <dc:description>
@@ -136,13 +138,14 @@ def get_metadata(
     series = ''
     series_index = ''
     author = ''
+    subjects = []
     doc = None
     titleel = None
     sortel = None
     descel = None
 
     if not metadata_file_path:
-        return doc, series, series_index, author, titleel, sortel, descel
+        return doc, series, series_index, author, subjects, titleel, sortel, descel
 
     # open the metadata file and create a document object
     try:
@@ -150,10 +153,10 @@ def get_metadata(
             doc = minidom.parse(docfile)
     except OSError as excep:
         logging.warning('Could not read metadata file "%s": %s', metadata_file_path, excep)
-        return doc, series, series_index, author, titleel, sortel, descel
+        return doc, series, series_index, author, subjects, titleel, sortel, descel
     except Exception as excep:
         logging.warning('Could not parse metadata file "%s": %s', metadata_file_path, excep)
-        return doc, series, series_index, author, titleel, sortel, descel
+        return doc, series, series_index, author, subjects, titleel, sortel, descel
 
     # get series info and other elements
 
@@ -169,6 +172,10 @@ def get_metadata(
     if descels:
         descel = descels[0]
 
+    subjectels = doc.getElementsByTagName('dc:subject')
+    if subjectels:
+        subjects = [el.firstChild.data for el in subjectels]
+
     metatags = doc.getElementsByTagName('meta')
     for metatag in metatags:
         if metatag.getAttribute('name') == 'calibre:series':
@@ -178,7 +185,7 @@ def get_metadata(
         elif metatag.getAttribute('name') == 'calibre:title_sort':
             sortel = metatag
 
-    return doc, series, series_index, author, titleel, sortel, descel
+        return doc, series, series_index, author, subjects, titleel, sortel, descel
 
 
 def write_metadata(metadatadoc: minidom.Document, metadata_file_dst_path: Path) -> None:
@@ -260,14 +267,14 @@ def do_book(
         return
     print(book_folder_src_path, flush=True)
 
-    if CMDARGS.dryrun:
-        return
-
     # locate related book files
     book_folder = book_folder_src_path.name
     metadata_file_src_path = find_metadata(book_folder_src_path)
     cover_file_src_path = find_cover(book_folder_src_path)
-    metadatadoc, series, series_index, author, titleel, sortel, descel = get_metadata(metadata_file_src_path)
+    metadatadoc, series, series_index, author, subjects, titleel, sortel, descel = get_metadata(metadata_file_src_path)
+
+    if CMDARGS.dryrun:
+        return
 
     if metadatadoc and not titleel:
         logging.warning('Missing normally required <dc:title> element in metadata for "%s"', book_folder_src_path)
