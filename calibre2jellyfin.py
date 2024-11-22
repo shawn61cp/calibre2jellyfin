@@ -260,6 +260,9 @@ def do_book(
         return
     print(book_folder_src_path, flush=True)
 
+    if CMDARGS.dryrun:
+        return
+
     # locate related book files
     book_folder = book_folder_src_path.name
     metadata_file_src_path = find_metadata(book_folder_src_path)
@@ -466,6 +469,12 @@ def main(clargs: list[str] | None = None):
         help='Useful to force a one-time update of all metadata files, '
         'for instance when configurable metadata mangling options have changed. '
         '(Normally metadata files are only updated when missing or out-of-date.)'
+    )
+    cmdparser.add_argument(
+        '--dryrun',
+        dest='dryrun',
+        action='store_true',
+        help='Displays normal console output but makes no changes to exported libraries.'
     )
     CMDARGS = cmdparser.parse_args(clargs)
 
