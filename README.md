@@ -110,6 +110,8 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 </table>
 
 #### Changes
+* 2024-11-22 Experimental
+  * Selection by tags (aka subject)
 * 2024-09-02 (Current version) (Main branch)
     * Add author's name to book description.
     * Add support for fractional series indices maintaining sort
