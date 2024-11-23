@@ -112,7 +112,9 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 #### Changes
 * 2024-11-22 Experimental
   * Selection by tags (aka subject)
-  * Add command line option -\-dryrun
+  * Add command line option -\-dryrun, -\-debug
+  * New configuration: selectionMode = [author | tag]
+  * This is working but I'm not certain the benefits are worth it. The main version is I think much cleaner.  This one needed to be refactored due to the additional complexity.
 * 2024-09-02 (Current version) (Main branch)
     * Add author's name to book description.
     * Add support for fractional series indices maintaining sort
