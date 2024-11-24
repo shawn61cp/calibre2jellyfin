@@ -226,7 +226,7 @@ class BookMetadata:
 
         subjectels = self.doc.getElementsByTagName('dc:subject')
         if subjectels:
-            self.subjects = [el.firstChild.data.lower() for el in subjectels]
+            self.subjects = [el.firstChild.data.lower().strip() for el in subjectels]
 
         metatags = self.doc.getElementsByTagName('meta')
         for metatag in metatags:
