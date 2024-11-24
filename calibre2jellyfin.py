@@ -330,7 +330,7 @@ class Book:
 
         self.book_file_dst_path = self.book_folder_dst_path / self.book_file_src_path.name
 
-        if self.cover_file_src_path is not None:
+        if self.cover_file_src_path:
             self.cover_file_dst_path = self.book_folder_dst_path / self.cover_file_src_path.name
 
         if self.metadata.doc and self.metadata_file_src_path:
@@ -350,6 +350,12 @@ class Book:
 
         print(self.book_folder_src_path, flush=True)
 
+        if not self.cover_file_src_path:
+            logging.warning('No cover image was found for "%s"', self.book_folder_src_path)
+
+        if not self.metadata_file_src_path:
+            logging.warning('No metadata was found for "%s"', self.book_folder_src_path)
+
         if self.metadata.doc and not self.metadata.titleel:
             logging.warning(
                 'Missing normally required <dc:title> element in metadata for "%s"',
@@ -363,6 +369,9 @@ class Book:
             )
 
         if CMDARGS.dryrun:
+            print(f'> {self.book_file_dst_path}', flush=True)
+            print(f'> {self.cover_file_dst_path}', flush=True)
+            print(f'> {self.metadata_file_dst_path}', flush=True)
             return
 
         # Create the destination book folder
