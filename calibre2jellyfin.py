@@ -34,7 +34,7 @@ CMDARGS: argparse.Namespace
 
 
 class Construct:
-    """Processes a configured [Construc] section"""
+    """Processes a configured [Construct] section"""
     author_folders: list[str]
     book_file_types: list[str]
     subjects: list[list[str]]
@@ -98,7 +98,7 @@ class Construct:
 
     def do_books_by_author(self) -> None:
 
-        """Iterates Book.do() over selected authors.
+        """Iterates Book.do() over configured authors.
 
             self          Construct object, data from config Construct section
 
@@ -117,13 +117,13 @@ class Construct:
                 if book.book_folder_src_path.is_dir():
                     book.get()
                     if CMDARGS.debug:
-                        print(vars(book))
-                        print(vars(book.metadata))
+                        print(f'Book attributes: {vars(book)}')
+                        print(f'Book metadata  : {vars(book.metadata)}')
                     book.do()
 
     def do_books_by_subject(self) -> None:
 
-        """Iterates Book.do() over books having selected subjects.
+        """Iterates Book.do() over books having configured subjects.
 
             self          Construct object, data from config Construct section
 
@@ -142,8 +142,8 @@ class Construct:
                 if book.book_folder_src_path.is_dir():
                     book.get()
                     if CMDARGS.debug:
-                        print(vars(book))
-                        print(vars(book.metadata))
+                        print(f'Book attributes: {vars(book)}')
+                        print(f'Book metadata  : {vars(book.metadata)}')
                     if book.check_subjects():
                         book.do()
 
@@ -157,7 +157,7 @@ class Construct:
         """
 
         if CMDARGS.debug:
-            print(vars(self))
+            print(f'[Construct] parameters: {vars(self)}')
             
         if self.selection_mode == 'author':
             self.do_books_by_author()
@@ -375,6 +375,7 @@ class Book:
             )
             if self.metadata.doc:
                 self.metadata.doc.unlink()
+                self.metadata.doc = None
             return
 
         # Create a symlink to the source book if it does not exist
@@ -449,6 +450,7 @@ class Book:
                 self.metadata.write(self.metadata_file_dst_path)
 
             self.metadata.doc.unlink()
+            self.metadata.doc = None
 
     def check_subject_line(self, line: list[str]) -> bool:
         """Tests one line from required- subjects
@@ -458,7 +460,8 @@ class Book:
         """
 
         # Note: Depends on both metadata subjects and configuration subjects
-        # having been set up for case insensitive comparison
+        # having been set up for case insensitive comparison (i.e. all made
+        # lower case or upper case)
 
         for item in line:
             if item not in self.metadata.subjects:
