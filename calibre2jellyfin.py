@@ -193,7 +193,7 @@ class Construct:
 
 
 class BookMetadata:
-    """Stores metadata for a book"""
+    """Retrieves, stores, and writes out metadata for a book"""
     doc: minidom.Document | None
     series: str
     series_index: str
