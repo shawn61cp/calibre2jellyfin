@@ -464,7 +464,7 @@ class Book:
         # lower case or upper case)
 
         for item in line:
-            if item not in self.metadata.subjects:
+            if item.strip() not in self.metadata.subjects:
                 return False
         return True
 
