@@ -372,6 +372,8 @@ class Book:
             print(f'> {self.book_file_dst_path}', flush=True)
             print(f'> {self.cover_file_dst_path}', flush=True)
             print(f'> {self.metadata_file_dst_path}', flush=True)
+
+        if CMDARGS.dryrun:
             return
 
         # Create the destination book folder
