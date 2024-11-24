@@ -461,7 +461,7 @@ class Book:
         # having been set up for case insensitive comparison
 
         for item in line:
-            if item not in book.metadata.subjects:
+            if item not in self.metadata.subjects:
                 return False
         return True
 
