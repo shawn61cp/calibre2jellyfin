@@ -121,33 +121,6 @@ class Construct:
                         print(vars(book.metadata))
                     book.do()
 
-    def check_subject_line(self, line: list[str], book: 'Book') -> bool:
-        """Tests one line from required- subjects
-
-            returns:        True if line's items exist in book metadata subjects
-                            False otherwise
-        """
-
-        # Note: Depends on both metadata subjects and configuration subjects
-        # having been set up for case insensitive comparison
-
-        for item in line:
-            if item not in book.metadata.subjects:
-                return False
-        return True
-
-    def check_subjects(self, book: 'Book') -> bool:
-
-        """Determines whether the book subjects match any of the required subjects
-
-            returns:        True if matched, False otherwise
-        """
-
-        for line in self.subjects:
-            if self.check_subject_line(line, book):
-                return True
-        return False
-
     def do_books_by_subject(self) -> None:
 
         """Iterates Book.do() over books having selected subjects.
@@ -171,7 +144,7 @@ class Construct:
                     if CMDARGS.debug:
                         print(vars(book))
                         print(vars(book.metadata))
-                    if self.check_subjects(book):
+                    if book.check_subjects():
                         book.do()
 
     def do(self) -> None:
@@ -476,6 +449,34 @@ class Book:
                 self.metadata.write(self.metadata_file_dst_path)
 
             self.metadata.doc.unlink()
+
+    def check_subject_line(self, line: list[str]) -> bool:
+        """Tests one line from required- subjects
+
+            returns:        True if line's items exist in book metadata subjects
+                            False otherwise
+        """
+
+        # Note: Depends on both metadata subjects and configuration subjects
+        # having been set up for case insensitive comparison
+
+        for item in line:
+            if item not in book.metadata.subjects:
+                return False
+        return True
+
+    def check_subjects(self) -> bool:
+
+        """Determines whether the book subjects match any of the subjects
+        required by the Construct section
+
+            returns:        True if matched, False otherwise
+        """
+
+        for line in self.construct.subjects:
+            if self.check_subject_line(line):
+                return True
+        return False
 
 
 # ------------------
