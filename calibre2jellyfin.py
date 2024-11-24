@@ -334,7 +334,6 @@ class Book:
         self.book_folder = self.book_folder_src_path.name
         self.metadata_file_src_path = find_metadata(self.book_folder_src_path)
         self.cover_file_src_path = find_cover(self.book_folder_src_path)
-        self.metadata = BookMetadata()
         self.metadata.get(self.metadata_file_src_path)
 
         # Output is organized as '.../author/series/book/book.ext', '.../series/book/book.ext'
