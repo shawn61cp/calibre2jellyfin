@@ -46,55 +46,48 @@ class Construct:
     selection_mode: str
 
     def __init__(self, section: configparser.SectionProxy):
+        """Initialize a Construct object from a configuration file [Section]
 
-        try:
-            # get simple configs
-            self.selection_mode = section['selectionMode']
-            self.calibre_store = Path(section['calibreStore'])
-            self.jellyfin_store = Path(section['jellyfinStore'])
-            self.foldermode = section['foldermode']
-            self.mangle_meta_title = section.getboolean('mangleMetaTitle')
-            self.mangle_meta_title_sort = section.getboolean('mangleMetaTitleSort')
-            # convert multiline configs to lists
-            self.book_file_types = section['bookfiletypes'][1:].split('\n')
-            if self.selection_mode == 'author':
-                self.author_folders = section['authorFolders'][1:].split('\n')
-                self.subjects = [['']]
-            else:
-                self.subjects = [x.split(',') for x in section['subjects'][1:].lower().split('\n')]
-                self.author_folders = []
-        except Exception as excep:
-            logging.critical(
-                'A required parameter is missing from [%s] '
-                'in configuration file "%s". : %s',
-                section, CONFIG_FILE_PATH, excep
-            )
-            sys.exit(-1)
+        Exceptions          KeyError
+                            Thrown by configparser when a required parameter is missing.
+
+                            ValueError
+                            Thrown by self when a configuration parameter is invalid.
+        """
+
+        # get simple configs
+        self.selection_mode = section['selectionMode']
+        self.calibre_store = Path(section['calibreStore'])
+        self.jellyfin_store = Path(section['jellyfinStore'])
+        self.foldermode = section['foldermode']
+        self.mangle_meta_title = section.getboolean('mangleMetaTitle')
+        self.mangle_meta_title_sort = section.getboolean('mangleMetaTitleSort')
+        # convert multiline configs to lists
+        self.book_file_types = section['bookfiletypes'][1:].split('\n')
+        if self.selection_mode == 'author':
+            self.author_folders = section['authorFolders'][1:].split('\n')
+            self.subjects = [['']]
+        else:
+            self.subjects = [x.split(',') for x in section['subjects'][1:].lower().split('\n')]
+            self.author_folders = []
 
         # sanity check configuration parameters
-        try:
-            if not self.calibre_store.is_dir():
-                raise ValueError(f'calibreStore value "{self.calibre_store}" is not a directory or does not exist')
-            if not self.jellyfin_store.is_dir():
-                raise ValueError(f'jellyfinStore value "{self.jellyfin_store}" is not a directory or does not exist')
-            if self.jellyfin_store.samefile(self.calibre_store):
-                raise ValueError('jellyfinStore and calibreStore must be different locations')
-            if self.foldermode not in ('book', 'series,book', 'author,series,book'):
-                raise ValueError('foldermode value must be "book", "series,book" or "author,series,book"')
-            if self.selection_mode not in ('author', 'subject'):
-                raise ValueError('selectionMode must be "author" or "subject"')
-            if self.selection_mode == 'author' and self.author_folders[0] == '':
-                raise ValueError('authorFolders must contain at least one entry')
-            if self.selection_mode == 'subject' and self.subjects[0][0] == '':
-                raise ValueError('subjects must contain at least one entry')
-            if self.book_file_types[0] == '':
-                raise ValueError('bookfiletypes must contain at least one entry')
-        except ValueError as excep:
-            logging.critical(
-                'Inappropriate parameter value in %s in configuration file "%s": %s',
-                section, CONFIG_FILE_PATH, excep
-            )
-            sys.exit(-1)
+        if not self.calibre_store.is_dir():
+            raise ValueError(f'calibreStore value "{self.calibre_store}" is not a directory or does not exist')
+        if not self.jellyfin_store.is_dir():
+            raise ValueError(f'jellyfinStore value "{self.jellyfin_store}" is not a directory or does not exist')
+        if self.jellyfin_store.samefile(self.calibre_store):
+            raise ValueError('jellyfinStore and calibreStore must be different locations')
+        if self.foldermode not in ('book', 'series,book', 'author,series,book'):
+            raise ValueError('foldermode value must be "book", "series,book" or "author,series,book"')
+        if self.selection_mode not in ('author', 'subject'):
+            raise ValueError('selectionMode must be "author" or "subject"')
+        if self.selection_mode == 'author' and self.author_folders[0] == '':
+            raise ValueError('authorFolders must contain at least one entry')
+        if self.selection_mode == 'subject' and self.subjects[0][0] == '':
+            raise ValueError('subjects must contain at least one entry')
+        if self.book_file_types[0] == '':
+            raise ValueError('bookfiletypes must contain at least one entry')
 
     def do_books_by_author(self) -> None:
 
@@ -194,6 +187,15 @@ class BookMetadata:
             metadata_file_path      pathlib.Path, full path to metadata file
 
             Returns                 None
+
+            Errors                  If the metata file cannot be read or cannot
+                                    be parsed, the error is logged via logging
+                                    and the function returns with the .doc attribute
+                                    having a value of None.
+
+                                    When the metadata is successfully read, but expected
+                                    elements are simply missing, the corresponding attribute
+                                    will be either None or empty.
         """
 
         if not metadata_file_path:
@@ -244,6 +246,8 @@ class BookMetadata:
             metadata_file_dst_path      pathlib.Path(), full path to destination metadata file
 
             returns                     None
+
+            Errors                      Failure to write the metadata is logged via logging.
         """
 
         # create/truncate the metadata file and write it out
@@ -341,6 +345,10 @@ class Book:
         """Creates folder, files and symlinks for one book.
 
             returns                 None
+
+            Errors                  Failures are logged as warnings via logging but otherwise
+                                    the function proceeds transparently and silently
+                                    as far as possible.
         """
 
         if not self.book_file_src_path:
@@ -670,7 +678,21 @@ def main(clargs: list[str] | None = None):
     # for each configured Construct
     for section in config:
         if section[0:9] == 'Construct':
-            construct = Construct(config[section])
+            try:
+                construct = Construct(config[section])
+            except ValueError as excep:
+                logging.critical(
+                    'Inappropriate parameter value in %s in configuration file "%s": %s',
+                    section, CONFIG_FILE_PATH, excep
+                )
+                sys.exit(-1)
+            except KeyError as excep:
+                logging.critical(
+                    'A required parameter (%s) is missing from [%s] '
+                    'in configuration file "%s".',
+                    excep, section, CONFIG_FILE_PATH
+                )
+                sys.exit(-1)
             construct.do()
 
 
