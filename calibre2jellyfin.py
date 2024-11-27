@@ -425,9 +425,6 @@ class Book:
                 'Could not create book\'s destination folder (or a parent folder thereof) '
                 '"%s": %s', self.book_folder_dst_path, excep
             )
-            if self.metadata.doc:
-                self.metadata.doc.unlink()
-                self.metadata.doc = None
             return
 
         # Create a symlink to the source book if it does not exist
