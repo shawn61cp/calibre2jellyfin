@@ -682,12 +682,10 @@ class Book:
                 self.book_folder_src_path
             )
 
-        if CMDARGS.debug:
+        if CMDARGS.dryrun:
             print(f'> {self.book_file_dst_path}', flush=True)
             print(f'> {self.cover_file_dst_path}', flush=True)
             print(f'> {self.metadata_file_dst_path}', flush=True)
-
-        if CMDARGS.dryrun:
             return
 
         self.do_book()
