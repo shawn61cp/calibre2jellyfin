@@ -80,11 +80,12 @@ class Construct:
     def __init__(self, section: configparser.SectionProxy):
         """Initialize a Construct object from a configuration file [Section]
 
-        Exceptions          KeyError
-                            Thrown by configparser when a required parameter is missing.
+        Exceptions:
+            KeyError
+            Thrown by configparser when a required parameter is missing.
 
-                            ValueError
-                            Thrown by self when a configuration parameter is invalid.
+            ValueError
+            Thrown by self when a configuration parameter is invalid.
         """
 
         # get simple configs
@@ -125,7 +126,8 @@ class Construct:
 
         """Iterates Book.do() over configured authors.
 
-            returns                 None
+            returns:
+                None
         """
 
         # for each configured author
@@ -157,7 +159,8 @@ class Construct:
 
         """Iterates Book.do() over books having configured subjects.
 
-            returns                 None
+            returns
+                None
         """
 
         # for author folder in Calibre store
@@ -191,7 +194,8 @@ class Construct:
 
         """Create (or update) one target Jellyfin e-book library as defined by a configured Construct section
 
-            returns                 None
+            returns
+                None
         """
 
         if CMDARGS.debug:
@@ -232,18 +236,19 @@ class BookMetadata:
         """Creates a miniDOM object from the metadata file and extracts
             various items of interest.
 
-            metadata_file_path      pathlib.Path, full path to metadata file
+            metadata_file_path
+                pathlib.Path, full path to metadata file
 
-            Returns                 None
+            Returns
+                None
 
-            Errors                  If the metata file cannot be read or cannot
-                                    be parsed, the error is logged via logging
-                                    and the function returns with the .doc attribute
-                                    having a value of None.
+            Errors
+                If the metata file cannot be read or cannot be parsed,
+                the error is logged via logging and the function returns
+                with the .doc attribute having a value of None.
 
-                                    When the metadata is successfully read, but expected
-                                    elements are simply missing, the corresponding attribute
-                                    will be either None or empty.
+                When the metadata is successfully read, but expected elements
+                are simply missing, the corresponding attribute will be either None or empty.
         """
 
         self.doc = None
@@ -302,14 +307,16 @@ class BookMetadata:
 
         """Formats series index string
 
-            returns:            None
+            returns:
+                None
 
-            examples:           ''          ->  '999'
-                                '3'         ->  '003'
-                                '34'        ->  '034'
-                                '345'       ->  '345'
-                                '3456'      ->  '3456'
-                                '3.2'       ->  '003.02'
+            examples:
+                ''          ->  '999'
+                '3'         ->  '003'
+                '34'        ->  '034'
+                '345'       ->  '345'
+                '3456'      ->  '3456'
+                '3.2'       ->  '003.02'
         """
 
         if not self.series_index:
@@ -327,9 +334,11 @@ class BookMetadata:
 
             metadata_file_dst_path      pathlib.Path(), full path to destination metadata file
 
-            returns                     None
+            returns
+                None
 
-            Errors                      Failure to write the metadata is logged via logging.
+            Errors
+                Failure to write the metadata is logged via logging.
         """
 
         # create/truncate the metadata file and write it out
@@ -380,7 +389,9 @@ class Book:
         author_folder_src_path: Path,
         book_folder_src_path: Path
     ):
-        """Constructs paths, files, and metadata pertinent to the book"""
+        """Builds paths and retrieves metadata for the book.  Logic implementing
+            output folder structure is here.
+        """
         self.construct = construct
         self.author_folder_src_path = author_folder_src_path
         self.author_folder_dst_path = construct.jellyfin_store / author_folder_src_path.name
@@ -439,7 +450,8 @@ class Book:
             Sets self.book_file_src_path = full Path to source book file,
             or unchanged if not found
 
-            returns                 None
+            returns
+                None
         """
 
         for type_ext in self.construct.book_file_types:
@@ -454,7 +466,8 @@ class Book:
             Sets self.metadata_file_src_path = full Path to metadata file,
             or unchanged if not found
 
-            returns                 None
+            returns
+                None
         """
 
         for metadata_file_path in self.book_folder_src_path.glob('*.opf'):
@@ -474,9 +487,10 @@ class Book:
             return
 
     def do_book(self) -> None:
-        """Creates/touches book folder and book (symlink)
+        """Creates destination book folder and file (symlink)
 
-            returns         None
+            returns
+                None
         """
 
         # Create the destination book folder
@@ -510,7 +524,8 @@ class Book:
     def do_cover(self) -> None:
         """Creates/touches cover image (symlink)
 
-            returns                 None
+            returns
+                None
         """
 
         # Create a symlink to the cover image if it does not exist
@@ -538,7 +553,8 @@ class Book:
     def do_metadata(self) -> None:
         """Outputs metadata file
 
-            returns                 None
+            returns
+                None
         """
 
         # Output a metadata xml (.opf) file into the destination book folder.
@@ -577,11 +593,13 @@ class Book:
 
         """Creates folder, files and symlinks for one book.
 
-            returns                 None
+            returns
+                None
 
-            Errors                  Failures are logged as warnings via logging but otherwise
-                                    the function proceeds transparently and silently
-                                    as far as possible.
+            Errors
+                Failures and warnings are logged via logging but otherwise
+                the function proceeds transparently and silently completing
+                as much as possible.
         """
 
         if not self.book_file_src_path:
@@ -624,8 +642,13 @@ class Book:
     def check_subject_line(self, line: list[str]) -> bool:
         """Tests one line from required- subjects
 
-            returns:        True if line's items exist in book metadata subjects
-                            False otherwise
+            line:
+                list[str], list of subjects that must all match one of the
+                book's subjects
+
+            returns:
+                True if all subjects matched
+                False otherwise
         """
 
         # Note: Depends on both metadata subjects and configuration subjects
@@ -642,7 +665,8 @@ class Book:
         """Determines whether the book subjects match any of the subjects
         required by the Construct section
 
-            returns:        True if matched, False otherwise
+            returns:
+                True if matched, False otherwise
         """
 
         for line in self.construct.subjects:
@@ -661,9 +685,11 @@ def sanitize_filename(sani: str) -> str:
     """Removes illegal characters from strings that will be incorporated in
     file names.
 
-        sani                string to sanitize
+        sani
+            str, string to sanitize
 
-        returns             sanitized string
+        returns
+            str, sanitized string
 
     From:   stackoverflow thread
             https://stackoverflow.com/questions/7406102/create-sane-safe-filename-from-any-unsafe-string
