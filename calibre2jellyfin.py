@@ -34,7 +34,39 @@ CMDARGS: argparse.Namespace
 
 
 class Construct:
-    """Processes a configured [Construct] section"""
+    """Processes a configured [Construct] section
+
+        Attributes:
+            See example calibre2jellyfin.cfg for additional info.
+        
+            author_folders: list[str]       Books in these author folders will be exported.
+                                            Applies only when selection_mode == 'author'
+                                            
+            book_file_types: list[str]      Book file extensions, in order of precedence,
+                                            that must match in order to be exported.
+                                            
+            subjects: list[list[str]]       Books matching any of these subjects will be
+                                            exported.  Applies only when selection_mode == 'subject'
+                                            
+            calibre_store: Path             Full path to the source Calibre library
+            
+            jellyfin_store: Path            Full path to the destination Jellyfin library
+            
+            foldermode: str                 Destination library folder structure:
+                                                'author,series,book'
+                                                'series,book'
+                                                'book'
+                                                
+            mangle_meta_title: bool         True if metadata title should be prefixed with
+                                            series index.
+                                            
+            mangle_meta_title_sort: bool    True if metadata sort title should be prefixed
+                                            with series index.
+                                            
+            selection_mode: str             Determines how books will be selected,
+                                            either by 'author' or 'subject'.
+    """
+    
     author_folders: list[str]
     book_file_types: list[str]
     subjects: list[list[str]]
@@ -172,7 +204,20 @@ class Construct:
 
 
 class BookMetadata:
-    """Retrieves, stores, and writes out metadata for a book"""
+    """Retrieves, stores, and writes out metadata for a book
+
+        Attributes:
+            doc: minidom.Document | None        DOM object created from the book metadata file.
+            series: str                         Series extracted from metadata.
+            series_index: str                   Series index extracted from metadata.
+            formatted_series_index: str         Formatted series index for use in folder names
+            author: str                         Author name extracted from metadata.
+            subjects: list[str]                 Subjects extracted from metadata.
+            titleel: minidom.Element | None     Metadata title element.
+            sortel: minidom.Element | None      Metadata title sort element.
+            descel: minidom.Element | None      Metadata description element.
+    """
+    
     doc: minidom.Document | None
     series: str
     series_index: str
@@ -297,7 +342,24 @@ class BookMetadata:
 
 
 class Book:
-    """Exports one book and related files"""
+    """Exports one book and related files
+
+        Attributes:
+            author_folder_src_path: Path            Full path to source author folder.
+            author_folder_dst_path: Path            Full path to dest author folder.
+            book_folder: str                        Name of dest book folder.
+            book_folder_src_path: Path              Full path to source book folder.
+            book_folder_dst_path: Path              Full path to dst book folder.
+            book_file_src_path: Path | None         Full path to source book file.
+            book_file_dst_path: Path | None         Full path to dest book file.
+            metadata_file_src_path: Path | None     Full path to source metadata file.
+            metadata_file_dst_path: Path | None     Full path to dest metadata file.
+            cover_file_src_path: Path | None        Full path to source cover file.
+            cover_file_dst_path: Path | None        Full path to dest cover file.
+            metadata: BookMetadata                  Book's metadata
+            construct: Construct                    Current configuration parameters
+    """
+    
     author_folder_src_path: Path
     author_folder_dst_path: Path
     book_folder: str
