@@ -375,7 +375,7 @@ class Book:
         """Locates first instance of a file having an configured book extension
 
             Sets self.book_file_src_path = full Path to source book file,
-            or None if not found
+            or unchanged if not found
 
             returns                 None
         """
@@ -390,7 +390,7 @@ class Book:
         """Locates first instance of a metadata file (one w an .opf extension)
 
             Sets self.metadata_file_src_path = full Path to metadata file,
-            or None if not found
+            or unchanged if not found
 
             returns                 None
         """
@@ -404,12 +404,115 @@ class Book:
         """Locates instance of a book cover image
 
             Sets self.cover_file_src_path = full Path to cover image,
-            or None if not found
+            or unchanged if not found
         """
 
         for cover_file_path in self.book_folder_src_path.glob('cover.jpg'):
             self.cover_file_src_path = cover_file_path
             return
+
+    def do_book(self) -> None:
+        """Creates/touches book folder and book (symlink)
+
+            returns         None
+        """
+
+        # Create the destination book folder
+        try:
+            self.book_folder_dst_path.mkdir(parents=True, exist_ok=True)
+        except OSError as excep:
+            logging.warning(
+                'Could not create book\'s destination folder (or a parent folder thereof) '
+                '"%s": %s', self.book_folder_dst_path, excep
+            )
+            if self.metadata.doc:
+                self.metadata.doc.unlink()
+                self.metadata.doc = None
+            return
+
+        # Create a symlink to the source book if it does not exist
+        # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
+        if self.book_file_dst_path.exists():
+            if stat(self.book_file_dst_path, follow_symlinks=False).st_mtime < stat(self.book_file_src_path).st_mtime:
+                try:
+                    utime(self.book_file_dst_path, follow_symlinks=False)
+                except OSError as excep:
+                    logging.warning(
+                        'Could not touch book symlink %s: %s', self.book_file_dst_path, excep
+                    )
+        else:
+            try:
+                self.book_file_dst_path.symlink_to(self.book_file_src_path)
+            except OSError as excep:
+                logging.warning(
+                    'Could not create book symlink "%s": %s', self.book_file_dst_path, excep
+                )
+
+    def do_cover(self) -> None:
+        """Creates/touches cover image (symlink)
+
+            returns                 None
+        """
+
+        # Create a symlink to the cover image if it does not exist
+        # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
+
+        if self.cover_file_src_path:
+            if self.cover_file_dst_path.exists():
+                if stat(self.cover_file_dst_path, follow_symlinks=False).st_mtime < stat(self.cover_file_src_path).st_mtime:
+                    try:
+                        utime(self.cover_file_dst_path, follow_symlinks=False)
+                    except OSError as excep:
+                        logging.warning(
+                            'Could not touch cover image symlink %s: %s',
+                            self.cover_file_dst_path, excep
+                        )
+            else:
+                try:
+                    self.cover_file_dst_path.symlink_to(self.cover_file_src_path)
+                except OSError as excep:
+                    logging.warning(
+                        'Could not create cover image symlink "%s": %s',
+                        self.cover_file_dst_path, excep
+                    )
+
+    def do_metadata(self) -> None:
+        """Outputs metadata file
+
+            returns                 None
+        """
+
+        # Output a metadata xml (.opf) file into the destination book folder.
+        # If folder mode is 'author,series,book' or 'series,book', series info was found,
+        # and mangling is enabled, mangle the book title (<dc:title>) and/or title_sort
+        # elements by prepending the book's index to it's title.
+        # Also prepend a "Book X of Lorem Ipsum" header to the book description.
+        # Otherwise, write out the original metadata unchanged.
+
+        if self.metadata.doc and self.metadata_file_src_path:
+            copy_metadata = False
+
+            if CMDARGS.updateAllMetadata:
+                copy_metadata = True
+            elif self.metadata_file_dst_path.exists():
+                if stat(self.metadata_file_dst_path).st_mtime < stat(self.metadata_file_src_path).st_mtime:
+                    copy_metadata = True
+            else:
+                copy_metadata = True
+
+            if copy_metadata:
+                if self.metadata.series and self.construct.foldermode in ['author,series,book', 'series,book']:
+                    if self.metadata.titleel and self.construct.mangle_meta_title:
+                        self.metadata.titleel.firstChild.data = f'{self.metadata.formatted_series_index} - {self.metadata.titleel.firstChild.data}'
+                    if self.metadata.sortel and self.construct.mangle_meta_title_sort:
+                        self.metadata.sortel.setAttribute(
+                            'content',
+                            f'{self.metadata.formatted_series_index} - {self.metadata.sortel.getAttribute("content")}'
+                        )
+                    if self.metadata.descel:
+                        self.metadata.descel.firstChild.data = f'<H4>Book {self.metadata.series_index} of <em>{self.metadata.series}</em>, by {self.metadata.author}</H4>{self.metadata.descel.firstChild.data}'
+
+                self.metadata.write(self.metadata_file_dst_path)
 
     def do(self) -> None:
 
@@ -455,92 +558,9 @@ class Book:
         if CMDARGS.dryrun:
             return
 
-        # Create the destination book folder
-        try:
-            self.book_folder_dst_path.mkdir(parents=True, exist_ok=True)
-        except OSError as excep:
-            logging.warning(
-                'Could not create book\'s destination folder (or a parent folder thereof) '
-                '"%s": %s', self.book_folder_dst_path, excep
-            )
-            if self.metadata.doc:
-                self.metadata.doc.unlink()
-                self.metadata.doc = None
-            return
-
-        # Create a symlink to the source book if it does not exist
-        # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
-        if self.book_file_dst_path.exists():
-            if stat(self.book_file_dst_path, follow_symlinks=False).st_mtime < stat(self.book_file_src_path).st_mtime:
-                try:
-                    utime(self.book_file_dst_path, follow_symlinks=False)
-                except OSError as excep:
-                    logging.warning(
-                        'Could not touch book symlink %s: %s', self.book_file_dst_path, excep
-                    )
-        else:
-            try:
-                self.book_file_dst_path.symlink_to(self.book_file_src_path)
-            except OSError as excep:
-                logging.warning(
-                    'Could not create book symlink "%s": %s', self.book_file_dst_path, excep
-                )
-
-        # Create a symlink to the cover image if it does not exist
-        # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
-        if self.cover_file_src_path:
-            if self.cover_file_dst_path.exists():
-                if stat(self.cover_file_dst_path, follow_symlinks=False).st_mtime < stat(self.cover_file_src_path).st_mtime:
-                    try:
-                        utime(self.cover_file_dst_path, follow_symlinks=False)
-                    except OSError as excep:
-                        logging.warning(
-                            'Could not touch cover image symlink %s: %s',
-                            self.cover_file_dst_path, excep
-                        )
-            else:
-                try:
-                    self.cover_file_dst_path.symlink_to(self.cover_file_src_path)
-                except OSError as excep:
-                    logging.warning(
-                        'Could not create cover image symlink "%s": %s',
-                        self.cover_file_dst_path, excep
-                    )
-
-        # Output a metadata xml (.opf) file into the destination book folder.
-        # If folder mode is 'author,series,book' or 'series,book', series info was found,
-        # and mangling is enabled, mangle the book title (<dc:title>) and/or title_sort
-        # elements by prepending the book's index to it's title.
-        # Also prepend a "Book X of Lorem Ipsum" header to the book description.
-        # Otherwise, write out the original metadata unchanged.
-
-        if self.metadata.doc and self.metadata_file_src_path:
-            copy_metadata = False
-
-            if CMDARGS.updateAllMetadata:
-                copy_metadata = True
-            elif self.metadata_file_dst_path.exists():
-                if stat(self.metadata_file_dst_path).st_mtime < stat(self.metadata_file_src_path).st_mtime:
-                    copy_metadata = True
-            else:
-                copy_metadata = True
-
-            if copy_metadata:
-                if self.metadata.series and self.construct.foldermode in ['author,series,book', 'series,book']:
-                    if self.metadata.titleel and self.construct.mangle_meta_title:
-                        self.metadata.titleel.firstChild.data = f'{self.metadata.formatted_series_index} - {self.metadata.titleel.firstChild.data}'
-                    if self.metadata.sortel and self.construct.mangle_meta_title_sort:
-                        self.metadata.sortel.setAttribute(
-                            'content',
-                            f'{self.metadata.formatted_series_index} - {self.metadata.sortel.getAttribute("content")}'
-                        )
-                    if self.metadata.descel:
-                        self.metadata.descel.firstChild.data = f'<H4>Book {self.metadata.series_index} of <em>{self.metadata.series}</em>, by {self.metadata.author}</H4>{self.metadata.descel.firstChild.data}'
-
-                self.metadata.write(self.metadata_file_dst_path)
-
-            self.metadata.doc.unlink()
-            self.metadata.doc = None
+        self.do_book()
+        self.do_cover()
+        self.do_metadata()
 
     def check_subject_line(self, line: list[str]) -> bool:
         """Tests one line from required- subjects
