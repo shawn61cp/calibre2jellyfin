@@ -65,6 +65,23 @@ class Construct:
                                             
             selection_mode: str             Determines how books will be selected,
                                             either by 'author' or 'subject'.
+
+        Usage:
+
+            ... initialize logging ...
+            ... get command line args ...
+            ... get configuration ...
+            ... set configuration DEFAULTs if necessary ...
+            ... iterate config [ConstructXXX] sections ...
+                try:
+                    construct = Construct(section)
+                except KeyError ...     # required config parameter missing
+                    ...
+                except ValueError ...   # invalid config parameter value
+                    ...
+
+                construct.do()          # export the library as defined by
+                                        # the current config [ConstructXXX] section
     """
     
     author_folders: list[str]
@@ -220,6 +237,19 @@ class BookMetadata:
             titleel: minidom.Element | None     Metadata title element.
             sortel: minidom.Element | None      Metadata title sort element.
             descel: minidom.Element | None      Metadata description element.
+
+        Usage:
+
+            # path_to_metadata_file may be None, in which case the object is
+            # initialized but all attributes are None or empty
+            metadata = BookMetadata(path_to_metadata_file)
+
+            # if metadata was loaded successfully
+            if metadata.doc:
+                ...
+                ...
+                if metadata was changed:
+                    metadata.write()
     """
     
     doc: minidom.Document | None
@@ -367,6 +397,13 @@ class Book:
             cover_file_dst_path: Path | None        Full path to dest cover file.
             metadata: BookMetadata                  Book's metadata
             construct: Construct                    Current configuration parameters
+
+        Usage:
+
+            ... path iteration, path checks, ...
+                book = Book(construct, author_folder_src_path, book_folder_src_path)
+                ... optionally check metadata was found (book.metadata.doc is not None) ...
+                book.do()   # export the book
     """
     
     author_folder_src_path: Path
@@ -391,6 +428,16 @@ class Book:
     ):
         """Builds paths and retrieves metadata for the book.  Logic implementing
             output folder structure is here.
+
+            Arguments:
+                construct:
+                    Construct object
+
+                author_folder_str_path:
+                    Path, Full path to author folder
+
+                book_folder_src_path:
+                    Path, Full path to book folder
         """
         self.construct = construct
         self.author_folder_src_path = author_folder_src_path
