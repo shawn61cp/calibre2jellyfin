@@ -573,6 +573,10 @@ class Book:
 
             returns
                 None
+
+            Notes:
+                do_book() should be called first since it creates
+                the book destination folder.
         """
 
         # Create a symlink to the cover image if it does not exist
@@ -602,6 +606,10 @@ class Book:
 
             returns
                 None
+
+            Notes:
+                do_book() should be called first since it creates
+                the book destination folder.
         """
 
         # Output a metadata xml (.opf) file into the destination book folder.
