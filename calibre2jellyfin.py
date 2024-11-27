@@ -93,8 +93,6 @@ class Construct:
 
         """Iterates Book.do() over configured authors.
 
-            self          Construct object, data from config Construct section
-
             returns                 None
         """
 
@@ -126,8 +124,6 @@ class Construct:
     def do_books_by_subject(self) -> None:
 
         """Iterates Book.do() over books having configured subjects.
-
-            self          Construct object, data from config Construct section
 
             returns                 None
         """
@@ -162,8 +158,6 @@ class Construct:
     def do(self) -> None:
 
         """Create (or update) one target Jellyfin e-book library as defined by a configured Construct section
-
-            section                 config parser section obj
 
             returns                 None
         """
@@ -263,14 +257,14 @@ class BookMetadata:
 
         """Formats series index string
 
-            returns                 self.formatted_series_index, formatted series index
-                                    examples:
-                                    ''          ->  '999'
-                                    '3'         ->  '003'
-                                    '34'        ->  '034'
-                                    '345'       ->  '345'
-                                    '3456'      ->  '3456'
-                                    '3.2'       ->  '003.02'
+            returns:            None
+
+            examples:           ''          ->  '999'
+                                '3'         ->  '003'
+                                '34'        ->  '034'
+                                '345'       ->  '345'
+                                '3456'      ->  '3456'
+                                '3.2'       ->  '003.02'
         """
 
         if not self.series_index:
@@ -380,8 +374,10 @@ class Book:
 
         """Locates first instance of a file having an configured book extension
 
-            returns                 self.book_file_src_path = full Path to source book file,
-                                    None if not found
+            Sets self.book_file_src_path = full Path to source book file,
+            or None if not found
+
+            returns                 None
         """
 
         for type_ext in self.construct.book_file_types:
@@ -393,8 +389,10 @@ class Book:
 
         """Locates first instance of a metadata file (one w an .opf extension)
 
-            returns                 self.metadata_file_src_path = full Path to metadata file,
-                                    None if not found
+            Sets self.metadata_file_src_path = full Path to metadata file,
+            or None if not found
+
+            returns                 None
         """
 
         for metadata_file_path in self.book_folder_src_path.glob('*.opf'):
@@ -405,8 +403,8 @@ class Book:
 
         """Locates instance of a book cover image
 
-            returns                 self.cover_file_src_path = full Path to cover image,
-                                    None if not found
+            Sets self.cover_file_src_path = full Path to cover image,
+            or None if not found
         """
 
         for cover_file_path in self.book_folder_src_path.glob('cover.jpg'):
