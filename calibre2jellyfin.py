@@ -101,18 +101,27 @@ class Construct:
         # for each configured author
         for author_folder in self.author_folders:
 
-            book = Book(self, author_folder)
-            if not book.author_folder_src_path:
+            author_folder_src_path = self.calibre_store / author_folder
+            if not author_folder_src_path.is_dir():
+                logging.warning(
+                    'Author folder "%s" does not exist or is not a directory'
+                    ' in Calibre store "%s".',
+                    author_folder, self.calibre_store
+                )
                 continue
 
             # for each book folder in source author folder
-            for book.book_folder_src_path in book.author_folder_src_path.iterdir():
-                if book.book_folder_src_path.is_dir():
-                    book.get()
-                    if CMDARGS.debug:
-                        print(f'Book attributes: {vars(book)}')
-                        print(f'Book metadata  : {vars(book.metadata)}')
-                    book.do()
+            for book_folder_src_path in author_folder_src_path.iterdir():
+
+                if not book_folder_src_path.is_dir():
+                    continue
+
+                book = Book(self, author_folder_src_path, book_folder_src_path)
+                if CMDARGS.debug:
+                    print(f'Book attributes: {vars(book)}')
+                    print(f'Book metadata  : {vars(book.metadata)}')
+
+                book.do()
 
     def do_books_by_subject(self) -> None:
 
@@ -124,21 +133,31 @@ class Construct:
         """
 
         # for author folder in Calibre store
-        for author_folder in self.calibre_store.iterdir():
+        for author_folder_src_path in self.calibre_store.iterdir():
 
-            book = Book(self, author_folder.name)
-            if not book.author_folder_src_path:
+            if not author_folder_src_path.is_dir() or author_folder_src_path.name[0:1] == '.':
                 continue
 
             # for each book folder in source author folder
-            for book.book_folder_src_path in book.author_folder_src_path.iterdir():
-                if book.book_folder_src_path.is_dir():
-                    book.get()
-                    if CMDARGS.debug:
-                        print(f'Book attributes: {vars(book)}')
-                        print(f'Book metadata  : {vars(book.metadata)}')
-                    if book.check_subjects():
-                        book.do()
+            for book_folder_src_path in author_folder_src_path.iterdir():
+
+                if not book_folder_src_path.is_dir():
+                    continue
+
+                book = Book(self, author_folder_src_path, book_folder_src_path)
+                if not book.metadata:
+                    logging.warning(
+                        'No metadata was found in "%s"',
+                        book_folder_src_path
+                    )
+                    continue
+
+                if CMDARGS.debug:
+                    print(f'Book attributes: {vars(book)}')
+                    print(f'Book metadata  : {vars(book.metadata)}')
+
+                if book.check_subjects():
+                    book.do()
 
     def do(self) -> None:
 
@@ -151,7 +170,7 @@ class Construct:
 
         if CMDARGS.debug:
             print(f'[Construct] parameters: {vars(self)}')
-            
+
         if self.selection_mode == 'author':
             self.do_books_by_author()
         else:
@@ -163,24 +182,14 @@ class BookMetadata:
     doc: minidom.Document | None
     series: str
     series_index: str
+    formatted_series_index: str
     author: str
     subjects: list[str]
     titleel: minidom.Element | None
     sortel: minidom.Element | None
     descel: minidom.Element | None
 
-    def __init__(self):
-        self.doc = None
-        self.series = ''
-        self.series_index = ''
-        self.author = ''
-        self.subjects = []
-        self.titleel = None
-        self.sortel = None
-        self.descel = None
-
-    def get(self, metadata_file_path: Path | None) -> None:
-
+    def __init__(self, metadata_file_path: Path | None):
         """Creates a miniDOM object from the metadata file and extracts
             various items of interest.
 
@@ -197,6 +206,16 @@ class BookMetadata:
                                     elements are simply missing, the corresponding attribute
                                     will be either None or empty.
         """
+
+        self.doc = None
+        self.series = ''
+        self.series_index = ''
+        self.formatted_series_index = ''
+        self.author = ''
+        self.subjects = []
+        self.titleel = None
+        self.sortel = None
+        self.descel = None
 
         if not metadata_file_path:
             return
@@ -236,8 +255,32 @@ class BookMetadata:
                 self.series = metatag.getAttribute('content')
             elif metatag.getAttribute('name') == 'calibre:series_index':
                 self.series_index = metatag.getAttribute('content')
+                self.format_series_index()
             elif metatag.getAttribute('name') == 'calibre:title_sort':
                 self.sortel = metatag
+
+    def format_series_index(self) -> None:
+
+        """Formats series index string
+
+            returns                 self.formatted_series_index, formatted series index
+                                    examples:
+                                    ''          ->  '999'
+                                    '3'         ->  '003'
+                                    '34'        ->  '034'
+                                    '345'       ->  '345'
+                                    '3456'      ->  '3456'
+                                    '3.2'       ->  '003.02'
+        """
+
+        if not self.series_index:
+            self.formatted_series_index = '999'
+
+        if '.' in self.series_index:
+            i = self.series_index.index('.')
+            self.formatted_series_index = f'{self.series_index[0:i]:>03s}.{self.series_index[i+1:]:>02s}'
+
+        self.formatted_series_index = f'{self.series_index:>03s}'
 
     def write(self, metadata_file_dst_path: Path) -> None:
 
@@ -260,12 +303,12 @@ class BookMetadata:
 
 
 class Book:
-    """Exports one book"""
-    author_folder_src_path: Path | None
-    author_folder_dst_path: Path | None
+    """Exports one book and related files"""
+    author_folder_src_path: Path
+    author_folder_dst_path: Path
     book_folder: str
-    book_folder_src_path: Path | None
-    book_folder_dst_path: Path | None
+    book_folder_src_path: Path
+    book_folder_dst_path: Path
     book_file_src_path: Path | None
     book_file_dst_path: Path | None
     metadata_file_src_path: Path | None
@@ -275,20 +318,18 @@ class Book:
     metadata: BookMetadata
     construct: Construct
 
-    def __init__(self, construct: Construct, author_folder: str):
+    def __init__(
+        self,
+        construct: Construct,
+        author_folder_src_path: Path,
+        book_folder_src_path: Path
+    ):
+        """Constructs paths, files, and metadata pertinent to the book"""
         self.construct = construct
-        self.author_folder_src_path = construct.calibre_store / author_folder
-        if not self.author_folder_src_path.is_dir() or self.author_folder_src_path.name[0:1]=='.':
-            if construct.selection_mode == 'author':
-                logging.warning(
-                    'Author folder "%s" does not exist or is not a directory'
-                    ' in Calibre store "%s".',
-                    author_folder, construct.calibre_store
-                )
-            self.author_folder_src_path = None
-        self.author_folder_dst_path = construct.jellyfin_store / author_folder
-        self.book_folder = ''
-        self.book_folder_src_path = None
+        self.author_folder_src_path = author_folder_src_path
+        self.author_folder_dst_path = construct.jellyfin_store / author_folder_src_path.name
+        self.book_folder = book_folder_src_path.name
+        self.book_folder_src_path = book_folder_src_path
         self.book_folder_dst_path = None
         self.book_file_src_path = None
         self.book_file_dst_path = None
@@ -296,22 +337,17 @@ class Book:
         self.metadata_file_dst_path = None
         self.cover_file_src_path = None
         self.cover_file_dst_path = None
-        self.metadata = BookMetadata()
-
-    def get(self):
-
-        """Constructs paths, files, and metadata pertinent to the book"""
+        self.metadata = None
 
         # find first instance of configured book file types
-        self.book_file_src_path = find_book(self.construct.book_file_types, self.book_folder_src_path)
+        self.find_book()
         if not self.book_file_src_path:
             return
 
         # locate related book files
-        self.book_folder = self.book_folder_src_path.name
-        self.metadata_file_src_path = find_metadata(self.book_folder_src_path)
-        self.cover_file_src_path = find_cover(self.book_folder_src_path)
-        self.metadata.get(self.metadata_file_src_path)
+        self.find_cover()
+        self.find_metadata()
+        self.metadata = BookMetadata(self.metadata_file_src_path)
 
         # Output is organized as '.../author/series/book/book.ext', '.../series/book/book.ext'
         # or '.../book/book.ext' depending on foldermode.  If series info was expected but not found,
@@ -322,7 +358,7 @@ class Book:
         # create the destination folder(s) if they do not exist.
 
         if self.metadata.series and self.construct.foldermode in ['author,series,book', 'series,book']:
-            self.book_folder = sanitize_filename(f'{format_series_index(self.metadata.series_index)} - {self.book_folder}')
+            self.book_folder = sanitize_filename(f'{self.metadata.formatted_series_index} - {self.book_folder}')
             if self.construct.foldermode == 'author,series,book':
                 self.book_folder_dst_path = self.author_folder_dst_path / sanitize_filename(f'{self.metadata.series} Series') / self.book_folder
             else:
@@ -337,8 +373,45 @@ class Book:
         if self.cover_file_src_path:
             self.cover_file_dst_path = self.book_folder_dst_path / self.cover_file_src_path.name
 
-        if self.metadata.doc and self.metadata_file_src_path:
+        if self.metadata_file_src_path and self.metadata.doc:
             self.metadata_file_dst_path = self.book_folder_dst_path / self.metadata_file_src_path.name
+
+    def find_book(self) -> None:
+
+        """Locates first instance of a file having an configured book extension
+
+            returns                 self.book_file_src_path = full Path to source book file,
+                                    None if not found
+        """
+
+        for type_ext in self.construct.book_file_types:
+            for book_file_path in self.book_folder_src_path.glob('*.' + type_ext):
+                self.book_file_src_path = book_file_path
+                return
+
+    def find_metadata(self) -> None:
+
+        """Locates first instance of a metadata file (one w an .opf extension)
+
+            returns                 self.metadata_file_src_path = full Path to metadata file,
+                                    None if not found
+        """
+
+        for metadata_file_path in self.book_folder_src_path.glob('*.opf'):
+            self.metadata_file_src_path = metadata_file_path
+            return
+
+    def find_cover(self) -> None:
+
+        """Locates instance of a book cover image
+
+            returns                 self.cover_file_src_path = full Path to cover image,
+                                    None if not found
+        """
+
+        for cover_file_path in self.book_folder_src_path.glob('cover.jpg'):
+            self.cover_file_src_path = cover_file_path
+            return
 
     def do(self) -> None:
 
@@ -457,11 +530,11 @@ class Book:
             if copy_metadata:
                 if self.metadata.series and self.construct.foldermode in ['author,series,book', 'series,book']:
                     if self.metadata.titleel and self.construct.mangle_meta_title:
-                        self.metadata.titleel.firstChild.data = f'{format_series_index(self.metadata.series_index)} - {self.metadata.titleel.firstChild.data}'
+                        self.metadata.titleel.firstChild.data = f'{self.metadata.formatted_series_index} - {self.metadata.titleel.firstChild.data}'
                     if self.metadata.sortel and self.construct.mangle_meta_title_sort:
                         self.metadata.sortel.setAttribute(
                             'content',
-                            f'{format_series_index(self.metadata.series_index)} - {self.metadata.sortel.getAttribute("content")}'
+                            f'{self.metadata.formatted_series_index} - {self.metadata.sortel.getAttribute("content")}'
                         )
                     if self.metadata.descel:
                         self.metadata.descel.firstChild.data = f'<H4>Book {self.metadata.series_index} of <em>{self.metadata.series}</em>, by {self.metadata.author}</H4>{self.metadata.descel.firstChild.data}'
@@ -504,79 +577,6 @@ class Book:
 # ------------------
 #   Functions
 # ------------------
-
-
-def find_book(book_file_types: list[str], book_folder_src_path: Path) -> Path | None:
-
-    """Locates first instance of a file having an configured book extension
-
-        book_file_types         [], list of file extensions identifying books (exclude periods)
-        book_folder_src_path    pathlib.Path, full path to book folder to search
-
-        returns                 pathlib.Path, full path to located book file
-                                None if not found
-    """
-
-    for type_ext in book_file_types:
-        for book_file_path in book_folder_src_path.glob('*.' + type_ext):
-            return book_file_path
-    return None
-
-
-def find_metadata(book_folder_src_path: Path) -> Path | None:
-
-    """Locates first instance of a metadata file (one w an .opf extension)
-
-        book_folder_src_path    pathlib.Path, full path to book folder to search
-
-        returns                 pathlib.Path, full path to metadata file
-                                None if not found
-    """
-
-    for metadata_file_path in book_folder_src_path.glob('*.opf'):
-        return metadata_file_path
-    return None
-
-
-def find_cover(book_folder_src_path: Path) -> Path | None:
-
-    """Locates instance of a book cover image
-
-        book_folder_src_path    pathlib.Path, full path to book folder to search
-
-        returns                 pathlib.Path, full path to cover image
-                                None if not found
-    """
-
-    for cover_file_path in book_folder_src_path.glob('cover.jpg'):
-        return cover_file_path
-    return None
-
-
-def format_series_index(series_index: str) -> str:
-
-    """Formats series index string
-
-        series_index            str, series index str extracted from metadata, may be empty
-
-        returns                 str, formatted series index
-                                examples:
-                                ''          ->  '999'
-                                '3'         ->  '003'
-                                '34'        ->  '034'
-                                '345'       ->  '345'
-                                '3456'      ->  '3456'
-                                '3.2'       ->  '003.02'
-    """
-
-    if not series_index:
-        return '999'
-
-    if '.' in series_index:
-        i = series_index.index('.')
-        return f'{series_index[0:i]:>03s}.{series_index[i+1:]:>02s}'
-
-    return f'{series_index:>03s}'
 
 
 def sanitize_filename(sani: str) -> str:
