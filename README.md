@@ -111,10 +111,23 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 
 #### Changes
 * 2024-11-22 Experimental
-  * Selection by tags (aka subject)
-  * Add command line option -\-dryrun, -\-debug
-  * New configuration: selectionMode = [author | tag]
-  * This is working but I'm not certain the benefits are worth it. The main version is I think much cleaner.  This one needed to be refactored due to the additional complexity.
+  * Selection by subject (aka tags in Calibre)
+  * Added command line options
+    * -\-dryrun
+      * This displays normal console output plus showing where files would be output but does not actually export anything.
+    * -\-debug
+      * Displays lots of path and metadata information.  Useful if you need to look into why a book is or is not being selected.
+  * New configurations (see example .cfg)
+    * selectionMode = [author | subject]
+    * subjects = ...
+  * Additional warnings
+    * Missing cover file
+    * Missing metadata file
+        * Note: In 'subject' selection mode, if the metadata is missing the book cannot be exported.
+  * Upgrade considerations
+    * If you already have the 2024-09-02 version and are not interested in selection by subject, there is not much reason to download this version.  The selection by author functionality has not changed.
+    * If you download this version because you are interested in the new warnings or the new command line options but not selection by subject, you do not need to make any changes to your configuration file.  Behavior defaults to selection by author.
+    * If you are interested in selection by subject, you will need to add the selectionMode and subjects parameters to your configuration file.  In author selectionMode, any subjects list is ignored.  In subject selectionMode, any authors list is ignored.  You can maintain both lists and switch between them using selectionMode.
 * 2024-09-02 (Current version) (Main branch)
     * Add author's name to book description.
     * Add support for fractional series indices maintaining sort
@@ -177,16 +190,17 @@ Two things need to be accomplished:
 
 #### Command line  options
 <pre>
-usage: calibre2jellyfin.py [-h] [--update-all-metadata]
+usage: calibre2jellyfin.py [-h] [--update-all-metadata] [--dryrun] [--debug]
 
 A utility to construct a Jellyfin ebook library from a Calibre library. Configuration file "/home/shawn/.config/calibre2jellyfin.cfg" is required.
 
 options:
   -h, --help            show this help message and exit
   --update-all-metadata
-                        Useful to force a one-time update of all metadata files, for instance when configurable metadata mangling options have changed. (Normally metadata files are
-                        only updated when missing or out-of-date.)
-</pre>
+                        Useful to force a one-time update of all metadata files, for instance when configurable metadata mangling options have changed.
+                        (Normally metadata files are only updated when missing or out-of-date.)
+  --dryrun              Displays normal console output but makes no changes to exported libraries.
+  --debug               Emit debug information.</pre>
 
 ## Real Life
 
