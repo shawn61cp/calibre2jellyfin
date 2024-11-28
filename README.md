@@ -291,6 +291,14 @@ If you find that an expected author does not show up in the created Jellyfin lib
 
 Another thing I have encountered is when multiple versions of the author name exist, such as "Public, John Q." and "John Q. Public", and they are then consolidated, Calibre actually moves the books into the folder matching the consolidated name.  If the author name configured for calibre2jellyfin happened to match the author name that "went away", updates to that author's books may appear to die, or you might see two different versions of the same author in Jellyfin.  The solution is to just delete, in Jellyfin, one or both authors, ensure that the author configured in the .cfg file matches the Calibre author folder, then re-run the script to have them cleanly re-created.  Jellyfin will eventually detect the changes and update the display contents.  You can also right-click on an item within Jellyfin and request an immediate metadata refresh.  Even so sometimes it will take a few minutes  for Jellyfin to recognize the changes.
 
+#### Selection by Subject
+
+Hah! I say.  And LOL.
+
+After going to the trouble to implement this, which included refactoring the whole script, I think the feature may be rather a niche benefit.  At least as exhibited by the books in my library, the subject tags are a hot mess making selection by author less effort.
+
+If one did desire not to have to deal with configuration files, at least after the initial set up, I think the most practial way to proceed, given the state of published subjects, is to assign a unique tag of your own, perhaps classifying by output Jellyfin library, to every book in Calibre that you want to export.  Then configure the script to select by those tags.  I have not delved into them deeply but I think Calibre has some database maintenance features that could ease this endeavor, at least for the initial assignments.  After that, one would still have to assign the appropriate tag to each newly acquired book.  Whereas in selection by author, no additional work is needed when additonal books by a configured author are acquired.
+
 ## Odds and Ends
 
 * I have noticed that Jellyfin does not re-paginate if you resize the browser window or change the zoom factor <em>after</em> you have opened the book.  However if you do these <em>before</em> opening the book it does so nicely.
