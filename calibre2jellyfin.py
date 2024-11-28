@@ -18,7 +18,6 @@ import logging
 from pathlib import Path
 from xml.dom import minidom
 from os import stat, utime
-from typing import Tuple
 
 # ------------------
 #   Globals
@@ -30,173 +29,708 @@ CMDARGS: argparse.Namespace
 
 
 # ------------------
-#   Functions
+#   Classes
 # ------------------
 
 
-def find_book(book_file_types: list[str], book_folder_src_path: Path) -> Path | None:
+class Construct:
+    """Processes a configured [Construct] section
 
-    """Locates first instance of a file having an configured book extension
+        Attributes:
+            See example calibre2jellyfin.cfg for additional info.
+        
+            author_folders: list[str]       Books in these author folders will be exported.
+                                            Applies only when selection_mode == 'author'
+                                            
+            book_file_types: list[str]      Book file extensions, in order of precedence,
+                                            that must match in order to be exported.
+                                            
+            subjects: list[list[str]]       Books matching any of these subjects will be
+                                            exported.  Applies only when selection_mode == 'subject'
+                                            
+            calibre_store: Path             Full path to the source Calibre library
+            
+            jellyfin_store: Path            Full path to the destination Jellyfin library
+            
+            foldermode: str                 Destination library folder structure:
+                                                'author,series,book'
+                                                'series,book'
+                                                'book'
+                                                
+            mangle_meta_title: bool         True if metadata title should be prefixed with
+                                            series index.
+                                            
+            mangle_meta_title_sort: bool    True if metadata sort title should be prefixed
+                                            with series index.
+                                            
+            selection_mode: str             Determines how books will be selected,
+                                            either by 'author' or 'subject'.
 
-        book_file_types         [], list of file extensions identifying books (exclude periods)
-        book_folder_src_path    pathlib.Path, full path to book folder to search
+        Usage:
 
-        returns                 pathlib.Path, full path to located book file
-                                None if not found
+            ... initialize logging ...
+            ... get command line args ...
+            ... get configuration ...
+            ... set configuration DEFAULTs if necessary ...
+            ... iterate config [ConstructXXX] sections ...
+                try:
+                    construct = Construct(section)
+                except KeyError ...     # required config parameter missing
+                    ...
+                except ValueError ...   # invalid config parameter value
+                    ...
+
+                construct.do()          # export the library as defined by
+                                        # the current config [ConstructXXX] section
     """
+    
+    author_folders: list[str]
+    book_file_types: list[str]
+    subjects: list[list[str]]
+    calibre_store: Path
+    jellyfin_store: Path
+    foldermode: str
+    mangle_meta_title: bool
+    mangle_meta_title_sort: bool
+    selection_mode: str
 
-    for type_ext in book_file_types:
-        for book_file_path in book_folder_src_path.glob('*.' + type_ext):
-            return book_file_path
-    return None
+    def __init__(self, section: configparser.SectionProxy):
+        """Initialize a Construct object from a configuration file [Section]
+
+        Exceptions:
+            KeyError
+            Thrown by configparser when a required parameter is missing.
+
+            ValueError
+            Thrown by self when a configuration parameter is invalid.
+        """
+
+        # get simple configs
+        self.selection_mode = section['selectionMode']
+        self.calibre_store = Path(section['calibreStore'])
+        self.jellyfin_store = Path(section['jellyfinStore'])
+        self.foldermode = section['foldermode']
+        self.mangle_meta_title = section.getboolean('mangleMetaTitle')
+        self.mangle_meta_title_sort = section.getboolean('mangleMetaTitleSort')
+        # convert multiline configs to lists
+        self.book_file_types = section['bookfiletypes'][1:].split('\n')
+        if self.selection_mode == 'author':
+            self.author_folders = section['authorFolders'][1:].split('\n')
+            self.subjects = [['']]
+        else:
+            self.subjects = [x.split(',') for x in section['subjects'][1:].lower().split('\n')]
+            self.author_folders = []
+
+        # sanity check configuration parameters
+        if not self.calibre_store.is_dir():
+            raise ValueError(f'calibreStore value "{self.calibre_store}" is not a directory or does not exist')
+        if not self.jellyfin_store.is_dir():
+            raise ValueError(f'jellyfinStore value "{self.jellyfin_store}" is not a directory or does not exist')
+        if self.jellyfin_store.samefile(self.calibre_store):
+            raise ValueError('jellyfinStore and calibreStore must be different locations')
+        if self.foldermode not in ('book', 'series,book', 'author,series,book'):
+            raise ValueError('foldermode value must be "book", "series,book" or "author,series,book"')
+        if self.selection_mode not in ('author', 'subject'):
+            raise ValueError('selectionMode must be "author" or "subject"')
+        if self.selection_mode == 'author' and self.author_folders[0] == '':
+            raise ValueError('authorFolders must contain at least one entry')
+        if self.selection_mode == 'subject' and self.subjects[0][0] == '':
+            raise ValueError('subjects must contain at least one entry')
+        if self.book_file_types[0] == '':
+            raise ValueError('bookfiletypes must contain at least one entry')
+
+    def do_books_by_author(self) -> None:
+
+        """Iterates Book.do() over configured authors.
+
+            returns:
+                None
+        """
+
+        # for each configured author
+        for author_folder in self.author_folders:
+
+            author_folder_src_path = self.calibre_store / author_folder
+            if not author_folder_src_path.is_dir():
+                logging.warning(
+                    'Author folder "%s" does not exist or is not a directory'
+                    ' in Calibre store "%s".',
+                    author_folder, self.calibre_store
+                )
+                continue
+
+            # for each book folder in source author folder
+            for book_folder_src_path in author_folder_src_path.iterdir():
+
+                if not book_folder_src_path.is_dir():
+                    continue
+
+                book = Book(self, author_folder_src_path, book_folder_src_path)
+                if CMDARGS.debug:
+                    print(f'Book attributes: {vars(book)}')
+                    print(f'Book metadata  : {vars(book.metadata)}')
+
+                book.do()
+
+    def do_books_by_subject(self) -> None:
+
+        """Iterates Book.do() over books having configured subjects.
+
+            returns
+                None
+        """
+
+        # for author folder in Calibre store
+        for author_folder_src_path in self.calibre_store.iterdir():
+
+            if not author_folder_src_path.is_dir() or author_folder_src_path.name[0:1] == '.':
+                continue
+
+            # for each book folder in source author folder
+            for book_folder_src_path in author_folder_src_path.iterdir():
+
+                if not book_folder_src_path.is_dir():
+                    continue
+
+                book = Book(self, author_folder_src_path, book_folder_src_path)
+                if not book.metadata:
+                    logging.warning(
+                        'No metadata was found in "%s"',
+                        book_folder_src_path
+                    )
+                    continue
+
+                if CMDARGS.debug:
+                    print(f'Book attributes: {vars(book)}')
+                    print(f'Book metadata  : {vars(book.metadata)}')
+
+                if book.check_subjects():
+                    book.do()
+
+    def do(self) -> None:
+
+        """Create (or update) one target Jellyfin e-book library as defined by a configured Construct section
+
+            returns
+                None
+        """
+
+        if CMDARGS.debug:
+            print(f'[Construct] parameters: {vars(self)}')
+
+        if self.selection_mode == 'author':
+            self.do_books_by_author()
+        else:
+            self.do_books_by_subject()
 
 
-def find_metadata(book_folder_src_path: Path) -> Path | None:
+class BookMetadata:
+    """Retrieves, stores, and writes out metadata for a book
 
-    """Locates first instance of a metadata file (one w an .opf extension)
+        Attributes:
+            doc: minidom.Document | None        DOM object created from the book metadata file.
+            series: str                         Series extracted from metadata.
+            series_index: str                   Series index extracted from metadata.
+            formatted_series_index: str         Formatted series index for use in folder names
+            author: str                         Author name extracted from metadata.
+            subjects: list[str]                 Subjects extracted from metadata.
+            titleel: minidom.Element | None     Metadata title element.
+            sortel: minidom.Element | None      Metadata title sort element.
+            descel: minidom.Element | None      Metadata description element.
 
-        book_folder_src_path    pathlib.Path, full path to book folder to search
+        Usage:
 
-        returns                 pathlib.Path, full path to metadata file
-                                None if not found
+            # path_to_metadata_file may be None, in which case the object is
+            # initialized but all attributes are None or empty
+            metadata = BookMetadata(path_to_metadata_file)
+
+            # if metadata was loaded successfully
+            if metadata.doc:
+                ...
+                ...
+                if metadata was changed:
+                    metadata.write()
     """
+    
+    doc: minidom.Document | None
+    series: str
+    series_index: str
+    formatted_series_index: str
+    author: str
+    subjects: list[str]
+    titleel: minidom.Element | None
+    sortel: minidom.Element | None
+    descel: minidom.Element | None
 
-    for metadata_file_path in book_folder_src_path.glob('*.opf'):
-        return metadata_file_path
-    return None
+    def __init__(self, metadata_file_path: Path | None):
+        """Creates a miniDOM object from the metadata file and extracts
+            various items of interest.
+
+            metadata_file_path
+                pathlib.Path, full path to metadata file
+
+            Returns
+                None
+
+            Errors
+                If the metata file cannot be read or cannot be parsed,
+                the error is logged via logging and the function returns
+                with the .doc attribute having a value of None.
+
+                When the metadata is successfully read, but expected elements
+                are simply missing, the corresponding attribute will be either None or empty.
+        """
+
+        self.doc = None
+        self.series = ''
+        self.series_index = ''
+        self.formatted_series_index = ''
+        self.author = ''
+        self.subjects = []
+        self.titleel = None
+        self.sortel = None
+        self.descel = None
+
+        if not metadata_file_path:
+            return
+
+        # open the metadata file and create a document object
+        try:
+            with open(metadata_file_path, 'r', encoding='utf8') as docfile:
+                self.doc = minidom.parse(docfile)
+        except OSError as excep:
+            logging.warning('Could not read metadata file "%s": %s', metadata_file_path, excep)
+            return
+        except Exception as excep:
+            logging.warning('Could not parse metadata file "%s": %s', metadata_file_path, excep)
+            return
+
+        # get series info and other elements
+
+        titleels = self.doc.getElementsByTagName('dc:title')
+        if titleels:
+            self.titleel = titleels[0]
+
+        authorels = self.doc.getElementsByTagName('dc:creator')
+        if authorels:
+            self.author = authorels[0].firstChild.data
+
+        descels = self.doc.getElementsByTagName('dc:description')
+        if descels:
+            self.descel = descels[0]
+
+        subjectels = self.doc.getElementsByTagName('dc:subject')
+        if subjectels:
+            self.subjects = [el.firstChild.data.lower().strip() for el in subjectels]
+
+        metatags = self.doc.getElementsByTagName('meta')
+        for metatag in metatags:
+            if metatag.getAttribute('name') == 'calibre:series':
+                self.series = metatag.getAttribute('content')
+            elif metatag.getAttribute('name') == 'calibre:series_index':
+                self.series_index = metatag.getAttribute('content')
+                self.format_series_index()
+            elif metatag.getAttribute('name') == 'calibre:title_sort':
+                self.sortel = metatag
+
+    def format_series_index(self) -> None:
+
+        """Formats series index string
+
+            returns:
+                None
+
+            examples:
+                ''          ->  '999'
+                '3'         ->  '003'
+                '34'        ->  '034'
+                '345'       ->  '345'
+                '3456'      ->  '3456'
+                '3.2'       ->  '003.02'
+        """
+
+        if not self.series_index:
+            self.formatted_series_index = '999'
+
+        if '.' in self.series_index:
+            i = self.series_index.index('.')
+            self.formatted_series_index = f'{self.series_index[0:i]:>03s}.{self.series_index[i+1:]:>02s}'
+
+        self.formatted_series_index = f'{self.series_index:>03s}'
+
+    def write(self, metadata_file_dst_path: Path) -> None:
+
+        """Writes out the book metadata
+
+            metadata_file_dst_path      pathlib.Path(), full path to destination metadata file
+
+            returns
+                None
+
+            Errors
+                Failure to write the metadata is logged via logging.
+        """
+
+        # create/truncate the metadata file and write it out
+        if self.doc:
+            try:
+                with open(metadata_file_dst_path, 'w', encoding='utf8') as docfile:
+                    self.doc.writexml(docfile)
+            except OSError as excep:
+                logging.warning('Could not (over) write metadata file "%s": %s', metadata_file_dst_path, excep)
 
 
-def find_cover(book_folder_src_path: Path) -> Path | None:
+class Book:
+    """Exports one book and related files
 
-    """Locates instance of a book cover image
+        Attributes:
+            author_folder_src_path: Path            Full path to source author folder.
+            author_folder_dst_path: Path            Full path to dest author folder.
+            book_folder: str                        Name of dest book folder.
+            book_folder_src_path: Path              Full path to source book folder.
+            book_folder_dst_path: Path              Full path to dst book folder.
+            book_file_src_path: Path | None         Full path to source book file.
+            book_file_dst_path: Path | None         Full path to dest book file.
+            metadata_file_src_path: Path | None     Full path to source metadata file.
+            metadata_file_dst_path: Path | None     Full path to dest metadata file.
+            cover_file_src_path: Path | None        Full path to source cover file.
+            cover_file_dst_path: Path | None        Full path to dest cover file.
+            metadata: BookMetadata                  Book's metadata
+            construct: Construct                    Current configuration parameters
 
-        book_folder_src_path    pathlib.Path, full path to book folder to search
+        Usage:
 
-        returns                 pathlib.Path, full path to cover image
-                                None if not found
+            ... path iteration, path checks, ...
+                book = Book(construct, author_folder_src_path, book_folder_src_path)
+                ... optionally check metadata was found (book.metadata.doc is not None) ...
+                book.do()   # export the book
     """
+    
+    author_folder_src_path: Path
+    author_folder_dst_path: Path
+    book_folder: str
+    book_folder_src_path: Path
+    book_folder_dst_path: Path
+    book_file_src_path: Path | None
+    book_file_dst_path: Path | None
+    metadata_file_src_path: Path | None
+    metadata_file_dst_path: Path | None
+    cover_file_src_path: Path | None
+    cover_file_dst_path: Path | None
+    metadata: BookMetadata
+    construct: Construct
 
-    for cover_file_path in book_folder_src_path.glob('cover.jpg'):
-        return cover_file_path
-    return None
+    def __init__(
+        self,
+        construct: Construct,
+        author_folder_src_path: Path,
+        book_folder_src_path: Path
+    ):
+        """Builds paths and retrieves metadata for the book.  Logic implementing
+            output folder structure is here.
+
+            Arguments:
+                construct:
+                    Construct object
+
+                author_folder_str_path:
+                    Path, Full path to author folder
+
+                book_folder_src_path:
+                    Path, Full path to book folder
+        """
+        self.construct = construct
+        self.author_folder_src_path = author_folder_src_path
+        self.author_folder_dst_path = construct.jellyfin_store / author_folder_src_path.name
+        self.book_folder = book_folder_src_path.name
+        self.book_folder_src_path = book_folder_src_path
+        self.book_folder_dst_path = None
+        self.book_file_src_path = None
+        self.book_file_dst_path = None
+        self.metadata_file_src_path = None
+        self.metadata_file_dst_path = None
+        self.cover_file_src_path = None
+        self.cover_file_dst_path = None
+        self.metadata = None
+
+        # find first instance of configured book file types
+        self.find_book()
+        if not self.book_file_src_path:
+            return
+
+        # locate related book files
+        self.find_cover()
+        self.find_metadata()
+        self.metadata = BookMetadata(self.metadata_file_src_path)
+
+        # Output is organized as '.../author/series/book/book.ext', '.../series/book/book.ext'
+        # or '.../book/book.ext' depending on foldermode.  If series info was expected but not found,
+        # output structure collapses to '.../author/book/book.ext' in author,series,book mode
+        # or '.../book/book.ext' in series,book mode.
+        # If series info was expected and found, then mangle the book's folder name by prepending
+        # the book's series index. Once the folder structure has been determined,
+        # create the destination folder(s) if they do not exist.
+
+        if self.metadata.series and self.construct.foldermode in ['author,series,book', 'series,book']:
+            self.book_folder = sanitize_filename(f'{self.metadata.formatted_series_index} - {self.book_folder}')
+            if self.construct.foldermode == 'author,series,book':
+                self.book_folder_dst_path = self.author_folder_dst_path / sanitize_filename(f'{self.metadata.series} Series') / self.book_folder
+            else:
+                self.book_folder_dst_path = self.construct.jellyfin_store / sanitize_filename(f'{self.metadata.series} Series') / self.book_folder
+        elif self.construct.foldermode in ['book', 'series,book']:
+            self.book_folder_dst_path = self.construct.jellyfin_store / self.book_folder
+        else:
+            self.book_folder_dst_path = self.author_folder_dst_path / self.book_folder
+
+        self.book_file_dst_path = self.book_folder_dst_path / self.book_file_src_path.name
+
+        if self.cover_file_src_path:
+            self.cover_file_dst_path = self.book_folder_dst_path / self.cover_file_src_path.name
+
+        if self.metadata_file_src_path and self.metadata.doc:
+            self.metadata_file_dst_path = self.book_folder_dst_path / self.metadata_file_src_path.name
+
+    def find_book(self) -> None:
+
+        """Locates first instance of a file having an configured book extension
+
+            Sets self.book_file_src_path = full Path to source book file,
+            or unchanged if not found
+
+            returns
+                None
+        """
+
+        for type_ext in self.construct.book_file_types:
+            for book_file_path in self.book_folder_src_path.glob('*.' + type_ext):
+                self.book_file_src_path = book_file_path
+                return
+
+    def find_metadata(self) -> None:
+
+        """Locates first instance of a metadata file (one w an .opf extension)
+
+            Sets self.metadata_file_src_path = full Path to metadata file,
+            or unchanged if not found
+
+            returns
+                None
+        """
+
+        for metadata_file_path in self.book_folder_src_path.glob('*.opf'):
+            self.metadata_file_src_path = metadata_file_path
+            return
+
+    def find_cover(self) -> None:
+
+        """Locates instance of a book cover image
+
+            Sets self.cover_file_src_path = full Path to cover image,
+            or unchanged if not found
+        """
+
+        for cover_file_path in self.book_folder_src_path.glob('cover.jpg'):
+            self.cover_file_src_path = cover_file_path
+            return
+
+    def do_book(self) -> None:
+        """Creates destination book folder and file (symlink)
+
+            returns
+                None
+        """
+
+        # Create the destination book folder
+        try:
+            self.book_folder_dst_path.mkdir(parents=True, exist_ok=True)
+        except OSError as excep:
+            logging.warning(
+                'Could not create book\'s destination folder (or a parent folder thereof) '
+                '"%s": %s', self.book_folder_dst_path, excep
+            )
+            return
+
+        # Create a symlink to the source book if it does not exist
+        # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
+        if self.book_file_dst_path.exists():
+            if stat(self.book_file_dst_path, follow_symlinks=False).st_mtime < stat(self.book_file_src_path).st_mtime:
+                try:
+                    utime(self.book_file_dst_path, follow_symlinks=False)
+                except OSError as excep:
+                    logging.warning(
+                        'Could not touch book symlink %s: %s', self.book_file_dst_path, excep
+                    )
+        else:
+            try:
+                self.book_file_dst_path.symlink_to(self.book_file_src_path)
+            except OSError as excep:
+                logging.warning(
+                    'Could not create book symlink "%s": %s', self.book_file_dst_path, excep
+                )
+
+    def do_cover(self) -> None:
+        """Creates/touches cover image (symlink)
+
+            returns
+                None
+
+            Notes:
+                do_book() should be called first since it creates
+                the book destination folder.
+        """
+
+        # Create a symlink to the cover image if it does not exist
+        # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
+
+        if self.cover_file_src_path:
+            if self.cover_file_dst_path.exists():
+                if stat(self.cover_file_dst_path, follow_symlinks=False).st_mtime < stat(self.cover_file_src_path).st_mtime:
+                    try:
+                        utime(self.cover_file_dst_path, follow_symlinks=False)
+                    except OSError as excep:
+                        logging.warning(
+                            'Could not touch cover image symlink %s: %s',
+                            self.cover_file_dst_path, excep
+                        )
+            else:
+                try:
+                    self.cover_file_dst_path.symlink_to(self.cover_file_src_path)
+                except OSError as excep:
+                    logging.warning(
+                        'Could not create cover image symlink "%s": %s',
+                        self.cover_file_dst_path, excep
+                    )
+
+    def do_metadata(self) -> None:
+        """Outputs metadata file
+
+            returns
+                None
+
+            Notes:
+                do_book() should be called first since it creates
+                the book destination folder.
+        """
+
+        # Output a metadata xml (.opf) file into the destination book folder.
+        # If folder mode is 'author,series,book' or 'series,book', series info was found,
+        # and mangling is enabled, mangle the book title (<dc:title>) and/or title_sort
+        # elements by prepending the book's index to it's title.
+        # Also prepend a "Book X of Lorem Ipsum" header to the book description.
+        # Otherwise, write out the original metadata unchanged.
+
+        if self.metadata.doc and self.metadata_file_src_path:
+            copy_metadata = False
+
+            if CMDARGS.updateAllMetadata:
+                copy_metadata = True
+            elif self.metadata_file_dst_path.exists():
+                if stat(self.metadata_file_dst_path).st_mtime < stat(self.metadata_file_src_path).st_mtime:
+                    copy_metadata = True
+            else:
+                copy_metadata = True
+
+            if copy_metadata:
+                if self.metadata.series and self.construct.foldermode in ['author,series,book', 'series,book']:
+                    if self.metadata.titleel and self.construct.mangle_meta_title:
+                        self.metadata.titleel.firstChild.data = f'{self.metadata.formatted_series_index} - {self.metadata.titleel.firstChild.data}'
+                    if self.metadata.sortel and self.construct.mangle_meta_title_sort:
+                        self.metadata.sortel.setAttribute(
+                            'content',
+                            f'{self.metadata.formatted_series_index} - {self.metadata.sortel.getAttribute("content")}'
+                        )
+                    if self.metadata.descel:
+                        self.metadata.descel.firstChild.data = f'<H4>Book {self.metadata.series_index} of <em>{self.metadata.series}</em>, by {self.metadata.author}</H4>{self.metadata.descel.firstChild.data}'
+
+                self.metadata.write(self.metadata_file_dst_path)
+
+    def do(self) -> None:
+
+        """Creates folder, files and symlinks for one book.
+
+            returns
+                None
+
+            Errors
+                Failures and warnings are logged via logging but otherwise
+                the function proceeds transparently and silently completing
+                as much as possible.
+        """
+
+        if not self.book_file_src_path:
+            if self.construct.selection_mode == 'author':
+                logging.warning('No book file of configured type was found in "%s"', self.book_folder_src_path)
+            return
+
+        print(self.book_folder_src_path, flush=True)
+
+        if not self.cover_file_src_path:
+            logging.warning('No cover image was found for "%s"', self.book_folder_src_path)
+
+        if not self.metadata_file_src_path:
+            logging.warning('No metadata was found for "%s"', self.book_folder_src_path)
+
+        if self.metadata.doc and not self.metadata.titleel:
+            logging.warning(
+                'Missing normally required <dc:title> element in metadata for "%s"',
+                self.book_folder_src_path
+            )
+
+        if self.metadata.doc and not self.metadata.author:
+            logging.warning(
+                'Missing normally required <dc:creator> (i.e. author) element in metadata for "%s"',
+                self.book_folder_src_path
+            )
+
+        if CMDARGS.dryrun:
+            print(f'> {self.book_file_dst_path}', flush=True)
+            print(f'> {self.cover_file_dst_path}', flush=True)
+            print(f'> {self.metadata_file_dst_path}', flush=True)
+            return
+
+        self.do_book()
+        self.do_cover()
+        self.do_metadata()
+
+    def check_subject_line(self, line: list[str]) -> bool:
+        """Tests one line from required- subjects
+
+            line:
+                list[str], list of subjects that must all match one of the
+                book's subjects
+
+            returns:
+                True if all subjects matched
+                False otherwise
+        """
+
+        # Note: Depends on both metadata subjects and configuration subjects
+        # having been set up for case insensitive comparison (i.e. all made
+        # lower case or upper case)
+
+        for item in line:
+            if item.strip() not in self.metadata.subjects:
+                return False
+        return True
+
+    def check_subjects(self) -> bool:
+
+        """Determines whether the book subjects match any of the subjects
+        required by the Construct section
+
+            returns:
+                True if matched, False otherwise
+        """
+
+        for line in self.construct.subjects:
+            if self.check_subject_line(line):
+                return True
+        return False
 
 
-def format_series_index(series_index: str) -> str:
-
-    """Formats series index string
-
-        series_index            str, series index str extracted from metadata, may be empty
-
-        returns                 str, formatted series index
-                                examples:
-                                ''          ->  '999'
-                                '3'         ->  '003'
-                                '34'        ->  '034'
-                                '345'       ->  '345'
-                                '3456'      ->  '3456'
-                                '3.2'       ->  '003.02'
-    """
-
-    if not series_index:
-        return '999'
-
-    if '.' in series_index:
-        i = series_index.index('.')
-        return f'{series_index[0:i]:>03s}.{series_index[i+1:]:>02s}'
-
-    return f'{series_index:>03s}'
-
-
-def get_metadata(
-    metadata_file_path: Path | None
-) -> Tuple[
-    minidom.Document | None,
-    str,
-    str,
-    str,
-    minidom.Element | None,
-    minidom.Element | None,
-    minidom.Element | None
-]:
-
-    """Creates a miniDOM object from the metadata file and extracts
-        various strings and elements of interest.
-
-        metadata_file_path      pathlib.Path, full path to metadata file
-
-        Returns ()              doc, minidom xml doc object
-                                str, name of series, empty str if none
-                                str, book index in series, empty str if none
-                                str, author (<dc:creator>)
-                                element, <dc:title>
-                                element, <meta name="calibre:title_sort" content="001 - Book Title"/>
-                                element, <dc:description>
-    """
-
-    series = ''
-    series_index = ''
-    author = ''
-    doc = None
-    titleel = None
-    sortel = None
-    descel = None
-
-    if not metadata_file_path:
-        return doc, series, series_index, author, titleel, sortel, descel
-
-    # open the metadata file and create a document object
-    try:
-        with open(metadata_file_path, 'r', encoding='utf8') as docfile:
-            doc = minidom.parse(docfile)
-    except OSError as excep:
-        logging.warning('Could not read metadata file "%s": %s', metadata_file_path, excep)
-        return doc, series, series_index, author, titleel, sortel, descel
-    except Exception as excep:
-        logging.warning('Could not parse metadata file "%s": %s', metadata_file_path, excep)
-        return doc, series, series_index, author, titleel, sortel, descel
-
-    # get series info and other elements
-
-    titleels = doc.getElementsByTagName('dc:title')
-    if titleels:
-        titleel = titleels[0]
-
-    authorels = doc.getElementsByTagName('dc:creator')
-    if authorels:
-        author = authorels[0].firstChild.data
-
-    descels = doc.getElementsByTagName('dc:description')
-    if descels:
-        descel = descels[0]
-
-    metatags = doc.getElementsByTagName('meta')
-    for metatag in metatags:
-        if metatag.getAttribute('name') == 'calibre:series':
-            series = metatag.getAttribute('content')
-        elif metatag.getAttribute('name') == 'calibre:series_index':
-            series_index = metatag.getAttribute('content')
-        elif metatag.getAttribute('name') == 'calibre:title_sort':
-            sortel = metatag
-
-    return doc, series, series_index, author, titleel, sortel, descel
-
-
-def write_metadata(metadatadoc: minidom.Document, metadata_file_dst_path: Path) -> None:
-
-    """Writes out the book metadata
-
-        metadatadoc                 minidom doc, doc object from source metadata
-        metadata_file_dst_path      pathlib.Path(), full path to destination metadata file
-
-        returns                     None
-    """
-
-    # create/truncate the metadata file and write it out
-    try:
-        with open(metadata_file_dst_path, 'w', encoding='utf8') as docfile:
-            metadatadoc.writexml(docfile)
-    except OSError as excep:
-        logging.warning('Could not (over) write metadata file "%s": %s', metadata_file_dst_path, excep)
+# ------------------
+#   Functions
+# ------------------
 
 
 def sanitize_filename(sani: str) -> str:
@@ -204,9 +738,11 @@ def sanitize_filename(sani: str) -> str:
     """Removes illegal characters from strings that will be incorporated in
     file names.
 
-        sani                string to sanitize
+        sani
+            str, string to sanitize
 
-        returns             sanitized string
+        returns
+            str, sanitized string
 
     From:   stackoverflow thread
             https://stackoverflow.com/questions/7406102/create-sane-safe-filename-from-any-unsafe-string
@@ -227,212 +763,6 @@ def sanitize_filename(sani: str) -> str:
     sani = re.sub(r"^ |[. ]$", '-', sani)
 
     return sani
-
-
-def do_book(
-    author_folder_dst_path: Path,
-    book_folder_src_path: Path,
-    book_file_types: list[str],
-    foldermode: str,
-    jellyfin_store: Path,
-    mangle_meta_title: bool,
-    mangle_meta_title_sort: bool
-) -> None:
-
-    """Creates folder, files and symlinks for one book.
-
-        author_folder_dst_path      pathlib.Path, full path to destination author folder
-        book_folder_src_path        pathlib.Path, full path to source book folder
-        book_file_types             list, extensions identifying book files (exclude periods)
-        foldermode                  str, one of 'author,series,book', 'series,book' or 'book'
-        jellyfin_store              pathlib.Path, full path top level output storage location
-                                    (i.e. will be jellyfin library folder)
-        mangle_meta_title           boolean, true if metadata title should be mangled
-        mangle_meta_title_sort      boolean, true if metadata sort title should be mangled
-
-        returns                 None
-    """
-
-    # find first instance of configured book file types
-    book_file_src_path = find_book(book_file_types, book_folder_src_path)
-    if not book_file_src_path:
-        logging.warning('No book file of configured type was found in "%s"', book_folder_src_path)
-        return
-    print(book_folder_src_path, flush=True)
-
-    # locate related book files
-    book_folder = book_folder_src_path.name
-    metadata_file_src_path = find_metadata(book_folder_src_path)
-    cover_file_src_path = find_cover(book_folder_src_path)
-    metadatadoc, series, series_index, author, titleel, sortel, descel = get_metadata(metadata_file_src_path)
-
-    if metadatadoc and not titleel:
-        logging.warning('Missing normally required <dc:title> element in metadata for "%s"', book_folder_src_path)
-
-    if metadatadoc and not author:
-        logging.warning('Missing normally required <dc:creator> (i.e. author) element in metadata for "%s"', book_folder_src_path)
-
-    # Output is organized as '.../author/series/book/book.ext', '.../series/book/book.ext'
-    # or '.../book/book.ext' depending on foldermode.  If series info was expected but not found,
-    # output structure collapses to '.../author/book/book.ext' in author,series,book mode
-    # or '.../book/book.ext' in series,book mode.
-    # If series info was expected and found, then mangle the book's folder name by prepending
-    # the book's series index. Once the folder structure has been determined,
-    # create the destination folder(s) if they do not exist.
-
-    if series > '' and foldermode in ['author,series,book', 'series,book']:
-        book_folder = sanitize_filename(f'{format_series_index(series_index)} - {book_folder}')
-        if foldermode == 'author,series,book':
-            book_folder_dst_path = author_folder_dst_path / sanitize_filename(f'{series} Series') / book_folder
-        else:
-            book_folder_dst_path = jellyfin_store / sanitize_filename(f'{series} Series') / book_folder
-    elif foldermode in ['book', 'series,book']:
-        book_folder_dst_path = jellyfin_store / book_folder
-    else:
-        book_folder_dst_path = author_folder_dst_path / book_folder
-
-    try:
-        book_folder_dst_path.mkdir(parents=True, exist_ok=True)
-    except OSError as excep:
-        logging.warning(
-            'Could not create book\'s destination folder (or a parent folder thereof) '
-            '"%s": %s', book_folder_dst_path, excep
-        )
-        if metadatadoc:
-            metadatadoc.unlink()
-        return
-
-    # Create a symlink to the source book if it does not exist
-    # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
-    book_file_dst_path = book_folder_dst_path / book_file_src_path.name
-    if book_file_dst_path.exists():
-        if stat(book_file_dst_path, follow_symlinks=False).st_mtime < stat(book_file_src_path).st_mtime:
-            try:
-                utime(book_file_dst_path, follow_symlinks=False)
-            except OSError as excep:
-                logging.warning('Could not touch book symlink %s: %s', book_file_dst_path, excep)
-    else:
-        try:
-            book_file_dst_path.symlink_to(book_file_src_path)
-        except OSError as excep:
-            logging.warning('Could not create book symlink "%s": %s', book_file_dst_path, excep)
-
-    # Create a symlink to the cover image if it does not exist
-    # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
-    if cover_file_src_path is not None:
-        cover_file_dst_path = book_folder_dst_path / cover_file_src_path.name
-        if cover_file_dst_path.exists():
-            if stat(cover_file_dst_path, follow_symlinks=False).st_mtime < stat(cover_file_src_path).st_mtime:
-                try:
-                    utime(cover_file_dst_path, follow_symlinks=False)
-                except OSError as excep:
-                    logging.warning('Could not touch cover image symlink %s: %s', cover_file_dst_path, excep)
-        else:
-            try:
-                cover_file_dst_path.symlink_to(cover_file_src_path)
-            except OSError as excep:
-                logging.warning('Could not create cover image symlink "%s": %s', cover_file_dst_path, excep)
-
-    # Output a metadata xml (.opf) file into the destination book folder.
-    # If folder mode is 'author,series,book' or 'series,book', series info was found,
-    # and mangling is enabled, mangle the book title (<dc:title>) and/or title_sort
-    # elements by prepending the book's index to it's title.
-    # Also prepend a "Book X of Lorem Ipsum" header to the book description.
-    # Otherwise, write out the original metadata unchanged.
-
-    if metadatadoc and metadata_file_src_path:
-
-        metadata_file_dst_path = book_folder_dst_path / metadata_file_src_path.name
-        copy_metadata = False
-
-        if CMDARGS.updateAllMetadata:
-            copy_metadata = True
-        elif metadata_file_dst_path.exists():
-            if stat(metadata_file_dst_path).st_mtime < stat(metadata_file_src_path).st_mtime:
-                copy_metadata = True
-        else:
-            copy_metadata = True
-
-        if copy_metadata:
-            if series > '' and foldermode in ['author,series,book', 'series,book']:
-                if titleel and mangle_meta_title:
-                    titleel.firstChild.data = f'{format_series_index(series_index)} - {titleel.firstChild.data}'
-                if sortel and mangle_meta_title_sort:
-                    sortel.setAttribute('content', f'{format_series_index(series_index)} - {sortel.getAttribute("content")}')
-                if descel:
-                    descel.firstChild.data = f'<H4>Book {series_index} of <em>{series}</em>, by {author}</H4>{descel.firstChild.data}'
-
-            write_metadata(metadatadoc, metadata_file_dst_path)
-
-        metadatadoc.unlink()
-
-
-def do_construct(section: configparser.SectionProxy) -> None:
-
-    """Create (or update) one target Jellyfin e-book library as defined by a configured Construct section
-
-        section             config parser section obj
-
-        returns             None
-    """
-
-    try:
-        # convert multiline configs to lists
-        author_folders = section['authorFolders'][1:].split('\n')
-        book_file_types = section['bookfiletypes'][1:].split('\n')
-        # get simple configs
-        calibre_store = Path(section['calibreStore'])
-        jellyfin_store = Path(section['jellyfinStore'])
-        foldermode = section['foldermode']
-        mangle_meta_title = section.getboolean('mangleMetaTitle')
-        mangle_meta_title_sort = section.getboolean('mangleMetaTitleSort')
-    except Exception as excep:
-        logging.critical(
-            'A required parameter is missing from %s '
-            'in configuration file "%s". : %s',
-            section, CONFIG_FILE_PATH, excep
-        )
-        sys.exit(-1)
-
-    # sanity check configuration parameters
-    try:
-        if not calibre_store.is_dir():
-            raise ValueError(f'calibreStore value "{calibre_store}" is not a directory or does not exist')
-        if not jellyfin_store.is_dir():
-            raise ValueError(f'jellyfinStore value "{jellyfin_store}" is not a directory or does not exist')
-        if jellyfin_store.samefile(calibre_store):
-            raise ValueError('jellyfinStore and calibreStore must be different locations')
-        if foldermode not in ('book', 'series,book', 'author,series,book'):
-            raise ValueError('foldermode value must be "book", "series,book" or "author,series,book"')
-        if author_folders[0] == '':
-            raise ValueError('authorFolders must contain at least one entry')
-        if book_file_types[0] == '':
-            raise ValueError('bookfiletypes must contain at least one entry')
-    except ValueError as excep:
-        logging.critical(
-            'Inappropriate parameter value in %s in configuration file "%s": %s',
-            section, CONFIG_FILE_PATH, excep
-        )
-        sys.exit(-1)
-
-    # for each configured author
-    for author_folder in author_folders:
-
-        # get/check author paths
-        author_folder_src_path = calibre_store / author_folder
-        author_folder_dst_path = jellyfin_store / author_folder
-        if not author_folder_src_path.is_dir():
-            logging.warning(f'Author folder "{author_folder}" does not exist or is not a directory in Calibre store "{calibre_store}".')
-            continue
-
-        # for each book folder in source author folder
-        for book_folder_src_path in author_folder_src_path.iterdir():
-            if book_folder_src_path.is_dir():
-                do_book(
-                    author_folder_dst_path, book_folder_src_path,
-                    book_file_types, foldermode, jellyfin_store,
-                    mangle_meta_title, mangle_meta_title_sort
-                )
 
 
 # ------------------
@@ -467,6 +797,18 @@ def main(clargs: list[str] | None = None):
         'for instance when configurable metadata mangling options have changed. '
         '(Normally metadata files are only updated when missing or out-of-date.)'
     )
+    cmdparser.add_argument(
+        '--dryrun',
+        dest='dryrun',
+        action='store_true',
+        help='Displays normal console output but makes no changes to exported libraries.'
+    )
+    cmdparser.add_argument(
+        '--debug',
+        dest='debug',
+        action='store_true',
+        help='Emit debug information.'
+    )
     CMDARGS = cmdparser.parse_args(clargs)
 
     # read configuration
@@ -486,11 +828,28 @@ def main(clargs: list[str] | None = None):
     # Default mangling behavior to that of original script
     config['DEFAULT']['mangleMetaTitle'] = '1'
     config['DEFAULT']['mangleMetaTitleSort'] = '0'
+    config['DEFAULT']['selectionMode'] = 'author'
+    config['DEFAULT']['subjects'] = ''
 
     # for each configured Construct
     for section in config:
         if section[0:9] == 'Construct':
-            do_construct(config[section])
+            try:
+                construct = Construct(config[section])
+            except ValueError as excep:
+                logging.critical(
+                    'Inappropriate parameter value in %s in configuration file "%s": %s',
+                    section, CONFIG_FILE_PATH, excep
+                )
+                sys.exit(-1)
+            except KeyError as excep:
+                logging.critical(
+                    'A required parameter (%s) is missing from [%s] '
+                    'in configuration file "%s".',
+                    excep, section, CONFIG_FILE_PATH
+                )
+                sys.exit(-1)
+            construct.do()
 
 
 if __name__ == '__main__':
