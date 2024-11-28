@@ -13,7 +13,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   * symlink to (single) book file in Calibre library (based on configured order of preference)
   * symlink to cover image in Calibre library
   * copy, possibly modified, of Calibre's metadata file
-* Books are selected for inclusion by listing author folders in the .cfg file
+* Books are selected in the .cfg file by author folder or by subject
   * Allows you to exclude from Jellyfin those messy persistent remnants from the years when your library was scattered over multiple proprietary platforms.
   * Allows you to separate differing levels of mature content into separate Jellyfin libraries, access to which can be restricted within Jellyfin.
   * Allows you to dispose books into libraries with differing structures as called out below in <em>Series Handling</em>
