@@ -110,7 +110,7 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 </table>
 
 #### Changes
-* 2024-11-22 Experimental
+* 2024-11-22 (Current version) (Main branch)
   * Selection by subject (aka tags in Calibre)
   * Added command line options
     * -\-dryrun
@@ -128,7 +128,7 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
     * If you already have the 2024-09-02 version and are not interested in selection by subject, there is not much reason to download this version.  The selection by author functionality has not changed.
     * If you download this version because you are interested in the new warnings or the new command line options but not selection by subject, you do not need to make any changes to your configuration file.  Behavior defaults to selection by author.
     * If you are interested in selection by subject, you will need to add the selectionMode and subjects parameters to your configuration file.  In author selectionMode, any subjects list is ignored.  In subject selectionMode, any authors list is ignored.  You can maintain both lists and switch between them using selectionMode.
-* 2024-09-02 (Current version) (Main branch)
+* 2024-09-02
     * Add author's name to book description.
     * Add support for fractional series indices maintaining sort
         * ''          ->  '999'
