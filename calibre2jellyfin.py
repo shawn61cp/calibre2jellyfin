@@ -351,10 +351,12 @@ class BookMetadata:
 
         if not self.series_index:
             self.formatted_series_index = '999'
+            return
 
         if '.' in self.series_index:
             i = self.series_index.index('.')
             self.formatted_series_index = f'{self.series_index[0:i]:>03s}.{self.series_index[i+1:]:>02s}'
+            return
 
         self.formatted_series_index = f'{self.series_index:>03s}'
 
