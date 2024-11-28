@@ -299,6 +299,8 @@ After going to the trouble to implement this, which included refactoring the who
 
 If one did desire not to have to deal with configuration files, at least after the initial set up, I think the most practial way to proceed, given the state of published subjects, is to assign a unique tag of your own, perhaps classifying by output Jellyfin library, to every book in Calibre that you want to export.  Then configure the script to select by those tags.  I have not delved into them deeply but I think Calibre has some database maintenance features that could ease this endeavor, at least for the initial assignments.  After that, one would still have to assign the appropriate tag to each newly acquired book.  Whereas in selection by author, no additional work is needed when additonal books by a configured author are acquired.
 
+Selection by subject tags does yield finer grained control over the selection by author method.  This might be of use in implementing parental controls for example.
+
 ## Odds and Ends
 
 * I have noticed that Jellyfin does not re-paginate if you resize the browser window or change the zoom factor <em>after</em> you have opened the book.  However if you do these <em>before</em> opening the book it does so nicely.
