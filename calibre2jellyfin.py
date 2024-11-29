@@ -644,7 +644,8 @@ class Book:
         """
 
         if not self.book_file_src_path:
-            logging.warning('No book file of configured type was found in "%s"', self.book_folder_src_path)
+            if self.construct.selection_mode == 'author':
+                logging.warning('No book file of configured type was found in "%s"', self.book_folder_src_path)
             return
 
         if CMDARGS.debug:
