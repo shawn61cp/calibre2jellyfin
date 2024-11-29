@@ -34,37 +34,38 @@ CMDARGS: argparse.Namespace
 
 
 class Construct:
+
     """Processes a configured [Construct] section
 
         Attributes:
             See example calibre2jellyfin.cfg for additional info.
-        
+
             author_folders: list[str]       Books in these author folders will be exported.
                                             Applies only when selection_mode == 'author'
-                                            
+
             book_file_types: list[str]      Book file extensions, in order of precedence,
                                             that must match in order to be exported.
-                                            
+
             subjects: list[list[str]]       Books matching any of these subjects will be
                                             exported.  Applies only when selection_mode == 'subject'
-                                            
+
             calibre_store: Path             Full path to the source Calibre library
-            
+
             jellyfin_store: Path            Full path to the destination Jellyfin library
-            
+
             foldermode: str                 Destination library folder structure:
                                                 'author,series,book'
                                                 'series,book'
                                                 'book'
-                                                
+
             mangle_meta_title: bool         True if metadata title should be prefixed with
                                             series index.
-                                            
+
             mangle_meta_title_sort: bool    True if metadata sort title should be prefixed
                                             with series index.
-                                            
+
             selection_mode: str             Determines how books will be selected,
-                                            either by 'author' or 'subject'.
+                                            either by 'author', 'subject', 'all'
 
         Usage:
 
@@ -83,7 +84,7 @@ class Construct:
                 construct.do()          # export the library as defined by
                                         # the current config [ConstructXXX] section
     """
-    
+
     author_folders: list[str]
     book_file_types: list[str]
     subjects: list[list[str]]
@@ -95,6 +96,7 @@ class Construct:
     selection_mode: str
 
     def __init__(self, section: configparser.SectionProxy):
+
         """Initialize a Construct object from a configuration file [Section]
 
         Exceptions:
@@ -117,8 +119,11 @@ class Construct:
         if self.selection_mode == 'author':
             self.author_folders = section['authorFolders'][1:].split('\n')
             self.subjects = [['']]
-        else:
+        elif self.selection_mode == 'subject':
             self.subjects = [x.split(',') for x in section['subjects'][1:].lower().split('\n')]
+            self.author_folders = []
+        else:
+            self.subjects = [['']]
             self.author_folders = []
 
         # sanity check configuration parameters
@@ -130,8 +135,8 @@ class Construct:
             raise ValueError('jellyfinStore and calibreStore must be different locations')
         if self.foldermode not in ('book', 'series,book', 'author,series,book'):
             raise ValueError('foldermode value must be "book", "series,book" or "author,series,book"')
-        if self.selection_mode not in ('author', 'subject'):
-            raise ValueError('selectionMode must be "author" or "subject"')
+        if self.selection_mode not in ('author', 'subject', 'all'):
+            raise ValueError('selectionMode must be "author", "subject", or "all"')
         if self.selection_mode == 'author' and self.author_folders[0] == '':
             raise ValueError('authorFolders must contain at least one entry')
         if self.selection_mode == 'subject' and self.subjects[0][0] == '':
@@ -209,6 +214,7 @@ class Construct:
 
 
 class BookMetadata:
+
     """Retrieves, stores, and writes out metadata for a book
 
         Attributes:
@@ -235,7 +241,7 @@ class BookMetadata:
                 if metadata was changed:
                     metadata.write()
     """
-    
+
     doc: minidom.Document | None
     series: str
     series_index: str
@@ -247,6 +253,7 @@ class BookMetadata:
     descel: minidom.Element | None
 
     def __init__(self, metadata_file_path: Path | None):
+
         """Creates a miniDOM object from the metadata file and extracts
             various items of interest.
 
@@ -367,6 +374,7 @@ class BookMetadata:
 
 
 class Book:
+
     """Exports one book and related files
 
         Attributes:
@@ -391,7 +399,7 @@ class Book:
                 ... optionally check metadata was found (book.metadata.doc is not None) ...
                 book.do()   # export the book
     """
-    
+
     author_folder_src_path: Path
     author_folder_dst_path: Path
     book_folder: str
@@ -412,6 +420,7 @@ class Book:
         author_folder_src_path: Path,
         book_folder_src_path: Path
     ):
+
         """Builds paths and retrieves metadata for the book.  Logic implementing
             output folder structure is here.
 
@@ -520,7 +529,8 @@ class Book:
             return
 
     def do_book(self) -> None:
-        """Creates destination book folder and file (symlink)
+
+        """Conditionally creates/updates destination book folder and file (symlink)
 
             returns
                 None
@@ -555,7 +565,8 @@ class Book:
                 )
 
     def do_cover(self) -> None:
-        """Creates/touches cover image (symlink)
+
+        """Conditionally creates/updates cover image (symlink)
 
             returns
                 None
@@ -588,7 +599,8 @@ class Book:
                     )
 
     def do_metadata(self) -> None:
-        """Outputs metadata file
+
+        """Conditionally outputs metadata file
 
             returns
                 None
@@ -632,7 +644,7 @@ class Book:
 
     def do(self) -> None:
 
-        """Creates folder, files and symlinks for one book.
+        """Conditionally creates/updates folder, files and symlinks for one book.
 
             returns
                 None
@@ -644,7 +656,7 @@ class Book:
         """
 
         if not self.book_file_src_path:
-            if self.construct.selection_mode == 'author':
+            if self.construct.selection_mode in ['author', 'all']:
                 logging.warning('No book file of configured type was found in "%s"', self.book_folder_src_path)
             return
 
@@ -690,7 +702,8 @@ class Book:
         self.do_metadata()
 
     def check_subject_line(self, line: list[str]) -> bool:
-        """Tests one line from required- subjects
+
+        """Tests one line from required subjects
 
             line:
                 list[str], list of subjects that must all match one of the

@@ -13,10 +13,11 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   * symlink to (single) book file in Calibre library (based on configured order of preference)
   * symlink to cover image in Calibre library
   * copy, possibly modified, of Calibre's metadata file
-* Books are selected in the .cfg file by author folder or by subject
+* Books may be selected in the .cfg file by author folder or by subject.
   * Allows you to exclude from Jellyfin those messy persistent remnants from the years when your library was scattered over multiple proprietary platforms.
   * Allows you to separate differing levels of mature content into separate Jellyfin libraries, access to which can be restricted within Jellyfin.
   * Allows you to dispose books into libraries with differing structures as called out below in <em>Series Handling</em>
+* Alternatively all books in the source library may be exported.
 * Series handling
   * Foldermode is author/series/book
     * <em>Suitable for fiction libraries</em>
@@ -111,7 +112,8 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 
 #### Changes
 * 2024-11-22 (Current version) (Main branch)
-  * Selection by subject (aka tags in Calibre)
+  * Added support for selection of all books in the source library
+  * Added support for Selection of books by subject (aka tags in Calibre)
   * Added command line options
     * -\-dryrun
       * This displays normal console output plus showing where files would be output but does not actually export anything.
@@ -126,8 +128,9 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
         * Note: In 'subject' selection mode, if the metadata is missing the book cannot be exported.
   * Upgrade considerations
     * If you already have the 2024-09-02 version and are not interested in selection by subject, there is not much reason to download this version.  The selection by author functionality has not changed.
-    * If you download this version because you are interested in the new warnings or the new command line options but not selection by subject, you do not need to make any changes to your configuration file.  Behavior defaults to selection by author.
-    * If you are interested in selection by subject, you will need to add the selectionMode and subjects parameters to your configuration file.  In author selectionMode, any subjects list is ignored.  In subject selectionMode, any authors list is ignored.  You can maintain both lists and switch between them using selectionMode.
+    * If you download this version because you are interested in the new warnings or the new command line options but not selection by subject or selection of all books, you do not need to make any changes to your configuration file.  Behavior defaults to selection by author.
+    * If you are interested in selection by subject, you will need to add the selectionMode and subjects parameters to your configuration file.  In 'author' or 'all' selectionMode, any subjects list is ignored.  In 'subject' or 'all' selectionMode, any authors list is ignored.  You can maintain both lists and switch between them using selectionMode.
+    * If you are interested in selection of all books, you will need to add just the selectionMode parameter.
 * 2024-09-02
     * Add author's name to book description.
     * Add support for fractional series indices maintaining sort
