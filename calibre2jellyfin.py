@@ -166,15 +166,11 @@ class Construct:
                     continue
 
                 book = Book(self, author_folder_src_path, book_folder_src_path)
-                if CMDARGS.debug:
-                    print(f'Book attributes: {vars(book)}')
-                    print(f'Book metadata  : {vars(book.metadata)}')
-
                 book.do()
 
-    def do_books_by_subject(self) -> None:
+    def do_books_all(self) -> None:
 
-        """Iterates Book.do() over books having configured subjects.
+        """Iterates Book.do() over entire Calibre library.
 
             returns
                 None
@@ -193,19 +189,7 @@ class Construct:
                     continue
 
                 book = Book(self, author_folder_src_path, book_folder_src_path)
-                if not book.metadata:
-                    logging.warning(
-                        'No metadata was found in "%s"',
-                        book_folder_src_path
-                    )
-                    continue
-
-                if CMDARGS.debug:
-                    print(f'Book attributes: {vars(book)}')
-                    print(f'Book metadata  : {vars(book.metadata)}')
-
-                if book.check_subjects():
-                    book.do()
+                book.do()
 
     def do(self) -> None:
 
@@ -216,12 +200,12 @@ class Construct:
         """
 
         if CMDARGS.debug:
-            print(f'[Construct] parameters: {vars(self)}')
+            print(f'[Construct] parameters: {vars(self)}', flush=True)
 
         if self.selection_mode == 'author':
             self.do_books_by_author()
         else:
-            self.do_books_by_subject()
+            self.do_books_all()
 
 
 class BookMetadata:
@@ -660,17 +644,27 @@ class Book:
         """
 
         if not self.book_file_src_path:
-            if self.construct.selection_mode == 'author':
-                logging.warning('No book file of configured type was found in "%s"', self.book_folder_src_path)
+            logging.warning('No book file of configured type was found in "%s"', self.book_folder_src_path)
             return
+
+        if CMDARGS.debug:
+            print(f'Book attributes:  {vars(self)}', flush=True)
+            if self.metadata.doc:
+                print(f'Book metadata:    {vars(self.metadata)}', flush=True)
+
+        if not self.metadata_file_src_path:
+            logging.warning('No metadata was found in "%s"', self.book_folder_src_path)
+
+        if self.construct.selection_mode == 'subject':
+            if not self.metadata.doc:
+                return
+            if not self.check_subjects():
+                return
 
         print(self.book_folder_src_path, flush=True)
 
         if not self.cover_file_src_path:
-            logging.warning('No cover image was found for "%s"', self.book_folder_src_path)
-
-        if not self.metadata_file_src_path:
-            logging.warning('No metadata was found for "%s"', self.book_folder_src_path)
+            logging.warning('No cover image was found in "%s"', self.book_folder_src_path)
 
         if self.metadata.doc and not self.metadata.titleel:
             logging.warning(
@@ -686,8 +680,8 @@ class Book:
 
         if CMDARGS.dryrun:
             print(f'> {self.book_file_dst_path}', flush=True)
-            print(f'> {self.cover_file_dst_path}', flush=True)
             print(f'> {self.metadata_file_dst_path}', flush=True)
+            print(f'> {self.cover_file_dst_path}', flush=True)
             return
 
         self.do_book()
