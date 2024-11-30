@@ -203,7 +203,8 @@ options:
                         Useful to force a one-time update of all metadata files, for instance when configurable metadata mangling options have changed.
                         (Normally metadata files are only updated when missing or out-of-date.)
   --dryrun              Displays normal console output but makes no changes to exported libraries.
-  --debug               Emit debug information.</pre>
+  --debug               Emit debug information.
+  -v, --version         Display version string.
 </pre>
 ## Real Life
 
