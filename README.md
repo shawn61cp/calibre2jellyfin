@@ -204,7 +204,7 @@ options:
                         (Normally metadata files are only updated when missing or out-of-date.)
   --dryrun              Displays normal console output but makes no changes to exported libraries.
   --debug               Emit debug information.</pre>
-
+</pre>
 ## Real Life
 
 The installation and usage instructions above work fine but other situations may be encountered or other conveniences desired.
