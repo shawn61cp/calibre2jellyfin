@@ -122,7 +122,7 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
       * Displays lots of path and metadata information.  Useful if you need to look into why a book is or is not being selected.
     * -\-version
   * New configurations (see example .cfg)
-    * selectionMode = [author | subject]
+    * selectionMode = [author | subject | all]
     * subjects = ...
   * Additional warnings
     * Missing cover file
