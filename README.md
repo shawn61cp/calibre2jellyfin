@@ -16,6 +16,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
 * Books may be selected in the .cfg file by author folder or by subject.
   * Allows you to exclude from Jellyfin those messy persistent remnants from the years when your library was scattered over multiple proprietary platforms.
   * Allows you to separate differing levels of mature content into separate Jellyfin libraries, access to which can be restricted within Jellyfin.  Selection by author is not quite 100% perfect for this since it is possible, though seemingly uncommon, for a single author to write differing content.  Selection by subject gives finer grained control but tags often seem not present and when present seem inconsistent.  To really make this work you would probably have to assign tags yourself.
+    * Another approach would be to combine construction methods.  Nothing prevents having multiple \[Construct\] sections that output to the same Jellyfin library.  (You probably would want to use the same foldermode.) One could exclude problematic authors (No offense, authors.) from a selection-by-author \[Construct\] and then handle those within a selection-by-subject \[Construct\].
   * Allows you to dispose books into libraries with differing structures as called out below in <em>Series Handling</em>
 * Alternatively all books in the source library may be exported.
 * Series handling
