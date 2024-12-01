@@ -15,7 +15,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   * copy, possibly modified, of Calibre's metadata file
 * Books may be selected in the .cfg file by author folder or by subject.
   * Allows you to exclude from Jellyfin those messy persistent remnants from the years when your library was scattered over multiple proprietary platforms.
-  * Allows you to separate differing levels of mature content into separate Jellyfin libraries, access to which can be restricted within Jellyfin.
+  * Allows you to separate differing levels of mature content into separate Jellyfin libraries, access to which can be restricted within Jellyfin.  Selection by author is not quite 100% perfect for this since it is possible, though seemingly uncommon, for a single author to write differing content.  Selection by subject gives finer grained control but tags often seem not present and when present seem inconsistent.  To really make this work you would probably have to assign tags yourself.
   * Allows you to dispose books into libraries with differing structures as called out below in <em>Series Handling</em>
 * Alternatively all books in the source library may be exported.
 * Series handling
@@ -119,6 +119,7 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
       * This displays normal console output plus showing where files would be output but does not actually export anything.
     * -\-debug
       * Displays lots of path and metadata information.  Useful if you need to look into why a book is or is not being selected.
+    * -\-version
   * New configurations (see example .cfg)
     * selectionMode = [author | subject]
     * subjects = ...
