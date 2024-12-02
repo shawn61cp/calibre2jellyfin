@@ -211,7 +211,7 @@ options:
 
 The installation and usage instructions above work fine but other situations may be encountered or other conveniences desired.
 
-#### Permissions on created Jellyfin library
+### Permissions on created Jellyfin library
 
 The usage/installation steps described above yield a Jellyfin store that is owned by whatever user ran the script.  Jellyfin can serve up this library because most default user configurations under Linux create files as world-readable.  However, if you make the library owned by Jellyfin (the <code>jellyfin</code> Linux user/service account), you will be able to delete books through the Jellyfin interface assuming you have administrative permission on the library within the Jellyfin app itself.  
 
@@ -221,7 +221,7 @@ Note that because the book and cover files are soft linked, and the folders and 
 
 For myself, I arrange to run the script under the <code>jellyfin</code> account.  This will result in the files and folders output by the script being owned by <code>jellyfin</code>.  The default home directory for the <code>jellyfin</code> user is <code>/var/lib/jellyfin</code>.  I create the path and install the script to <code>/var/lib/jellyfin/.local/bin/calibre2jellyfin.py</code>.  Similarly I install the configuration file to <code>/var/lib/jellyfin/.config/calibre2jellyfin.cfg</code>.
 
-###### Set up the script under the jellyfin account
+##### Set up the script under the jellyfin account
 
 The steps to accomplish the above follow.  I refer again to the EXTRACT_FOLDER as described in the installation section above. Finally, <code>jellyfin</code> by default does not permit logins so these steps will be performed as <code>root</code>.
 
@@ -260,14 +260,14 @@ Finally, exit from the root shell.
 \# exit
 </code>
 
-###### Running the installed script
+##### Running the installed script
 
 I find that when dealing with accounts that do not permit login that the <code>runuser</code> utility is convenient.  _Possibly this is habit. :)_  To run the script I execute the following from my own account.
 <code>
 $ sudo runuser -u jellyfin -- /var/lib/jellyfin/.local/bin/calibre2jellyfin.py
 </code>
 
-#### Scheduling the script to run automatically
+### Scheduling the script to run automatically
 
 You can use CRON to run the script regularly to keep your Jellyfin library updated.  The steps below assume the script has been set up under the <code>jellyfin</code> user as described above.  The cron job is set up under the root account but again uses <code>runuser</code> to execute it as <code>jellyfin</code>.
 
@@ -288,7 +288,7 @@ Add a line like this to the cron file.  The redirection causes any error message
 
 Save the file, exit the editor, and exit the root shell.
 
-#### Calibre Author Folders
+### Calibre Author Folders
 
 Typically the Calibre author folder is named exactly as the author appears in the Calibre interface.  Occasionally however it is not.  I have seen this when Calibre displays authors as "Jane Doe & John Q. Public" but the folder name is actually just "Jane Doe".  Also when the list of authors is very long, as happens in technical books, Calibre will limit the length of the folder name.
 
@@ -296,7 +296,7 @@ If you find that an expected author does not show up in the created Jellyfin lib
 
 Another thing I have encountered is when multiple versions of the author name exist, such as "Public, John Q." and "John Q. Public", and they are then consolidated, Calibre actually moves the books into the folder matching the consolidated name.  If the author name configured for calibre2jellyfin happened to match the author name that "went away", updates to that author's books may appear to die, or you might see two different versions of the same author in Jellyfin.  The solution is to just delete, in Jellyfin, one or both authors, ensure that the author configured in the .cfg file matches the Calibre author folder, then re-run the script to have them cleanly re-created.  Jellyfin will eventually detect the changes and update the display contents.  You can also right-click on an item within Jellyfin and request an immediate metadata refresh.  Even so sometimes it will take a few minutes  for Jellyfin to recognize the changes.
 
-#### Tricks with \[Construct\] jellyfinStore
+### Tricks with \[Construct\] jellyfinStore
 
 Although the instructions in the example .cfg file state categorically that the jellyfinStore parameter should be set to the location of the Jellyfin library, there actually is some wiggle room.
 
@@ -312,7 +312,7 @@ Suppose that you want top level folders in your Jellyfin library that separate y
 
 Then using your desired selectionMode, arrange for appropriate books to be output from each \[Construct...\] section.  Jellyfin would then display drillable category folders above the author folders (or whatever folderMode you choose).
 
-#### Mature Content
+### Mature Content
 
 Selection by author, although good for this purpose, is not exactly 100% perfect since it is possible for a single author to write content of differing level.
 
