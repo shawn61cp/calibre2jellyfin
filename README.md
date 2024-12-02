@@ -15,8 +15,7 @@ Python script to construct a Jellyfin ebook library from a Calibre library.
   * copy, possibly modified, of Calibre's metadata file
 * Books may be selected in the .cfg file by author folder or by subject.
   * Allows you to exclude from Jellyfin those messy persistent remnants from the years when your library was scattered over multiple proprietary platforms.
-  * Allows you to separate differing levels of mature content into separate Jellyfin libraries, access to which can be restricted within Jellyfin.  Selection by author is not quite 100% perfect for this since it is possible, though seemingly uncommon, for a single author to write differing content.  Selection by subject gives finer grained control but tags often seem not present and when present seem inconsistent.  To really make this work you would probably have to assign tags yourself.
-    * Another approach would be to combine construction methods.  Nothing prevents having multiple \[Construct\] sections that output to the same Jellyfin library.  (You probably would want to use the same foldermode.) One could exclude problematic authors (No offense, authors.) from a selection-by-author \[Construct\] and then handle those within a selection-by-subject \[Construct\].
+  * Allows you to separate differing levels of mature content into separate Jellyfin libraries, access to which can be restricted within Jellyfin.  (See Real Life section below for further discussion.)
   * Allows you to dispose books into libraries with differing structures as called out below in <em>Series Handling</em>
 * Alternatively all books in the source library may be exported.
 * Series handling
@@ -312,6 +311,15 @@ Suppose that you want top level folders in your Jellyfin library that separate y
 </pre>
 
 Then using your desired selectionMode, arrange for appropriate books to be output from each \[Construct...\] section.  Jellyfin would then display drillable category folders above the author folders (or whatever folderMode you choose).
+
+#### Mature Content
+
+Selection by author, although good for this purpose, is not exactly 100% perfect since it is possible for a single author to write content of differing level.
+
+Selection by subject gives finer grained control but tags are often missing and when present seem inconsistent.  To really make selection-by-subject work you would probably have to curate tags yourself.
+
+Another approach would be to combine construction methods.  Nothing prevents having multiple \[Construct\] sections that output to the same Jellyfin library.  (You probably would want to use the same foldermode.) One could exclude problematic authors (No offense, authors!) from a selection-by-author \[Construct\] and then handle those within a selection-by-subject \[Construct\].
+
 
 ## Odds and Ends
 
