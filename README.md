@@ -311,7 +311,7 @@ Suppose that you want top level folders in your Jellyfin library that separate y
     └── Westerns/           <- point a [ConstructWesterns] jellyfinStore param here
 </pre>
 
-Jellyfin would then display drillable category folders above the author folders (or whatever folderMode you choose).
+Then using your desired selectionMode, arrange for appropriate books to be output from each \[Construct...\] section.  Jellyfin would then display drillable category folders above the author folders (or whatever folderMode you choose).
 
 ## Odds and Ends
 
