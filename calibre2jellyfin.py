@@ -928,8 +928,8 @@ def main(clargs: list[str] | None = None):
             construct.do()
 
     if CMDARGS.list_spec:
+        report.sort()
         for line in report:
-            report.sort()
             print(line)
 
 
