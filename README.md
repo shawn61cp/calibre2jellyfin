@@ -120,6 +120,8 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
     * -\-debug
       * Displays lots of path and metadata information.  Useful if you need to look into why a book is or is not being selected.
     * -\-version
+    * -\-list LIST_SPEC
+      * Outputs a report that can be useful in curating your library.
   * New configurations (see example .cfg)
     * selectionMode = [author | subject | all]
     * subjects = ...
@@ -194,18 +196,39 @@ Two things need to be accomplished:
 
 #### Command line  options
 <pre>
-usage: calibre2jellyfin.py [-h] [--update-all-metadata] [--dryrun] [--debug]
+usage: calibre2jellyfin.py [-h] [--debug] [--dryrun] [--list LIST_SPEC]
+                           [--update-all-metadata] [-v]
 
-A utility to construct a Jellyfin ebook library from a Calibre library. Configuration file "/home/shawn/.config/calibre2jellyfin.cfg" is required.
+A utility to construct a Jellyfin ebook library from a Calibre library.
+Configuration file "/home/shawn/.config/calibre2jellyfin.cfg" is required.
 
 options:
-  -h, --help            show this help message and exit
-  --update-all-metadata
-                        Useful to force a one-time update of all metadata files, for instance when configurable metadata mangling options have changed.
-                        (Normally metadata files are only updated when missing or out-of-date.)
-  --dryrun              Displays normal console output but makes no changes to exported libraries.
-  --debug               Emit debug information.
-  -v, --version         Display version string.
+  -h, --help             show this help message and exit
+                         
+  --debug                Emit debug information.
+                         
+  --dryrun               Displays normal console output but makes no changes to
+                         exported libraries.
+                         
+  --list LIST_SPEC       Suspends normal export behavior. Instead prints info
+                         from configuration sections and file system that is
+                         useful for curation. LIST_SPEC is a comma-delimited
+                         list of columns to include in the report. The output
+                         is tab-separated. Columns may be one or more of
+                         author, section, book, bfolder, afolder, or subject.
+                         author: display author name if the source folder
+                         exists. section: display section name. book: display
+                         book title. bfolder: display book folder. afolder:
+                         display author folder. subject: display subject that
+                         matched. The report output is sorted so there will be
+                         a pause while all configured sections are processed.
+                         
+  --update-all-metadata  Useful to force a one-time update of all metadata
+                         files, for instance when configurable metadata
+                         mangling options have changed. (Normally metadata
+                         files are only updated when missing or out-of-date.)
+                         
+  -v, --version          Display version string.
 </pre>
 ## Real Life
 

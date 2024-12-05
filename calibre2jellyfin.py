@@ -27,6 +27,7 @@ from os import stat, utime
 CONFIG_FILE_PATH = Path.home() / '.config' / (Path(__file__).stem + '.cfg')
 CMDARGS: argparse.Namespace
 VERSION: str = '2024-11-22'
+report: list[str] = []
 
 # ------------------
 #   Classes
@@ -67,6 +68,8 @@ class Construct:
             selection_mode: str             Determines how books will be selected,
                                             either by 'author', 'subject', 'all'
 
+            section_name: str               Name of current section
+
         Usage:
 
             ... initialize logging ...
@@ -94,6 +97,7 @@ class Construct:
     mangle_meta_title: bool
     mangle_meta_title_sort: bool
     selection_mode: str
+    section_name: str
 
     def __init__(self, section: configparser.SectionProxy):
 
@@ -106,6 +110,8 @@ class Construct:
             ValueError
             Thrown by self when a configuration parameter is invalid.
         """
+
+        self.section_name = section.name
 
         # get simple configs
         self.selection_mode = section['selectionMode']
@@ -391,6 +397,8 @@ class Book:
             cover_file_dst_path: Path | None        Full path to dest cover file.
             metadata: BookMetadata                  Book's metadata
             construct: Construct                    Current configuration parameters
+            list_format: str                        Format string for --list output
+            matched_subject: str                    Subject spec that matched book
 
         Usage:
 
@@ -447,6 +455,8 @@ class Book:
         self.cover_file_src_path = None
         self.cover_file_dst_path = None
         self.metadata = None
+        self.list_format = ''
+        self.matched_subject = ''
 
         # find first instance of configured book file types
         self.find_book()
@@ -484,6 +494,10 @@ class Book:
 
         if self.metadata_file_src_path and self.metadata.doc:
             self.metadata_file_dst_path = self.book_folder_dst_path / self.metadata_file_src_path.name
+
+        if CMDARGS.list_spec:
+            cols = CMDARGS.list_spec.split(',')
+            self.list_format = '\t'.join([f'{{{col}}}' for col in cols])
 
     def find_book(self) -> None:
 
@@ -642,6 +656,31 @@ class Book:
 
                 self.metadata.write(self.metadata_file_dst_path)
 
+    def do_list(self) -> None:
+
+        """Outputs report as specified by the --list command line argument
+
+            returns
+                None
+        """
+
+        if self.metadata.titleel:
+            book = self.metadata.titleel.firstChild.data
+        else:
+            book = ''
+        line = self.list_format.format(
+            author=self.metadata.author,
+            subject=self.matched_subject,
+            section=self.construct.section_name,
+            book=book,
+            bfolder=self.book_folder_src_path.name,
+            afolder=self.author_folder_src_path.name
+        )
+        if "{book}" not in self.list_format:
+            if line in report:
+                return
+        report.append(line)
+        
     def do(self) -> None:
 
         """Conditionally creates/updates folder, files and symlinks for one book.
@@ -673,6 +712,10 @@ class Book:
                 return
             if not self.check_subjects():
                 return
+
+        if CMDARGS.list_spec:
+            self.do_list()
+            return
 
         print(self.book_folder_src_path, flush=True)
 
@@ -734,6 +777,7 @@ class Book:
 
         for line in self.construct.subjects:
             if self.check_subject_line(line):
+                self.matched_subject = ",".join(line)
                 return True
         return False
 
@@ -800,12 +844,10 @@ def main(clargs: list[str] | None = None):
         f' Configuration file "{CONFIG_FILE_PATH}" is required.'
     )
     cmdparser.add_argument(
-        '--update-all-metadata',
-        dest='updateAllMetadata',
+        '--debug',
+        dest='debug',
         action='store_true',
-        help='Useful to force a one-time update of all metadata files, '
-        'for instance when configurable metadata mangling options have changed. '
-        '(Normally metadata files are only updated when missing or out-of-date.)'
+        help='Emit debug information.'
     )
     cmdparser.add_argument(
         '--dryrun',
@@ -814,10 +856,18 @@ def main(clargs: list[str] | None = None):
         help='Displays normal console output but makes no changes to exported libraries.'
     )
     cmdparser.add_argument(
-        '--debug',
-        dest='debug',
+        '--list',
+        dest='list_spec',
+        action='store',
+        help='Suspends normal export behavior.  Instead prints info from configuration sections and file system that is useful for curation.\n LIST_SPEC is a comma-delimited list of columns to include in the report.  The output is tab-separated.  Columns may be one or more of author, section, book, bfolder, afolder, or subject.  author: display author name if the source folder exists.  section: display section name.  book: display book title.  bfolder: display book folder.  afolder: display author folder.  subject: display subject that matched.  The report output is sorted so there will be a pause while all configured sections are processed.'
+    )
+    cmdparser.add_argument(
+        '--update-all-metadata',
+        dest='updateAllMetadata',
         action='store_true',
-        help='Emit debug information.'
+        help='Useful to force a one-time update of all metadata files, '
+        'for instance when configurable metadata mangling options have changed. '
+        '(Normally metadata files are only updated when missing or out-of-date.)'
     )
     cmdparser.add_argument(
         '-v', '--version',
@@ -830,6 +880,12 @@ def main(clargs: list[str] | None = None):
     if CMDARGS.version:
         print(f'version {VERSION}', flush=True)
         return
+
+    if CMDARGS.list_spec:
+        for report_col in CMDARGS.list_spec.split(','):
+            if report_col not in ['section', 'author', 'book', 'subject', 'bfolder', 'afolder']:
+                logging.critical('--list columns must be one or more of "section", "author", "book", "bfolder", "afolder", or "subject"')
+                sys.exit(-1)
 
     # read configuration
     try:
@@ -870,6 +926,11 @@ def main(clargs: list[str] | None = None):
                 )
                 sys.exit(-1)
             construct.do()
+
+    if CMDARGS.list_spec:
+        for line in report:
+            report.sort()
+            print(line)
 
 
 if __name__ == '__main__':
