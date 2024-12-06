@@ -675,7 +675,7 @@ class Book:
         else:
             book = ''
         line = self.list_format.format(
-            author=self.metadata.author,
+            authors=self.metadata.authors,
             subject=self.matched_subject,
             section=self.construct.section_name,
             book=book,
@@ -867,7 +867,7 @@ def main(clargs: list[str] | None = None):
         '--list',
         dest='list_spec',
         action='store',
-        help='Suspends normal export behavior.  Instead prints info from configuration sections and file system that is useful for curation.\n LIST_SPEC is a comma-delimited list of columns to include in the report.  The output is tab-separated.  Columns may be one or more of author, section, book, bfolder, afolder, subject, series, or index.  author: display author name if the source folder exists.  section: display section name.  book: display book title.  bfolder: display book folder.  afolder: display author folder.  subject: display subject that matched.  series: display name of the series.  index: display series index.  The report output is sorted so there will be a pause while all configured sections are processed.'
+        help='Suspends normal export behavior.  Instead prints info from configuration sections and file system that is useful for curation.\n LIST_SPEC is a comma-delimited list of columns to include in the report.  The output is tab-separated.  Columns may be one or more of authors, section, book, bfolder, afolder, subject, series, or index.  authors: display author name if the source folder exists.  section: display section name.  book: display book title.  bfolder: display book folder.  afolder: display author folder.  subject: display subject that matched.  series: display name of the series.  index: display series index.  The report output is sorted so there will be a pause while all configured sections are processed.'
     )
     cmdparser.add_argument(
         '--update-all-metadata',
@@ -891,8 +891,8 @@ def main(clargs: list[str] | None = None):
 
     if CMDARGS.list_spec:
         for report_col in CMDARGS.list_spec.split(','):
-            if report_col not in ['section', 'author', 'book', 'subject', 'bfolder', 'afolder', 'series', 'index']:
-                logging.critical('--list columns must be one or more of "section", "author", "book", "bfolder", "afolder", "subject", "series", "index"')
+            if report_col not in ['section', 'authors', 'book', 'subject', 'bfolder', 'afolder', 'series', 'index']:
+                logging.critical('--list columns must be one or more of "section", "authors", "book", "bfolder", "afolder", "subject", "series", "index"')
                 sys.exit(-1)
 
     # read configuration
