@@ -228,7 +228,7 @@ class BookMetadata:
             series: str                         Series extracted from metadata.
             series_index: str                   Series index extracted from metadata.
             formatted_series_index: str         Formatted series index for use in folder names
-            author: str                         Author name extracted from metadata.
+            authors: str                        Comma delimited list of authors
             subjects: list[str]                 Subjects extracted from metadata.
             titleel: minidom.Element | None     Metadata title element.
             sortel: minidom.Element | None      Metadata title sort element.
@@ -252,7 +252,7 @@ class BookMetadata:
     series: str
     series_index: str
     formatted_series_index: str
-    author: str
+    authors: str
     subjects: list[str]
     titleel: minidom.Element | None
     sortel: minidom.Element | None
@@ -282,7 +282,7 @@ class BookMetadata:
         self.series = ''
         self.series_index = ''
         self.formatted_series_index = ''
-        self.author = ''
+        self.authors = ''
         self.subjects = []
         self.titleel = None
         self.sortel = None
@@ -310,7 +310,7 @@ class BookMetadata:
 
         authorels = self.doc.getElementsByTagName('dc:creator')
         if authorels:
-            self.author = authorels[0].firstChild.data
+            self.authors = ', '.join([el.firstChild.data for el in authorels])
 
         descels = self.doc.getElementsByTagName('dc:description')
         if descels:
@@ -643,16 +643,22 @@ class Book:
                 copy_metadata = True
 
             if copy_metadata:
-                if self.metadata.series and self.construct.foldermode in ['author,series,book', 'series,book']:
-                    if self.metadata.titleel and self.construct.mangle_meta_title:
-                        self.metadata.titleel.firstChild.data = f'{self.metadata.formatted_series_index} - {self.metadata.titleel.firstChild.data}'
-                    if self.metadata.sortel and self.construct.mangle_meta_title_sort:
-                        self.metadata.sortel.setAttribute(
-                            'content',
-                            f'{self.metadata.formatted_series_index} - {self.metadata.sortel.getAttribute("content")}'
-                        )
-                    if self.metadata.descel:
-                        self.metadata.descel.firstChild.data = f'<H4>Book {self.metadata.series_index} of <em>{self.metadata.series}</em>, by {self.metadata.author}</H4>{self.metadata.descel.firstChild.data}'
+                if self.metadata.series:
+                    if self.construct.foldermode in ['author,series,book', 'series,book']:
+                        if self.metadata.titleel and self.construct.mangle_meta_title:
+                            self.metadata.titleel.firstChild.data = f'{self.metadata.formatted_series_index} - {self.metadata.titleel.firstChild.data}'
+                        if self.metadata.sortel and self.construct.mangle_meta_title_sort:
+                            self.metadata.sortel.setAttribute(
+                                'content',
+                                f'{self.metadata.formatted_series_index} - {self.metadata.sortel.getAttribute("content")}'
+                            )
+                    desc_header = [f'Book {self.metadata.series_index} of <em>{self.metadata.series}</em>']
+                else:
+                    desc_header = []
+                if self.metadata.authors:
+                    desc_header.append(f'by {self.metadata.authors}')
+                if self.metadata.descel and desc_header:
+                    self.metadata.descel.firstChild.data = f'<H4>{", ".join(desc_header)}</H4>{self.metadata.descel.firstChild.data}'
 
                 self.metadata.write(self.metadata_file_dst_path)
 
@@ -674,7 +680,9 @@ class Book:
             section=self.construct.section_name,
             book=book,
             bfolder=self.book_folder_src_path.name,
-            afolder=self.author_folder_src_path.name
+            afolder=self.author_folder_src_path.name,
+            series=self.metadata.series,
+            index=self.metadata.formatted_series_index
         )
         if "{book}" not in self.list_format:
             if line in report:
@@ -728,7 +736,7 @@ class Book:
                 self.book_folder_src_path
             )
 
-        if self.metadata.doc and not self.metadata.author:
+        if self.metadata.doc and not self.metadata.authors:
             logging.warning(
                 'Missing normally required <dc:creator> (i.e. author) element in metadata for "%s"',
                 self.book_folder_src_path
@@ -859,7 +867,7 @@ def main(clargs: list[str] | None = None):
         '--list',
         dest='list_spec',
         action='store',
-        help='Suspends normal export behavior.  Instead prints info from configuration sections and file system that is useful for curation.\n LIST_SPEC is a comma-delimited list of columns to include in the report.  The output is tab-separated.  Columns may be one or more of author, section, book, bfolder, afolder, or subject.  author: display author name if the source folder exists.  section: display section name.  book: display book title.  bfolder: display book folder.  afolder: display author folder.  subject: display subject that matched.  The report output is sorted so there will be a pause while all configured sections are processed.'
+        help='Suspends normal export behavior.  Instead prints info from configuration sections and file system that is useful for curation.\n LIST_SPEC is a comma-delimited list of columns to include in the report.  The output is tab-separated.  Columns may be one or more of author, section, book, bfolder, afolder, subject, series, or index.  author: display author name if the source folder exists.  section: display section name.  book: display book title.  bfolder: display book folder.  afolder: display author folder.  subject: display subject that matched.  series: display name of the series.  index: display series index.  The report output is sorted so there will be a pause while all configured sections are processed.'
     )
     cmdparser.add_argument(
         '--update-all-metadata',
@@ -883,8 +891,8 @@ def main(clargs: list[str] | None = None):
 
     if CMDARGS.list_spec:
         for report_col in CMDARGS.list_spec.split(','):
-            if report_col not in ['section', 'author', 'book', 'subject', 'bfolder', 'afolder']:
-                logging.critical('--list columns must be one or more of "section", "author", "book", "bfolder", "afolder", or "subject"')
+            if report_col not in ['section', 'author', 'book', 'subject', 'bfolder', 'afolder', 'series', 'index']:
+                logging.critical('--list columns must be one or more of "section", "author", "book", "bfolder", "afolder", "subject", "series", "index"')
                 sys.exit(-1)
 
     # read configuration
