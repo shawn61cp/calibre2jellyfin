@@ -129,8 +129,8 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
     * Missing cover file
     * Missing metadata file
         * Note: In 'subject' selection mode, if the metadata is missing the book cannot be exported.
-  * All authors now appear in the description header
-  * The authors by-line appears in all folder modes and even when there is no series
+  * All authors now appear in the description header and the authors by-line appears in all folder modes whether there is series info or not.
+    * Run once with --update-all-metadata to apply
   * Upgrade considerations
     * If you already have the 2024-09-02 version and are not interested in selection by subject, there is not much reason to download this version.  The selection by author functionality has not changed.
     * If you download this version because you are interested in the new warnings or the new command line options but not selection by subject or selection of all books, you do not need to make any changes to your configuration file.  Behavior defaults to selection by author.
