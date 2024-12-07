@@ -406,6 +406,31 @@ order by
 ;" | column -t -s $'\t' | less
 </pre>
 
+#### Compact list of collaborator's books
+
+<strong><em><ins>Caveat Usor:</ins></em></strong> The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
+
+<pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
+select
+      (
+	    select group_concat(A.name, ',')
+		from
+                        books_authors_link BAL
+            inner join  authors A                   on  A.id = BAL.author
+		where 
+			BAL.book = B.id
+	  ) as author
+	, B.title as book
+	, coalesce(S.name, '') as series
+from
+                        books B
+	left join           books_series_link BSL       on  BSL.book = B.id
+	left join           series S                    on  S.id = BSL.series
+order by
+    1
+;" | column -t -s $'\t' | less
+</pre>
+
 ## Odds and Ends
 
 * I have noticed that Jellyfin does not re-paginate if you resize the browser window or change the zoom factor <em>after</em> you have opened the book.  However if you do these <em>before</em> opening the book it does so nicely.
