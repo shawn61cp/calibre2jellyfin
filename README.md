@@ -427,7 +427,7 @@ from
     left join           books_series_link BSL       on  BSL.book = B.id
     left join           series S                    on  S.id = BSL.series
 order by
-    1
+    1, 2
 ;" | column -t -s $'\t' | less
 </pre>
 
