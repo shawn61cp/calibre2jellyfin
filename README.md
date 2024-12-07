@@ -345,6 +345,42 @@ Selection by subject gives finer grained control but tags are often missing and 
 
 Another approach would be to combine construction methods.  Nothing prevents having multiple \[Construct\] sections that output to the same Jellyfin library.  (You probably would want to use the same foldermode.) One could exclude problematic authors (No offense, authors!) from a selection-by-author \[Construct\] and then handle those within a selection-by-subject \[Construct\].
 
+### Curation
+
+#### Listing Calibre author folders that will <em>not</em> be output by calibre2jellyfin.
+
+Step 1 - Get a list of author folders in the Calibre library.  If by chance your 'ls' command is aliased to always output ansi color codes, prefix the ls command with a backslash '\ls' to run a non-aliased 'ls' and  prevent this.  Otherwise these steps will not work.
+<code>ls PATH_TO_CALIBRE_LIBRARY >afolders_c</code>
+
+Step 2 - Get a list of author folders that calibre2jellyfin is exporting.  The following assumes, as described above, that calibre2jellyfin is installed under the <code>jellyfin</code> account.
+<code>sudo -u jellyfin /var/lib/jellyfin/.local/bin/calibre2jellyfin.py --list afolder >afolders_jf</code>
+
+Step 3 - Construct a list of folders that only exist in one but not both of the lists.  Absent something strange having occurred, there cannot be folders output by calibre2jellyfin that do not exist in the Calibre library, so this leaves only those Calibre library folders that will not be exported.
+<code>cat afolders_c afolders_jf | sort | uniq -u >afolders_todo</code>
+
+Step 4 - Review the list.  Note that there are a small number of files in the Calibre library such as the metadata.db that will appear in this list.  It seems easier to just ignore them rather than taking the trouble to filter them out.
+<code>less afolders_todo</code>
+
+#### Compact list of Calibre author series
+
+<strong>Caveat Usor:</strong>The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
+
+<code>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db '
+select 
+          A.name as author
+        , S.name as series
+from
+                                      authors A
+        inner JOIN                    books_authors_link BAL       on  BAL.author = A.id
+        inner JOIN                    books_series_link BSL        on  BSL.book = BAL.book
+        inner JOIN                    series S                     on  S.id = BSL.series
+group by
+          A.name
+        , S.name
+order by
+        1, 2
+;' | column -t -s $'\t' | less
+</code>
 
 ## Odds and Ends
 
