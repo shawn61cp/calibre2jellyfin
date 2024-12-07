@@ -420,12 +420,12 @@ select
         where 
 			BAL.book = B.id
     ) as author
-	, B.title as book
-	, coalesce(S.name, '') as series
+    , B.title as book
+    , coalesce(S.name, '') as series
 from
                         books B
-	left join           books_series_link BSL       on  BSL.book = B.id
-	left join           series S                    on  S.id = BSL.series
+    left join           books_series_link BSL       on  BSL.book = B.id
+    left join           series S                    on  S.id = BSL.series
 order by
     1
 ;" | column -t -s $'\t' | less
