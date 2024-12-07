@@ -365,7 +365,7 @@ Step 4 - Review the list.  Note that there are a small number of files in the Ca
 
 <code>less afolders_todo</code>
 
-#### Compact list of Calibre author series
+#### Compact list of Calibre author's series
 
 <strong><em><ins>Caveat Usor:</ins></em></strong> The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
 
@@ -378,6 +378,29 @@ from
         inner JOIN                    books_authors_link BAL       on  BAL.author = A.id
         inner JOIN                    books_series_link BSL        on  BSL.book = BAL.book
         inner JOIN                    series S                     on  S.id = BSL.series
+group by
+          A.name
+        , S.name
+order by
+        1, 2
+;' | column -t -s $'\t' | less
+</pre>
+
+#### Compact list of author's books
+
+<strong><em><ins>Caveat Usor:</ins></em></strong> The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
+
+<pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db '
+select 
+          A.name as author
+		, B.title as book
+        , coalesce(S.name,'') as series
+from
+                                      authors A
+        inner JOIN                    books_authors_link BAL       on  BAL.author = A.id
+        inner JOIN                    books B                      on  B.id = BAL.book
+        left JOIN                     books_series_link BSL        on  BSL.book = BAL.book
+        left JOIN                     series S                     on  S.id = BSL.series
 group by
           A.name
         , S.name
