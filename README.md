@@ -412,14 +412,14 @@ order by
 
 <pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
 select
-      (
+    (
 	    select group_concat(A.name, ',')
-		from
+        from
                         books_authors_link BAL
             inner join  authors A                   on  A.id = BAL.author
-		where 
+        where 
 			BAL.book = B.id
-	  ) as author
+    ) as author
 	, B.title as book
 	, coalesce(S.name, '') as series
 from
