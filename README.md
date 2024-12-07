@@ -369,7 +369,7 @@ Step 4 - Review the list.  Note that there are a small number of files in the Ca
 
 <strong>Caveat Usor:</strong>The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
 
-<code>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db '
+<pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db '
 select 
           A.name as author
         , S.name as series
@@ -384,7 +384,7 @@ group by
 order by
         1, 2
 ;' | column -t -s $'\t' | less
-</code>
+</pre>
 
 ## Odds and Ends
 
