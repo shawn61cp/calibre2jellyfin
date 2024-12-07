@@ -386,7 +386,7 @@ order by
 ;' | column -t -s $'\t' | less
 </pre>
 
-#### Compact list of author's books
+#### Compact list of Calibre author's books
 
 <strong><em><ins>Caveat Usor:</ins></em></strong> The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
 
@@ -406,7 +406,7 @@ order by
 ;" | column -t -s $'\t' | less
 </pre>
 
-#### Compact list of collaborator's books
+#### Compact list of Calibre collaborator's books
 
 <strong><em><ins>Caveat Usor:</ins></em></strong> The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
 
