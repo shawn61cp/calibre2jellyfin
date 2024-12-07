@@ -390,7 +390,7 @@ order by
 
 <strong><em><ins>Caveat Usor:</ins></em></strong> The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
 
-<pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db '
+<pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
 select 
           A.name as author
 		, B.title as book
@@ -406,7 +406,7 @@ group by
         , S.name
 order by
         1, 2
-;' | column -t -s $'\t' | less
+;" | column -t -s $'\t' | less
 </pre>
 
 ## Odds and Ends
