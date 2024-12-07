@@ -418,7 +418,7 @@ select
                         books_authors_link BAL
             inner join  authors A                   on  A.id = BAL.author
         where 
-			BAL.book = B.id
+            BAL.book = B.id
     ) as author
     , B.title as book
     , coalesce(S.name, '') as series
