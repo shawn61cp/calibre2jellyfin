@@ -392,17 +392,17 @@ order by
 
 <pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
 select
-	  A.name as author
-	, B.title as book
-	, coalesce(S.name, '') as series
+      A.name as author
+    , B.title as book
+    , coalesce(S.name, '') as series
 from
-						authors A
-	inner join			books_authors_link BAL		on	BAL.author = A.id
-	inner join			books B						on	B.id = BAL.book
-	left join			books_series_link BSL		on	BSL.book = B.id
-	left join			series S					on	S.id = BSL.series	
+                        authors A
+    inner join          books_authors_link BAL      on  BAL.author = A.id
+    inner join          books B                     on  B.id = BAL.book
+    left join           books_series_link BSL       on  BSL.book = B.id
+    left join           series S                    on  S.id = BSL.series	
 order by
-        1, 2
+    1, 2
 ;" | column -t -s $'\t' | less
 </pre>
 
