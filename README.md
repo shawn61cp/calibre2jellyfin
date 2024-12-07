@@ -413,7 +413,7 @@ order by
 <pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
 select
     (
-	    select group_concat(A.name, ',')
+        select group_concat(A.name, ',')
         from
                         books_authors_link BAL
             inner join  authors A                   on  A.id = BAL.author
