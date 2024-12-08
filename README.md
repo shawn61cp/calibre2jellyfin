@@ -347,6 +347,8 @@ Another approach would be to combine construction methods.  Nothing prevents hav
 
 ### Curation
 
+<strong><em><ins>Caveat Usor:</ins></em></strong> Several of following procedures use sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
+
 #### Listing Calibre author folders that will <em>not</em> be output by calibre2jellyfin.
 
 Step 1 - Get a list of author folders in the Calibre library.  If by chance your 'ls' command is aliased to always output ansi color codes, prefix the ls command with a backslash '\ls' to run a non-aliased 'ls' and  prevent this.  Otherwise these steps will not work.
@@ -367,8 +369,6 @@ Step 4 - Review the list.  Note that there are a small number of files in the Ca
 
 #### Compact list of Calibre author's series
 
-<strong><em><ins>Caveat Usor:</ins></em></strong> The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
-
 <pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db '
 select 
           A.name as author
@@ -388,8 +388,6 @@ order by
 
 #### Compact list of Calibre author's books
 
-<strong><em><ins>Caveat Usor:</ins></em></strong> The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
-
 <pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
 select
       A.name as author
@@ -407,8 +405,6 @@ order by
 </pre>
 
 #### Compact list of Calibre collaborator's books
-
-<strong><em><ins>Caveat Usor:</ins></em></strong> The following uses sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
 
 <pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
 select
