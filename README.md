@@ -386,6 +386,28 @@ order by
 ;' | column -t -s $'\t' | less
 </pre>
 
+#### Compact list of Calibre series
+
+<pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
+select distinct
+      S.name as series
+    , (
+        select group_concat(A.name, ',')
+        from
+                        books_authors_link BAL
+            inner join  authors A                   on  A.id = BAL.author
+        where 
+            BAL.book = B.id
+    ) as author
+from
+                        books B
+    inner join          books_series_link BSL       on  BSL.book = B.id
+    inner join          series S                    on  S.id = BSL.series
+order by
+    1, 2
+;" | column -t -s $'\t' | less
+</pre>
+
 #### Compact list of Calibre author's books
 
 <pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
