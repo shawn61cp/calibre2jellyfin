@@ -388,7 +388,8 @@ order by
 
 #### Compact list of Calibre series
 
-<pre>sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
+<pre># With authors
+sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
 select distinct
       S.name as series
     , (
@@ -398,7 +399,20 @@ select distinct
             inner join  authors A                   on  A.id = BAL.author
         where 
             BAL.book = B.id
-    ) as author
+    ) as authors
+from
+                        books B
+    inner join          books_series_link BSL       on  BSL.book = B.id
+    inner join          series S                    on  S.id = BSL.series
+order by
+    1, 2
+;" | column -t -s $'\t' | less
+
+# With author folder
+sqlite3 -separator $'\t' PATH_TO_CALIBRE_LIBRARY/metadata.db "
+select distinct
+      S.name as series
+    , substr(B.path, 1, instr(B.path, '/')-1) as afolder
 from
                         books B
     inner join          books_series_link BSL       on  BSL.book = B.id
@@ -437,7 +451,7 @@ select
             inner join  authors A                   on  A.id = BAL.author
         where 
             BAL.book = B.id
-    ) as author
+    ) as authors
     , B.title as book
     , coalesce(S.name, '') as series
 from
