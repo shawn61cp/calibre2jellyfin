@@ -347,7 +347,7 @@ Another approach would be to combine construction methods.  Nothing prevents hav
 
 ### Curation
 
-None of these reports and lists are at all required in order to use the wincalibre2jellyfin script.  I use them when I review my Calibre library for things that need to be cleaned up.
+None of these reports and lists are at all required in order to use the calibre2jellyfin script.  I use them when I review my Calibre library for things that need to be cleaned up.
 
 <strong><em><ins>Caveat Usor:</ins></em></strong> Several of following procedures use sqlite3 to access the Calibre metadata database directly.  Read-only select statements should not present problems.  Nevertheless it is a good idea to make a backup of such an important file.
 
