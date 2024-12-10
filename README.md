@@ -465,6 +465,32 @@ order by
 ;" | column -t -s $'\t' | less
 </pre>
 
+## Differences between Linux and Windows versions
+
+The Windows and Linux code is probably 99 point something percent identical but there are a few differences.
+
+* Configuration file
+  * Linux
+    * Named: calibre2jellyfin.cfg
+    * Resides in the .config/ directory under whatever account runs the script
+  * Windows
+    * Named: wincalibre2jellyfin.cfg
+    * Resides in the same location as the script
+* UTF-8 decode error
+  * Linux
+    * None
+  * Windows
+    * In testing the Windows version, 2 of 4000 books exhibited a utf-8 decode error of the metadata.  Testing was performed on the same library under Windows as under Linux, although for Windows access was via a Samba share, while under Linux the library resided on a local ext4 file system.
+    * The Windows version implements a fallback to backslashed ascii representation and logs a warning if utf-8 decoding fails.
+* Symlinks
+  * Linux
+    * Creates symlinks for the book and cover image.  The metadata file is copied since it may be modified.
+  * Windows
+    * Creates copies of all files
+    * Windows supports symlinks but requires elevated privileges to create them.  It seems inappropriate to me to require a script of this nature to run with administrative privileges.
+    * In, admittedly shallow, testing Jellyfin does not read Windows shortcuts, not that I would expect it to since shortcuts are I believe an artefact of the shell, but I did look at the possibility. :)
+    * I welcome advice from anyone more knowledgeable about these details than I.
+
 ## Odds and Ends
 
 * I have noticed that Jellyfin does not re-paginate if you resize the browser window or change the zoom factor <em>after</em> you have opened the book.  However if you do these <em>before</em> opening the book it does so nicely.
