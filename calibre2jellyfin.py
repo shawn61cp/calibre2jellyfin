@@ -645,9 +645,8 @@ class Book:
         # Also prepend a "Book X of Lorem Ipsum" header to the book description.
         # Otherwise, write out the original metadata unchanged.
 
+        copy_metadata = False
         if self.metadata.doc and self.metadata_file_src_path:
-            copy_metadata = False
-
             if CMDARGS.updateAllMetadata:
                 copy_metadata = True
             elif self.metadata_file_dst_path.exists():
@@ -656,33 +655,36 @@ class Book:
             else:
                 copy_metadata = True
 
-            if copy_metadata:
-                if self.metadata.series:
-                    if self.construct.foldermode in ['author,series,book', 'series,book']:
-                        if self.metadata.titleel and self.construct.mangle_meta_title:
-                            self.metadata.titleel.firstChild.data = (
-                                f'{self.metadata.formatted_series_index}'
-                                f' - {self.metadata.titleel.firstChild.data}'
-                            )
-                        if self.metadata.sortel and self.construct.mangle_meta_title_sort:
-                            self.metadata.sortel.setAttribute(
-                                'content',
-                                f'{self.metadata.formatted_series_index}'
-                                f' - {self.metadata.sortel.getAttribute("content")}'
-                            )
-                    desc_header = [f'Book {self.metadata.series_index} of <em>{self.metadata.series}</em>']
-                else:
-                    desc_header = []
+        if not copy_metadata:
+            return
 
-                if self.metadata.authors:
-                    desc_header.append(f'by {self.metadata.authors}')
+        desc_header = []
+        if self.metadata.series:
 
-                if self.metadata.descel and desc_header:
-                    self.metadata.descel.firstChild.data = (
-                        f'<H4>{", ".join(desc_header)}</H4>{self.metadata.descel.firstChild.data}'
+            if self.construct.foldermode in ['author,series,book', 'series,book']:
+                if self.metadata.titleel and self.construct.mangle_meta_title:
+                    self.metadata.titleel.firstChild.data = (
+                        f'{self.metadata.formatted_series_index}'
+                        f' - {self.metadata.titleel.firstChild.data}'
                     )
+                if self.metadata.sortel and self.construct.mangle_meta_title_sort:
+                    self.metadata.sortel.setAttribute(
+                        'content',
+                        f'{self.metadata.formatted_series_index}'
+                        f' - {self.metadata.sortel.getAttribute("content")}'
+                    )
+                    
+            desc_header.append(f'Book {self.metadata.series_index} of <em>{self.metadata.series}</em>')
 
-                self.metadata.write(self.metadata_file_dst_path)
+        if self.metadata.authors:
+            desc_header.append(f'by {self.metadata.authors}')
+
+        if self.metadata.descel and desc_header:
+            self.metadata.descel.firstChild.data = (
+                f'<H4>{", ".join(desc_header)}</H4>{self.metadata.descel.firstChild.data}'
+            )
+
+        self.metadata.write(self.metadata_file_dst_path)
 
     def do_list(self) -> None:
 
