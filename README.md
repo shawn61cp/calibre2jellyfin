@@ -230,41 +230,42 @@ Two things need to be accomplished:
     New configuration options are listed in the *Changes* section and also in the sample .cfg file.
 
 #### Command line  options
-<pre>
-usage: calibre2jellyfin.py [-h] [--debug] [--dryrun] [--list LIST_SPEC]
+usage: calibre2jellyfin.py [-h] [--debug] [--dryrun] [--invert] [--list LIST_SPEC]
                            [--update-all-metadata] [-v]
 
-A utility to construct a Jellyfin ebook library from a Calibre library.
-Configuration file "/home/shawn/.config/calibre2jellyfin.cfg" is required.
+A utility to construct a Jellyfin ebook library from a Calibre library. Configuration file
+"/home/shawn/.config/calibre2jellyfin.cfg" is required.
 
 options:
-  -h, --help             show this help message and exit
-                         
-  --debug                Emit debug information.
-                         
-  --dryrun               Displays normal console output but makes no changes to
-                         exported libraries.
-                         
-  --list LIST_SPEC       Suspends normal export behavior. Instead prints info
-                         from configuration sections and file system that is
-                         useful for curation. LIST_SPEC is a comma-delimited
-                         list of columns to include in the report. The output
-                         is tab-separated. Columns may be one or more of
-                         author, section, book, bfolder, afolder, or subject.
-                         author: display author name if the source folder
-                         exists. section: display section name. book: display
-                         book title. bfolder: display book folder. afolder:
-                         display author folder. subject: display subject that
-                         matched. The report output is sorted so there will be
-                         a pause while all configured sections are processed.
-                         
-  --update-all-metadata  Useful to force a one-time update of all metadata
-                         files, for instance when configurable metadata
-                         mangling options have changed. (Normally metadata
-                         files are only updated when missing or out-of-date.)
-                         
-  -v, --version          Display version string.
-</pre>
+
+  -h, --help            show this help message and exit
+  
+  --debug               Emit debug information.
+  
+  --dryrun              Displays normal console output but makes no changes to exported libraries.
+  
+  --invert              Inverts the sense of the --list argument, showing those items that will not be
+                        exported. Only valid in combination with --list.
+                        
+  --list LIST_SPEC      Suspends normal export behavior. Instead prints info from configuration
+                        sections and file system that is useful for curation. LIST_SPEC is a comma-
+                        delimited list of columns to include in the report. The output is tab-
+                        separated. Columns may be one or more of authors, section, book, bfolder,
+                        afolder, subject, series, or index. authors: display author name if the source
+                        folder exists. section: display section name. book: display book title.
+                        bfolder: display book folder. afolder: display author folder. subject: display
+                        subject that matched. series: display name of the series. index: display series
+                        index. The report output is sorted so there will be a pause while all
+                        configured sections are processed.
+                        
+  --update-all-metadata
+                        Useful to force a one-time update of all metadata files, for instance when
+                        configurable metadata mangling options have changed. (Normally metadata files
+                        are only updated when missing or out-of-date.)
+                        
+  -v, --version         Display version string.
+  </pre>
+  
 ## Real Life
 
 The installation and usage instructions above work fine but other situations may be encountered or

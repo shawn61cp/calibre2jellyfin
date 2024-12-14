@@ -964,7 +964,7 @@ def main(clargs: list[str] | None = None):
         '--invert',
         dest='invert',
         action='store_true',
-        help='Inverts the sense of the --list argument, showing those items that will'
+        help='Inverts the sense of the --list argument, showing those items that will '
         'not be exported.  Only valid in combination with --list.'
     )
     cmdparser.add_argument(
