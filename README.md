@@ -120,7 +120,14 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 </table>
 
 #### Changes
-* 2024-11-22 (Current version) (Main branch)
+* 2024-12-14 (Current version, Branch Main)
+  * Added --invert command line option
+    * This causes the output of --list to show excluded items.
+    Books having a type that is not in a configured <em>bookfiletypes</em> parameter are ignored.
+    I.e. such books are considered to be neither selected nor excluded.
+  * --list reports now separate output by source library
+  * Added additional INFO logging
+* 2024-11-22
   * Added support for selection of all books in the source library
   * Added support for Selection of books by subject (aka tags in Calibre)
   * Added command line options
@@ -224,40 +231,42 @@ Two things need to be accomplished:
 
 #### Command line  options
 <pre>
-usage: calibre2jellyfin.py [-h] [--debug] [--dryrun] [--list LIST_SPEC]
+usage: calibre2jellyfin.py [-h] [--debug] [--dryrun] [--invert] [--list LIST_SPEC]
                            [--update-all-metadata] [-v]
 
-A utility to construct a Jellyfin ebook library from a Calibre library.
-Configuration file "/home/shawn/.config/calibre2jellyfin.cfg" is required.
+A utility to construct a Jellyfin ebook library from a Calibre library. Configuration file
+"/home/shawn/.config/calibre2jellyfin.cfg" is required.
 
 options:
-  -h, --help             show this help message and exit
-                         
-  --debug                Emit debug information.
-                         
-  --dryrun               Displays normal console output but makes no changes to
-                         exported libraries.
-                         
-  --list LIST_SPEC       Suspends normal export behavior. Instead prints info
-                         from configuration sections and file system that is
-                         useful for curation. LIST_SPEC is a comma-delimited
-                         list of columns to include in the report. The output
-                         is tab-separated. Columns may be one or more of
-                         author, section, book, bfolder, afolder, or subject.
-                         author: display author name if the source folder
-                         exists. section: display section name. book: display
-                         book title. bfolder: display book folder. afolder:
-                         display author folder. subject: display subject that
-                         matched. The report output is sorted so there will be
-                         a pause while all configured sections are processed.
-                         
-  --update-all-metadata  Useful to force a one-time update of all metadata
-                         files, for instance when configurable metadata
-                         mangling options have changed. (Normally metadata
-                         files are only updated when missing or out-of-date.)
-                         
-  -v, --version          Display version string.
-</pre>
+
+  -h, --help            show this help message and exit
+  
+  --debug               Emit debug information.
+  
+  --dryrun              Displays normal console output but makes no changes to exported libraries.
+  
+  --invert              Inverts the sense of the --list argument, showing those items that will not be
+                        exported. Only valid in combination with --list.
+                        
+  --list LIST_SPEC      Suspends normal export behavior. Instead prints info from configuration
+                        sections and file system that is useful for curation. LIST_SPEC is a comma-
+                        delimited list of columns to include in the report. The output is tab-
+                        separated. Columns may be one or more of authors, section, book, bfolder,
+                        afolder, subject, series, or index. authors: display author name if the source
+                        folder exists. section: display section name. book: display book title.
+                        bfolder: display book folder. afolder: display author folder. subject: display
+                        subject that matched. series: display name of the series. index: display series
+                        index. The report output is sorted so there will be a pause while all
+                        configured sections are processed.
+                        
+  --update-all-metadata
+                        Useful to force a one-time update of all metadata files, for instance when
+                        configurable metadata mangling options have changed. (Normally metadata files
+                        are only updated when missing or out-of-date.)
+                        
+  -v, --version         Display version string.
+  </pre>
+  
 ## Real Life
 
 The installation and usage instructions above work fine but other situations may be encountered or
@@ -432,6 +441,8 @@ access the Calibre metadata database directly.  Read-only select statements shou
 Nevertheless it is a good idea to make a backup of such an important file.
 
 #### Listing Calibre author folders that will <em>not</em> be output by calibre2jellyfin.
+
+<em>2024-12-14: This method is obsolete since the addition of the --invert command line option.</em>
 
 Step 1 - Get a list of author folders in the Calibre library.  If by chance your 'ls' command is
 aliased to always output ansi color codes, prefix the ls command with a backslash '\ls' to run
