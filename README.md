@@ -442,6 +442,8 @@ Nevertheless it is a good idea to make a backup of such an important file.
 
 #### Listing Calibre author folders that will <em>not</em> be output by calibre2jellyfin.
 
+<em>2024-12-14: This method is obsolete since the addition of the --invert command line option.</em>
+
 Step 1 - Get a list of author folders in the Calibre library.  If by chance your 'ls' command is
 aliased to always output ansi color codes, prefix the ls command with a backslash '\ls' to run
 a non-aliased 'ls' and  prevent this.  Otherwise these steps will not work.
