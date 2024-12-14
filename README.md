@@ -120,7 +120,14 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 </table>
 
 #### Changes
-* 2024-11-22 (Current version) (Main branch)
+* 2024-12-14 (Current version, Branch Main)
+  * Added --invert command line option
+    * This causes the output of --list to show excluded items.
+    Books having a type that is not in a configured <em>bookfiletypes</em> parameter are ignored.
+    I.e. such books are considered to be neither selected nor excluded.
+  * --list reports now separate output by source library
+  * Added additional INFO logging
+* 2024-11-22
   * Added support for selection of all books in the source library
   * Added support for Selection of books by subject (aka tags in Calibre)
   * Added command line options

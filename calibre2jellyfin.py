@@ -27,7 +27,8 @@ from os import stat, utime
 CONFIG_FILE_PATH = Path.home() / '.config' / (Path(__file__).stem + '.cfg')
 CMDARGS: argparse.Namespace
 VERSION: str = '2024-11-22'
-report: list[str] = []
+report: dict = {}
+list_format: str
 
 # ------------------
 #   Classes
@@ -70,6 +71,8 @@ class Construct:
 
             section_name: str               Name of current section
 
+            prescan: bool                   True if report is being pre-loaded for --invert output
+
         Usage:
 
             ... initialize logging ...
@@ -98,6 +101,7 @@ class Construct:
     mangle_meta_title_sort: bool
     selection_mode: str
     section_name: str
+    prescan: bool
 
     def __init__(self, section: configparser.SectionProxy):
 
@@ -112,6 +116,7 @@ class Construct:
         """
 
         self.section_name = section.name
+        self.prescan = False
 
         # get simple configs
         self.selection_mode = section['selectionMode']
@@ -163,11 +168,12 @@ class Construct:
 
             author_folder_src_path = self.calibre_store / author_folder
             if not author_folder_src_path.is_dir():
-                logging.warning(
-                    'Author folder "%s" does not exist or is not a directory'
-                    ' in Calibre store "%s".',
-                    author_folder, self.calibre_store
-                )
+                if not self.prescan:
+                    logging.warning(
+                        'Author folder "%s" does not exist or is not a directory'
+                        ' in Calibre store "%s".',
+                        author_folder, self.calibre_store
+                    )
                 continue
 
             # for each book folder in source author folder
@@ -209,6 +215,8 @@ class Construct:
             returns
                 None
         """
+
+        logging.info('Processing [%s] ...', self.section_name)
 
         if CMDARGS.debug:
             print(f'[Construct] parameters: {vars(self)}', flush=True)
@@ -397,7 +405,6 @@ class Book:
             cover_file_dst_path: Path | None        Full path to dest cover file.
             metadata: BookMetadata                  Book's metadata
             construct: Construct                    Current configuration parameters
-            list_format: str                        Format string for --list output
             matched_subject: str                    Subject spec that matched book
 
         Usage:
@@ -455,7 +462,6 @@ class Book:
         self.cover_file_src_path = None
         self.cover_file_dst_path = None
         self.metadata = None
-        self.list_format = ''
         self.matched_subject = ''
 
         # find first instance of configured book file types
@@ -502,10 +508,6 @@ class Book:
 
         if self.metadata_file_src_path and self.metadata.doc:
             self.metadata_file_dst_path = self.book_folder_dst_path / self.metadata_file_src_path.name
-
-        if CMDARGS.list_spec:
-            cols = CMDARGS.list_spec.split(',')
-            self.list_format = '\t'.join([f'{{{col}}}' for col in cols])
 
     def find_book(self) -> None:
 
@@ -698,7 +700,7 @@ class Book:
             book = self.metadata.titleel.firstChild.data
         else:
             book = ''
-        line = self.list_format.format(
+        line = list_format.format(
             authors=self.metadata.authors,
             subject=self.matched_subject,
             section=self.construct.section_name,
@@ -708,10 +710,18 @@ class Book:
             series=self.metadata.series,
             index=self.metadata.formatted_series_index
         )
-        if "{book}" not in self.list_format:
-            if line in report:
-                return
-        report.append(line)
+
+        if self.construct.calibre_store not in report:
+            report[self.construct.calibre_store] = []
+
+        if line in report[self.construct.calibre_store]:
+            if CMDARGS.invert and not self.construct.prescan:
+                report[self.construct.calibre_store].remove(line)
+            return
+        elif CMDARGS.invert and not self.construct.prescan:
+            return
+        report[self.construct.calibre_store].append(line)            
+
 
     def do(self) -> None:
 
@@ -727,7 +737,10 @@ class Book:
         """
 
         if not self.book_file_src_path:
-            if self.construct.selection_mode in ['author', 'all']:
+            if (
+                self.construct.selection_mode in ['author', 'all']
+                and not self.construct.prescan
+            ):
                 logging.warning('No book file of configured type was found in "%s"', self.book_folder_src_path)
             return
 
@@ -851,6 +864,66 @@ def sanitize_filename(sani: str) -> str:
     return sani
 
 
+def do_constructs(config: configparser.ConfigParser) -> None:
+
+    """Iterates over configured [Construct] sections. Prints --list report.
+
+        config:
+            initialized config parser object
+
+        Exceptions:
+            ValueError and KeyError
+            See Construct()
+
+    """
+    
+    logging.info('Scanning ...')
+
+    # for each configured Construct
+    for section in config:
+        if section[0:9] == 'Construct':
+            construct = Construct(config[section])
+            construct.do()
+
+    if CMDARGS.list_spec:
+        for store in report:
+            if CMDARGS.invert:
+                selection_str = 'excluded:'
+            else:
+                selection_str = 'selected:'
+            print(f'{store}, {selection_str}\n{list_format}', flush=True)
+            report[store].sort()
+            for line in report[store]:
+                print(line, flush=True)
+
+
+def do_prescan(config: configparser.ConfigParser) -> None:
+
+    """Pre-loads REPORT with all possible values.  For use with --invert.
+
+        config:
+            initialized config parser object
+
+        Exceptions:
+            ValueError and KeyError
+            See Construct()
+
+    """
+
+    logging.info('Prescanning ...')
+
+    # for each configured Construct
+    for section in config:
+        if section[0:9] == 'Construct':
+            construct = Construct(config[section])
+            save_selection_mode = construct.selection_mode
+            construct.selection_mode = 'all'
+            construct.prescan = True
+            construct.do()
+            construct.prescan = False
+            construct.selection_mode = save_selection_mode
+
+
 # ------------------
 #   Main
 # ------------------
@@ -866,7 +939,7 @@ def main(clargs: list[str] | None = None):
                                     calibre2jellyfin.main(['--update-all-metadata', ...])
     """
 
-    global CMDARGS
+    global CMDARGS, list_format
 
     logging.basicConfig(format='%(levelname)s:%(filename)s:%(lineno)s: %(message)s', level=logging.DEBUG)
 
@@ -886,6 +959,13 @@ def main(clargs: list[str] | None = None):
         dest='dryrun',
         action='store_true',
         help='Displays normal console output but makes no changes to exported libraries.'
+    )
+    cmdparser.add_argument(
+        '--invert',
+        dest='invert',
+        action='store_true',
+        help='Inverts the sense of the --list argument, showing those items that will'
+        'not be exported.  Only valid in combination with --list.'
     )
     cmdparser.add_argument(
         '--list',
@@ -921,6 +1001,14 @@ def main(clargs: list[str] | None = None):
         print(f'version {VERSION}', flush=True)
         return
 
+    if CMDARGS.dryrun and (CMDARGS.list_spec or CMDARGS.updateAllMetadata):
+        logging.critical('Incompatible arguments')
+        sys.exit(-1)
+
+    if CMDARGS.invert and not CMDARGS.list_spec:
+        logging.critical('Argument --invert may only be used in conjuction with --list.')
+        sys.exit(-1)
+
     if CMDARGS.list_spec:
         for report_col in CMDARGS.list_spec.split(','):
             if report_col not in ['section', 'authors', 'book', 'subject', 'bfolder', 'afolder', 'series', 'index']:
@@ -929,6 +1017,9 @@ def main(clargs: list[str] | None = None):
                     '"subject", "series", "index"'
                 )
                 sys.exit(-1)
+        cols = CMDARGS.list_spec.split(',')
+        list_format = '\t'.join([f'{{{col}}}' for col in cols])
+
 
     # read configuration
     try:
@@ -950,30 +1041,23 @@ def main(clargs: list[str] | None = None):
     config['DEFAULT']['selectionMode'] = 'author'
     config['DEFAULT']['subjects'] = ''
 
-    # for each configured Construct
-    for section in config:
-        if section[0:9] == 'Construct':
-            try:
-                construct = Construct(config[section])
-            except ValueError as excep:
-                logging.critical(
-                    'Inappropriate parameter value in %s in configuration file "%s": %s',
-                    section, CONFIG_FILE_PATH, excep
-                )
-                sys.exit(-1)
-            except KeyError as excep:
-                logging.critical(
-                    'A required parameter (%s) is missing from [%s] '
-                    'in configuration file "%s".',
-                    excep, section, CONFIG_FILE_PATH
-                )
-                sys.exit(-1)
-            construct.do()
-
-    if CMDARGS.list_spec:
-        report.sort()
-        for line in report:
-            print(line)
+    try:
+        if CMDARGS.invert:
+            do_prescan(config)
+        do_constructs(config)
+    except ValueError as excep:
+        logging.critical(
+            'Inappropriate parameter value in %s in configuration file "%s": %s',
+            section, CONFIG_FILE_PATH, excep
+        )
+        sys.exit(-1)
+    except KeyError as excep:
+        logging.critical(
+            'A required parameter (%s) is missing from [%s] '
+            'in configuration file "%s".',
+            excep, section, CONFIG_FILE_PATH
+        )
+        sys.exit(-1)
 
 
 if __name__ == '__main__':
