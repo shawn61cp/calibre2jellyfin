@@ -675,7 +675,7 @@ class Book:
                         f'{self.metadata.formatted_series_index}'
                         f' - {self.metadata.sortel.getAttribute("content")}'
                     )
-                    
+
             desc_header.append(f'Book {self.metadata.series_index} of <em>{self.metadata.series}</em>')
 
         if self.metadata.authors:
@@ -720,8 +720,7 @@ class Book:
             return
         elif CMDARGS.invert and not self.construct.prescan:
             return
-        report[self.construct.calibre_store].append(line)            
-
+        report[self.construct.calibre_store].append(line)
 
     def do(self) -> None:
 
@@ -876,7 +875,7 @@ def do_constructs(config: configparser.ConfigParser) -> None:
             See Construct()
 
     """
-    
+
     logging.info('Scanning ...')
 
     # for each configured Construct
@@ -1020,7 +1019,6 @@ def main(clargs: list[str] | None = None):
         cols = CMDARGS.list_spec.split(',')
         list_format = '\t'.join([f'{{{col}}}' for col in cols])
 
-
     # read configuration
     try:
         with open(CONFIG_FILE_PATH, 'r', encoding='utf8') as configfile:
@@ -1047,15 +1045,14 @@ def main(clargs: list[str] | None = None):
         do_constructs(config)
     except ValueError as excep:
         logging.critical(
-            'Inappropriate parameter value in %s in configuration file "%s": %s',
-            section, CONFIG_FILE_PATH, excep
+            'Inappropriate parameter value in configuration file "%s": %s',
+            CONFIG_FILE_PATH, excep
         )
         sys.exit(-1)
     except KeyError as excep:
         logging.critical(
-            'A required parameter (%s) is missing from [%s] '
-            'in configuration file "%s".',
-            excep, section, CONFIG_FILE_PATH
+            'A required parameter (%s) is missing from configuration file "%s".',
+            excep, CONFIG_FILE_PATH
         )
         sys.exit(-1)
 
