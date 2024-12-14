@@ -230,6 +230,7 @@ Two things need to be accomplished:
     New configuration options are listed in the *Changes* section and also in the sample .cfg file.
 
 #### Command line  options
+<pre>
 usage: calibre2jellyfin.py [-h] [--debug] [--dryrun] [--invert] [--list LIST_SPEC]
                            [--update-all-metadata] [-v]
 
