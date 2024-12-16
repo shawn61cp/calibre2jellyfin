@@ -560,16 +560,6 @@ class Book:
                 None
         """
 
-        # Create the destination book folder
-        try:
-            self.book_folder_dst_path.mkdir(parents=True, exist_ok=True)
-        except OSError as excep:
-            logging.warning(
-                'Could not create book\'s destination folder (or a parent folder thereof) '
-                '"%s": %s', self.book_folder_dst_path, excep
-            )
-            return
-
         # Create a symlink to the source book if it does not exist
         # If it exists and is out of date, touch it; This helps jellyfin respond quickly to changes.
         if self.book_file_dst_path.exists():
@@ -628,16 +618,41 @@ class Book:
                         self.cover_file_dst_path, excep
                     )
 
-    def do_metadata(self) -> None:
-
-        """Conditionally outputs metadata file
+    def mangle_series_metadata(self) -> None:
+        """Conditionally mangles metadata (title and title-sort) with series info.
 
             returns
                 None
 
-            Notes:
-                do_book() should be called first since it creates
-                the book destination folder.
+            requires
+                self.metadata.series
+                self.metadata.formatted_series_index
+
+        """
+
+        if self.construct.foldermode not in ['author,series,book', 'series,book']:
+            return
+
+        if self.metadata.titleel and self.construct.mangle_meta_title:
+            self.metadata.titleel.firstChild.data = (
+                f'{self.metadata.formatted_series_index}'
+                f' - {self.metadata.titleel.firstChild.data}'
+            )
+
+        if self.metadata.sortel and self.construct.mangle_meta_title_sort:
+            self.metadata.sortel.setAttribute(
+                'content',
+                f'{self.metadata.formatted_series_index}'
+                f' - {self.metadata.sortel.getAttribute("content")}'
+            )
+
+    def do_metadata(self) -> None:
+
+        """Conditionally outputs the metadata file.
+
+            returns
+                None
+
         """
 
         # Output a metadata xml (.opf) file into the destination book folder.
@@ -647,35 +662,26 @@ class Book:
         # Also prepend a "Book X of Lorem Ipsum" header to the book description.
         # Otherwise, write out the original metadata unchanged.
 
+        if not (self.metadata.doc and self.metadata_file_src_path):
+            return
+
         copy_metadata = False
-        if self.metadata.doc and self.metadata_file_src_path:
-            if CMDARGS.updateAllMetadata:
+
+        if CMDARGS.updateAllMetadata:
+            copy_metadata = True
+        elif self.metadata_file_dst_path.exists():
+            if stat(self.metadata_file_dst_path).st_mtime < stat(self.metadata_file_src_path).st_mtime:
                 copy_metadata = True
-            elif self.metadata_file_dst_path.exists():
-                if stat(self.metadata_file_dst_path).st_mtime < stat(self.metadata_file_src_path).st_mtime:
-                    copy_metadata = True
-            else:
-                copy_metadata = True
+        else:
+            copy_metadata = True
 
         if not copy_metadata:
             return
 
         desc_header = []
+
         if self.metadata.series:
-
-            if self.construct.foldermode in ['author,series,book', 'series,book']:
-                if self.metadata.titleel and self.construct.mangle_meta_title:
-                    self.metadata.titleel.firstChild.data = (
-                        f'{self.metadata.formatted_series_index}'
-                        f' - {self.metadata.titleel.firstChild.data}'
-                    )
-                if self.metadata.sortel and self.construct.mangle_meta_title_sort:
-                    self.metadata.sortel.setAttribute(
-                        'content',
-                        f'{self.metadata.formatted_series_index}'
-                        f' - {self.metadata.sortel.getAttribute("content")}'
-                    )
-
+            self.mangle_series_metadata()
             desc_header.append(f'Book {self.metadata.series_index} of <em>{self.metadata.series}</em>')
 
         if self.metadata.authors:
@@ -782,6 +788,16 @@ class Book:
             print(f'> {self.book_file_dst_path}', flush=True)
             print(f'> {self.metadata_file_dst_path}', flush=True)
             print(f'> {self.cover_file_dst_path}', flush=True)
+            return
+
+        # Create the destination book folder
+        try:
+            self.book_folder_dst_path.mkdir(parents=True, exist_ok=True)
+        except OSError as excep:
+            logging.warning(
+                'Could not create book\'s destination folder (or a parent folder thereof) '
+                '"%s": %s', self.book_folder_dst_path, excep
+            )
             return
 
         self.do_book()
