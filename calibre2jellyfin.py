@@ -554,7 +554,7 @@ class Book:
 
     def do_book(self) -> None:
 
-        """Conditionally creates/updates destination book folder and file (symlink)
+        """Conditionally creates/updates destination book file (symlink)
 
             returns
                 None
@@ -800,6 +800,7 @@ class Book:
             )
             return
 
+        # Output the book files
         self.do_book()
         self.do_cover()
         self.do_metadata()
