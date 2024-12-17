@@ -221,6 +221,9 @@ class Construct:
         if CMDARGS.debug:
             print(f'[Construct] parameters: {vars(self)}', flush=True)
 
+        if self.prescan and self.calibre_store in report:
+            return
+
         if self.selection_mode == 'author':
             self.do_books_by_author()
         else:
