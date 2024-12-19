@@ -28,7 +28,7 @@ CONFIG_FILE_PATH = Path.home() / '.config' / (Path(__file__).stem + '.cfg')
 CMDARGS: argparse.Namespace
 VERSION: str = '2024-11-22'
 report: dict = {}
-list_format: str
+list_format: str = ''
 
 # ------------------
 #   Classes
@@ -221,7 +221,7 @@ class Construct:
         if CMDARGS.debug:
             print(f'[Construct] parameters: {vars(self)}', flush=True)
 
-        if self.prescan and self.calibre_store in report:
+        if self.prescan and str(self.calibre_store) in report:
             return
 
         if self.selection_mode == 'author':
@@ -720,16 +720,17 @@ class Book:
             index=self.metadata.formatted_series_index
         )
 
-        if self.construct.calibre_store not in report:
-            report[self.construct.calibre_store] = []
+        store = str(self.construct.calibre_store)
+        if store not in report:
+            report[store] = []
 
-        if line in report[self.construct.calibre_store]:
+        if line in report[store]:
             if CMDARGS.invert and not self.construct.prescan:
-                report[self.construct.calibre_store].remove(line)
+                report[store].remove(line)
             return
         elif CMDARGS.invert and not self.construct.prescan:
             return
-        report[self.construct.calibre_store].append(line)
+        report[store].append(line)
 
     def do(self) -> None:
 
