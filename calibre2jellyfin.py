@@ -31,9 +31,15 @@ VERSION: str = '2024-11-22'
 report: dict = {}
 list_format: str = ''
 
-# cache memory usage was about 10 times the size of
-# the on-disk metadata file
+# Cache memory usage was about 10 times the size of
+# the on-disk metadata file.
 # 
+# Caching improved the scanning portions of an inverte
+# report by about 17% but oddly added a few seconds
+# to normal processing.  Given that support for
+# saving/restoring mangled metadata had not been
+# implemented in this test, it seemd the benefits
+# are not really worth it.
 opf_cache: dict = {}
 
 # ------------------
