@@ -18,6 +18,7 @@ import logging
 from pathlib import Path
 from xml.dom import minidom
 from os import stat, utime
+from memory_profiler import profile
 
 # ------------------
 #   Globals
@@ -28,7 +29,8 @@ CONFIG_FILE_PATH = Path.home() / '.config' / (Path(__file__).stem + '.cfg')
 CMDARGS: argparse.Namespace
 VERSION: str = '2024-11-22'
 report: dict = {}
-list_format: str
+list_format: str = ''
+opf_cache: dict = {}
 
 # ------------------
 #   Classes
@@ -269,6 +271,7 @@ class BookMetadata:
     sortel: minidom.Element | None
     descel: minidom.Element | None
 
+    @profile
     def __init__(self, metadata_file_path: Path | None):
 
         """Creates a miniDOM object from the metadata file and extracts
@@ -340,6 +343,9 @@ class BookMetadata:
                 self.format_series_index()
             elif metatag.getAttribute('name') == 'calibre:title_sort':
                 self.sortel = metatag
+
+        if metadata_file_path not in opf_cache:
+            opf_cache[metadata_file_path] = self.doc
 
     def format_series_index(self) -> None:
 
@@ -432,6 +438,7 @@ class Book:
     metadata: BookMetadata
     construct: Construct
 
+    @profile
     def __init__(
         self,
         construct: Construct,
@@ -947,7 +954,7 @@ def do_prescan(config: configparser.ConfigParser) -> None:
 #   Main
 # ------------------
 
-
+@profile
 def main(clargs: list[str] | None = None):
 
     """Main
