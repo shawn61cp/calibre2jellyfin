@@ -226,7 +226,7 @@ class Construct:
         if CMDARGS.debug:
             print(f'[Construct] parameters: {vars(self)}', flush=True)
 
-        if self.prescan and self.calibre_store in report:
+        if self.prescan and str(self.calibre_store) in report:
             return
 
         if self.selection_mode == 'author':
@@ -346,9 +346,6 @@ class BookMetadata:
                 self.format_series_index()
             elif metatag.getAttribute('name') == 'calibre:title_sort':
                 self.sortel = metatag
-
-        if metadata_file_path not in opf_cache:
-            opf_cache[metadata_file_path] = self.doc
 
     def format_series_index(self) -> None:
 
@@ -483,9 +480,19 @@ class Book:
             return
 
         # locate related book files
+        
         self.find_cover()
         self.find_metadata()
-        self.metadata = BookMetadata(self.metadata_file_src_path)
+        
+        metadata_key = str(self.metadata_file_src_path)
+        if CMDARGS.cache and metadata_key in opf_cache:
+            self.metadata = opf_cache[metadata_key]
+            logging.info(f'cache hit {metadata_key}')
+        else:
+            self.metadata = BookMetadata(self.metadata_file_src_path)
+            logging.info(f'cache hit {metadata_key}')
+            if CMDARGS.cache:
+                opf_cache[metadata_key] = self.metadata
 
         # Output is organized as '.../author/series/book/book.ext', '.../series/book/book.ext'
         # or '.../book/book.ext' depending on foldermode.  If series info was expected but not found,
@@ -730,16 +737,17 @@ class Book:
             index=self.metadata.formatted_series_index
         )
 
-        if self.construct.calibre_store not in report:
-            report[self.construct.calibre_store] = []
+        store = str(self.construct.calibre_store)
+        if store not in report:
+            report[store] = []
 
-        if line in report[self.construct.calibre_store]:
+        if line in report[store]:
             if CMDARGS.invert and not self.construct.prescan:
-                report[self.construct.calibre_store].remove(line)
+                report[store].remove(line)
             return
         elif CMDARGS.invert and not self.construct.prescan:
             return
-        report[self.construct.calibre_store].append(line)
+        report[store].append(line)
 
     def do(self) -> None:
 
@@ -976,6 +984,13 @@ def main(clargs: list[str] | None = None):
     cmdparser = argparse.ArgumentParser(
         description='A utility to construct a Jellyfin ebook library from a Calibre library.'
         f' Configuration file "{CONFIG_FILE_PATH}" is required.'
+    )
+    cmdparser.add_argument(
+        '--cache',
+        dest='cache',
+        action='store_true',
+        help='Caches metadata read from OPF files. This improves performance when multiple select-by-subject'
+        ' [ConstructXXX]\'s are used.'
     )
     cmdparser.add_argument(
         '--debug',
