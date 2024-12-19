@@ -33,6 +33,7 @@ list_format: str = ''
 
 # cache memory usage was about 10 times the size of
 # the on-disk metadata file
+# 
 opf_cache: dict = {}
 
 # ------------------
@@ -487,10 +488,10 @@ class Book:
         metadata_key = str(self.metadata_file_src_path)
         if CMDARGS.cache and metadata_key in opf_cache:
             self.metadata = opf_cache[metadata_key]
-            logging.info(f'cache hit {metadata_key}')
+            #logging.info(f'cache hit {metadata_key}')
         else:
             self.metadata = BookMetadata(self.metadata_file_src_path)
-            logging.info(f'cache hit {metadata_key}')
+            #logging.info(f'cache hit {metadata_key}')
             if CMDARGS.cache:
                 opf_cache[metadata_key] = self.metadata
 
