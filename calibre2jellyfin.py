@@ -18,7 +18,7 @@ import logging
 from pathlib import Path
 from xml.dom import minidom
 from os import stat, utime
-from memory_profiler import profile
+#from memory_profiler import profile
 
 # ------------------
 #   Globals
@@ -30,6 +30,9 @@ CMDARGS: argparse.Namespace
 VERSION: str = '2024-11-22'
 report: dict = {}
 list_format: str = ''
+
+# cache memory usage was about 10 times the size of
+# the on-disk metadata file
 opf_cache: dict = {}
 
 # ------------------
@@ -271,7 +274,7 @@ class BookMetadata:
     sortel: minidom.Element | None
     descel: minidom.Element | None
 
-    @profile
+    #@profile
     def __init__(self, metadata_file_path: Path | None):
 
         """Creates a miniDOM object from the metadata file and extracts
@@ -438,7 +441,7 @@ class Book:
     metadata: BookMetadata
     construct: Construct
 
-    @profile
+    #@profile
     def __init__(
         self,
         construct: Construct,
@@ -954,7 +957,7 @@ def do_prescan(config: configparser.ConfigParser) -> None:
 #   Main
 # ------------------
 
-@profile
+#@profile
 def main(clargs: list[str] | None = None):
 
     """Main
