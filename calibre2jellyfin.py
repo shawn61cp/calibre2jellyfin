@@ -32,14 +32,21 @@ report: dict = {}
 list_format: str = ''
 
 # Cache memory usage was about 10 times the size of
-# the on-disk metadata file.
+# the on-disk metadata files.
 # 
-# Caching improved the scanning portions of an inverte
-# report by about 17% but oddly added a few seconds
-# to normal processing.  Given that support for
-# saving/restoring mangled metadata had not been
-# implemented in this test, it seemd the benefits
-# are not really worth it.
+# Caching improved performance by 38% on an up-to-date
+# destination library of 3957 books with 11 sections using
+# select-by-subject and 8 sections using select-by-author.
+# On average 75 seconds vs 121 seconds.
+#
+# Preservation/restoration of mangled metadata had not
+# been implemented in the test version.
+#
+# Oddly, ordering the configuration sections so that
+# at least one select-by-subject is processed first
+# (and so populated the cache) took slightly longer
+# than the un-ordered version.
+
 opf_cache: dict = {}
 
 # ------------------
@@ -491,13 +498,12 @@ class Book:
         self.find_cover()
         self.find_metadata()
         
+        #self.metadata = BookMetadata(self.metadata_file_src_path)
         metadata_key = str(self.metadata_file_src_path)
         if CMDARGS.cache and metadata_key in opf_cache:
             self.metadata = opf_cache[metadata_key]
-            #logging.info(f'cache hit {metadata_key}')
         else:
             self.metadata = BookMetadata(self.metadata_file_src_path)
-            #logging.info(f'cache hit {metadata_key}')
             if CMDARGS.cache:
                 opf_cache[metadata_key] = self.metadata
 
