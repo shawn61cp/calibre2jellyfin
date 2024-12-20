@@ -1,0 +1,44 @@
+Fri Dec 20 13:25:52 2024    stat.dest.uptodate.1
+Fri Dec 20 13:33:58 2024    stat.dest.uptodate.5
+Fri Dec 20 13:32:00 2024    stat.dest.uptodate.4
+Fri Dec 20 13:30:15 2024    stat.dest.uptodate.3
+Fri Dec 20 13:27:57 2024    stat.dest.uptodate.2
+
+         386534000 function calls (313833120 primitive calls) in 603.612 seconds
+
+   Ordered by: cumulative time
+   List reduced from 770 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    130/5    0.000    0.000  603.612  120.722 {built-in method builtins.exec}
+        5    0.000    0.000  603.612  120.722 ./calibre2jellyfin.py:1(<module>)
+        5    0.000    0.000  603.550  120.710 ./calibre2jellyfin.py:976(main)
+        5    0.001    0.000  603.504  120.701 ./calibre2jellyfin.py:911(do_constructs)
+       95    0.001    0.000  603.483    6.352 ./calibre2jellyfin.py:223(do)
+       55    1.233    0.022  537.417    9.771 ./calibre2jellyfin.py:200(do_books_all)
+   235845    3.074    0.000  533.347    0.002 ./calibre2jellyfin.py:449(__init__)
+   235445    3.132    0.000  263.331    0.001 ./calibre2jellyfin.py:285(__init__)
+  1413460    3.058    0.000  253.542    0.000 /usr/lib/python3.10/pathlib.py:1023(glob)
+   942685    6.846    0.000  222.778    0.000 /usr/lib/python3.10/pathlib.py:438(_select_from)
+   471795  212.871    0.000  213.125    0.000 {built-in method posix.scandir}
+   235445    1.148    0.000  186.996    0.001 /usr/lib/python3.10/xml/dom/minidom.py:1986(parse)
+   235445    1.249    0.000  185.358    0.001 /usr/lib/python3.10/xml/dom/expatbuilder.py:899(parse)
+   235445    1.441    0.000  182.293    0.001 /usr/lib/python3.10/xml/dom/expatbuilder.py:197(parseFile)
+   472510   33.284    0.000  171.289    0.000 {method 'Parse' of 'pyexpat.xmlparser' objects}
+   235845    0.572    0.000  126.784    0.001 ./calibre2jellyfin.py:539(find_book)
+   235445    0.410    0.000  104.674    0.000 ./calibre2jellyfin.py:555(find_metadata)
+  5520975   25.121    0.000   83.350    0.000 /usr/lib/python3.10/xml/dom/expatbuilder.py:736(start_element_handler)
+       40    0.137    0.003   66.054    1.651 ./calibre2jellyfin.py:170(do_books_by_author)
+   400830    0.449    0.000   48.664    0.000 /usr/lib/python3.10/pathlib.py:1013(iterdir)
+    85700   47.476    0.001   47.536    0.001 {built-in method posix.listdir}
+  1343805    0.785    0.000   38.407    0.000 /usr/lib/python3.10/pathlib.py:1092(stat)
+  1462670   34.255    0.000   38.333    0.000 {built-in method posix.stat}
+  5520975    7.585    0.000   30.833    0.000 /usr/lib/python3.10/xml/dom/expatbuilder.py:789(end_element_handler)
+ 13101440   18.021    0.000   29.567    0.000 /usr/lib/python3.10/xml/dom/expatbuilder.py:114(_parse_ns_name)
+  1177225    0.571    0.000   29.332    0.000 /usr/lib/python3.10/xml/dom/minidom.py:1799(getElementsByTagName)
+   294405    0.285    0.000   29.152    0.000 /usr/lib/python3.10/pathlib.py:1285(exists)
+73873400/1177225   28.493    0.000   28.760    0.000 /usr/lib/python3.10/xml/dom/minidom.py:310(_get_elements_by_tagName_helper)
+   235450   26.020    0.000   27.877    0.000 {built-in method io.open}
+   235445    0.351    0.000   23.417    0.000 ./calibre2jellyfin.py:570(find_cover)
+
+
