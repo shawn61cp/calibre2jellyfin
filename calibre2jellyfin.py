@@ -414,7 +414,6 @@ class Book:
 
             ... path iteration, path checks, ...
                 book = Book(construct, author_folder_src_path, book_folder_src_path)
-                ... optionally check metadata was found (book.metadata.doc is not None) ...
                 book.do()   # export the book
     """
 
@@ -591,9 +590,6 @@ class Book:
             returns
                 None
 
-            Notes:
-                do_book() should be called first since it creates
-                the book destination folder.
         """
 
         # Create a symlink to the cover image if it does not exist
@@ -662,7 +658,7 @@ class Book:
         # If folder mode is 'author,series,book' or 'series,book', series info was found,
         # and mangling is enabled, mangle the book title (<dc:title>) and/or title_sort
         # elements by prepending the book's index to it's title.
-        # Also prepend a "Book X of Lorem Ipsum" header to the book description.
+        # Also prepend a "Book X of Lorem Ipsum, by Author..." header to the book description.
         # Otherwise, write out the original metadata unchanged.
 
         if not (self.metadata.doc and self.metadata_file_src_path):
@@ -700,6 +696,9 @@ class Book:
     def do_list(self) -> None:
 
         """Outputs report as specified by the --list command line argument
+
+            Updates
+                report
 
             returns
                 None
@@ -919,10 +918,13 @@ def do_constructs(config: configparser.ConfigParser) -> None:
 
 def do_prescan(config: configparser.ConfigParser) -> None:
 
-    """Pre-loads REPORT with all possible values.  For use with --invert.
+    """Pre-loads REPORT with all possible values precedent to an --invert(ed) report.
 
         config:
             initialized config parser object
+
+        returns:
+            None
 
         Exceptions:
             ValueError and KeyError
