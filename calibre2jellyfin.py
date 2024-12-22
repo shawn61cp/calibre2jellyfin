@@ -1030,14 +1030,14 @@ def main(clargs: list[str] | None = None):
         sys.exit(-1)
 
     if CMDARGS.list_spec:
-        for report_col in CMDARGS.list_spec.split(','):
+        cols = CMDARGS.list_spec.split(',')
+        for report_col in cols:
             if report_col not in ['section', 'authors', 'book', 'subject', 'bfolder', 'afolder', 'series', 'index']:
                 logging.critical(
                     '--list columns must be one or more of "section", "authors", "book", "bfolder", "afolder", '
                     '"subject", "series", "index"'
                 )
                 sys.exit(-1)
-        cols = CMDARGS.list_spec.split(',')
         list_format = '\t'.join([f'{{{col}}}' for col in cols])
 
     # read configuration
