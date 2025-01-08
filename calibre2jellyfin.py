@@ -26,7 +26,7 @@ from os import stat, utime
 
 CONFIG_FILE_PATH = Path.home() / '.config' / (Path(__file__).stem + '.cfg')
 CMDARGS: argparse.Namespace
-VERSION: str = '2024-11-22'
+VERSION: str = '2024-12-14'
 report: dict = {}
 list_format: str = ''
 
