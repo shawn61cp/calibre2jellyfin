@@ -278,7 +278,7 @@ The usage/installation steps described above yield a Jellyfin store that is owne
 Jellyfin can serve up this library because most default user configurations under Linux create files as world-readable.
 However, if you make the library owned by Jellyfin (the <code>jellyfin</code> Linux user/service account),
 you will be able to delete books through the Jellyfin interface assuming you have administrative permission
-on the library within the Jellyfin app itself.  
+on the library within the Jellyfin app itself.
 
 If your situation is like mine, cleaning up my Calibre library, ensuring the right metadata and
 covers got downloaded etc., is an ongoing task.  If you discover an issue while browsing your books
@@ -286,6 +286,13 @@ within Jellyfin, you can delete the Jellyfin book (within Jellyfin), go back to 
 clean things up, and then re-run the script. Et voilà! Depending on the issue, you might not even have to
 delete the book from Jellyfin; Rerunning the script might be sufficient. However, deleting the book,
 or even the author folder if there were many changes, from Jellyfin does guarantee a clean re-creation.
+
+<em>Note 2025-02-24: I have found that Jellyfin will delete an entire containing author or other folder
+and all contents, but attemtping to delete at the book level results in only the book file itself  
+being deleted, along with I believe its internal metadata, but not the enclosing book folder  
+nor the cover image nor the metadata opf file.  The book folder must be deleted through the file system.
+Since this is a bit of a nuisance, if I have very much to clean up, I sometimes just delete the author folder
+and let the whole author structure be re-created on the next run or via a manual run.</em>
 
 Note that because the book and cover files are soft linked, and the folders and metadata file are copies,
 when you delete a book or author through the Jellyfin interface, you are only affecting the Jellyfin library and
