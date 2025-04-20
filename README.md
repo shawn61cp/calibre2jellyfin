@@ -121,8 +121,9 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 
 #### Changes
 * 2024-12-14 (Current version, Branch Main)
-  * Added option to configuration parameter mangleMetaTitle to allow title prefixing 
-    metadata title with unformatted series index (e.g. "7" instead of "007")
+  * Added option to configuration parameter mangleMetaTitle to allow prefixing 
+    metadata title with unformatted series index (e.g. "7" instead of "007").  Run
+    once with --update-all-metadata to apply.
   * Added --invert command line option
     * This causes the output of --list to show excluded items.
     Books having a type that is not in a configured <em>bookfiletypes</em> parameter are ignored.
