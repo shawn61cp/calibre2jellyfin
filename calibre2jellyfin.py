@@ -75,8 +75,7 @@ class Construct:
                                                 'series,book'
                                                 'book'
 
-            mangle_meta_title: bool         True if metadata title should be prefixed with
-                                            series index.
+            mangle_meta_title: integer      0 - disable, 1 - formatted, 2 - unformatted
 
             mangle_meta_title_sort: bool    True if metadata sort title should be prefixed
                                             with series index.
@@ -112,7 +111,7 @@ class Construct:
     calibre_store: Path
     jellyfin_store: Path
     foldermode: str
-    mangle_meta_title: bool
+    mangle_meta_title: int
     mangle_meta_title_sort: bool
     selection_mode: str
     section_name: str
@@ -138,7 +137,7 @@ class Construct:
         self.calibre_store = Path(section['calibreStore'])
         self.jellyfin_store = Path(section['jellyfinStore'])
         self.foldermode = section['foldermode']
-        self.mangle_meta_title = section.getboolean('mangleMetaTitle')
+        self.mangle_meta_title = section.getint('mangleMetaTitle')
         self.mangle_meta_title_sort = section.getboolean('mangleMetaTitleSort')
         # convert multiline configs to lists
         self.book_file_types = section['bookfiletypes'][1:].split('\n')
@@ -169,6 +168,8 @@ class Construct:
             raise ValueError('subjects must contain at least one entry')
         if self.book_file_types[0] == '':
             raise ValueError('bookfiletypes must contain at least one entry')
+        if self.mangle_meta_title and (self.mangle_meta_title < 0 or self.mangle_meta_title > 2):
+            raise ValueError('mangleMetaTitle must be 0, 1, or 2')
 
     def do_books_by_author(self) -> None:
 
@@ -647,11 +648,17 @@ class Book:
         if self.construct.foldermode not in ['author,series,book', 'series,book']:
             return
 
-        if self.metadata.titleel and self.construct.mangle_meta_title:
-            self.metadata.titleel.firstChild.data = (
-                f'{self.metadata.formatted_series_index}'
-                f' - {self.metadata.titleel.firstChild.data}'
-            )
+        if self.metadata.titleel:
+            if self.construct.mangle_meta_title == 1:
+                self.metadata.titleel.firstChild.data = (
+                    f'{self.metadata.formatted_series_index}'
+                    f' - {self.metadata.titleel.firstChild.data}'
+                )
+            elif self.construct.mangle_meta_title == 2:
+                self.metadata.titleel.firstChild.data = (
+                    f'{self.metadata.series_index}'
+                    f' - {self.metadata.titleel.firstChild.data}'
+                )
 
         if self.metadata.sortel and self.construct.mangle_meta_title_sort:
             self.metadata.sortel.setAttribute(
