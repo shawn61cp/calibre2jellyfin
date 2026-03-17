@@ -120,6 +120,12 @@ _The "series/book" option is intended for use with eComics, thanks for this go t
 </table>
 
 #### Changes
+* 2026-03-17 (Current version, Branch Main)
+  * New configuration parameter
+    * additionalAuthors = [0|1]
+    * Causes books to appear in folders for additional authors as well as the "primary" author.
+    * Applies only when foldermode is 'author,series,book'
+    * Add the new parameter to your configuration file as desired.
 * 2024-12-14 (Current version, Branch Main)
   * Added option to configuration parameter mangleMetaTitle to allow prefixing 
     metadata title with unformatted series index (e.g. "7" instead of "007").  Run

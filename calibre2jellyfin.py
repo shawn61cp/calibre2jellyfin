@@ -9,7 +9,7 @@
    contributors Cudail
    license GPL3
 
-   Copyright (C) 2023-2025  Shawn C. Powell and Contributors.
+   Copyright (C) 2023-2026  Shawn C. Powell and Contributors.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ from os import stat, utime
 
 CONFIG_FILE_PATH = Path.home() / '.config' / (Path(__file__).stem + '.cfg')
 CMDARGS: argparse.Namespace
-VERSION: str = '2024-12-14'
+VERSION: str = '2026-03-17'
 report: dict = {}
 list_format: str = ''
 
@@ -87,6 +87,8 @@ class Construct:
 
             prescan: bool                   True if report is being pre-loaded for --invert output
 
+            additional_authors:book         True if books are to be output under the additional authors
+
         Usage:
 
             ... initialize logging ...
@@ -116,6 +118,7 @@ class Construct:
     selection_mode: str
     section_name: str
     prescan: bool
+    additional_authors: bool
 
     def __init__(self, section: configparser.SectionProxy):
 
@@ -139,6 +142,7 @@ class Construct:
         self.foldermode = section['foldermode']
         self.mangle_meta_title = section.getint('mangleMetaTitle')
         self.mangle_meta_title_sort = section.getboolean('mangleMetaTitleSort')
+        self.additional_authors = section.getboolean('additionalAuthors')
         # convert multiline configs to lists
         self.book_file_types = section['bookfiletypes'][1:].split('\n')
         if self.selection_mode == 'author':
@@ -413,6 +417,9 @@ class Book:
         Attributes:
             author_folder_src_path: Path            Full path to source author folder.
             author_folder_dst_path: Path            Full path to dest author folder.
+            override_author_folder_dst_name: str    Override destination author folder.
+                                                    Used to output books to their additional
+                                                    authors.  Also non-empty value indicates recursion.
             book_folder: str                        Name of dest book folder.
             book_folder_src_path: Path              Full path to source book folder.
             book_folder_dst_path: Path              Full path to dst book folder.
@@ -435,6 +442,7 @@ class Book:
 
     author_folder_src_path: Path
     author_folder_dst_path: Path
+    override_author_folder_dst_name: str
     book_folder: str
     book_folder_src_path: Path
     book_folder_dst_path: Path
@@ -451,7 +459,8 @@ class Book:
         self,
         construct: Construct,
         author_folder_src_path: Path,
-        book_folder_src_path: Path
+        book_folder_src_path: Path,
+        override_author_folder_dst_name:str = ''
     ):
 
         """Builds paths and retrieves metadata for the book.  Logic implementing
@@ -466,10 +475,21 @@ class Book:
 
                 book_folder_src_path:
                     Path, Full path to book folder
+
+                override_author_folder_dst_name
+                    str, overrides name of output author folder, only effective when folder mode is 'author,series,book'
+                    
         """
         self.construct = construct
         self.author_folder_src_path = author_folder_src_path
-        self.author_folder_dst_path = construct.jellyfin_store / author_folder_src_path.name
+        self.override_author_folder_dst_name = override_author_folder_dst_name
+        if self.override_author_folder_dst_name:
+            if self.override_author_folder_dst_name[-1] == '.':
+                self.override_author_folder_dst_name[-1] = '_'
+            self.override_author_folder_dst_name = sanitize_filename(self.override_author_folder_dst_name)
+            self.author_folder_dst_path = construct.jellyfin_store / self.override_author_folder_dst_name
+        else:
+            self.author_folder_dst_path = construct.jellyfin_store / author_folder_src_path.name
         self.book_folder = book_folder_src_path.name
         self.book_folder_src_path = book_folder_src_path
         self.book_folder_dst_path = None
@@ -715,6 +735,42 @@ class Book:
 
         self.metadata.write(self.metadata_file_dst_path)
 
+    def do_additional_authors(self) -> None:
+
+        """Outputs book to additional authors if configured and folder
+            mode is 'author,series,book'
+
+            returns
+                None
+        """
+
+        if not self.construct.additional_authors:
+            return
+        
+        if self.override_author_folder_dst_name:
+            return
+            
+        if not self.construct.foldermode == 'author,series,book':
+            return
+
+        authorels = self.metadata.doc.getElementsByTagName('dc:creator')
+        if not authorels:
+            return
+        if len(authorels) < 2:
+            return
+
+        for authorel in authorels[1:]:
+            author = authorel.firstChild.data
+            if not author:
+                continue
+            addBook = Book(
+                self.construct,
+                self.author_folder_src_path,
+                self.book_folder_src_path,
+                author
+            )
+            addBook.do()
+        
     def do_list(self) -> None:
 
         """Outputs report as specified by the --list command line argument
@@ -792,7 +848,13 @@ class Book:
             self.do_list()
             return
 
-        print(self.book_folder_src_path, flush=True)
+        # recursing first simplifies some things
+        self.do_additional_authors()
+
+        if self.override_author_folder_dst_name:
+            print(f'{self.book_folder_src_path} (+ {self.override_author_folder_dst_name})', flush=True)
+        else:
+            print(self.book_folder_src_path, flush=True)
 
         if not self.cover_file_src_path:
             logging.warning('No cover image was found in "%s"', self.book_folder_src_path)
@@ -1083,6 +1145,7 @@ def main(clargs: list[str] | None = None):
     config['DEFAULT']['mangleMetaTitleSort'] = '0'
     config['DEFAULT']['selectionMode'] = 'author'
     config['DEFAULT']['subjects'] = ''
+    config['DEFAULT']['additionalAuthors'] = '0'
 
     try:
         if CMDARGS.invert:
