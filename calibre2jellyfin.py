@@ -87,7 +87,7 @@ class Construct:
 
             prescan: bool                   True if report is being pre-loaded for --invert output
 
-            additional_authors:book         True if books are to be output under the additional authors
+            additional_authors:bool         True if books are to be output under the additional authors
 
         Usage:
 
