@@ -28,8 +28,10 @@
 import sys
 import configparser
 import argparse
+import textwrap
 import re
 import logging
+import gettext
 from pathlib import Path
 from xml.dom import minidom
 from os import stat, utime
@@ -37,7 +39,12 @@ from os import stat, utime
 # ------------------
 #   Globals
 # ------------------
-
+print(Path(__file__))
+_t = gettext.translation(
+	'calibre2jellyfin', 
+	localedir=Path(__file__).resolve().parent / 'calibre2jellyfin.locale'
+)
+_ = _t.gettext
 
 CONFIG_FILE_PATH = Path.home() / '.config' / (Path(__file__).stem + '.cfg')
 CMDARGS: argparse.Namespace
@@ -157,23 +164,23 @@ class Construct:
 
         # sanity check configuration parameters
         if not self.calibre_store.is_dir():
-            raise ValueError(f'calibreStore value "{self.calibre_store}" is not a directory or does not exist')
+            raise ValueError(_('calibreStore value "{calibre_store}" is not a directory or does not exist').format(calibre_store=self.calibre_store))
         if not self.jellyfin_store.is_dir():
-            raise ValueError(f'jellyfinStore value "{self.jellyfin_store}" is not a directory or does not exist')
+            raise ValueError(_('jellyfinStore value "{jellyfin_store}" is not a directory or does not exist').format(jellyfin_store=self.jellyfin_store))
         if self.jellyfin_store.samefile(self.calibre_store):
-            raise ValueError('jellyfinStore and calibreStore must be different locations')
+            raise ValueError(_('jellyfinStore and calibreStore must be different locations'))
         if self.foldermode not in ('book', 'series,book', 'author,series,book'):
-            raise ValueError('foldermode value must be "book", "series,book" or "author,series,book"')
+            raise ValueError(_('foldermode must be "book", "series,book" or "author,series,book"'))
         if self.selection_mode not in ('author', 'subject', 'all'):
-            raise ValueError('selectionMode must be "author", "subject", or "all"')
+            raise ValueError(_('selectionMode must be "author", "subject" or "all"'))
         if self.selection_mode == 'author' and self.author_folders[0] == '':
-            raise ValueError('authorFolders must contain at least one entry')
+            raise ValueError(_('authorFolders must contain at least one entry'))
         if self.selection_mode == 'subject' and self.subjects[0][0] == '':
-            raise ValueError('subjects must contain at least one entry')
+            raise ValueError(_('subjects must contain at least one entry'))
         if self.book_file_types[0] == '':
-            raise ValueError('bookfiletypes must contain at least one entry')
+            raise ValueError(_('bookfiletypes must contain at least one entry'))
         if self.mangle_meta_title and (self.mangle_meta_title < 0 or self.mangle_meta_title > 2):
-            raise ValueError('mangleMetaTitle must be 0, 1, or 2')
+            raise ValueError(_('mangleMetaTitle must be 0, 1, or 2'))
 
     def do_books_by_author(self) -> None:
 
@@ -190,8 +197,7 @@ class Construct:
             if not author_folder_src_path.is_dir():
                 if not self.prescan:
                     logging.warning(
-                        'Author folder "%s" does not exist or is not a directory'
-                        ' in Calibre store "%s".',
+                        _('Author folder "%s" does not exist or is not a directory in Calibre store "%s".'),
                         author_folder, self.calibre_store
                     )
                 continue
@@ -236,10 +242,10 @@ class Construct:
                 None
         """
 
-        logging.info('Processing [%s] ...', self.section_name)
+        logging.info(_('Processing [%s]:'), self.section_name)
 
         if CMDARGS.debug:
-            print(f'[Construct] parameters: {vars(self)}', flush=True)
+            print(_('[Construct] parameters: {vars}').format(vars=vars(self)), flush=True)
 
         if self.prescan and str(self.calibre_store) in report:
             return
@@ -327,10 +333,10 @@ class BookMetadata:
             with open(metadata_file_path, 'r', encoding='utf8') as docfile:
                 self.doc = minidom.parse(docfile)
         except OSError as excep:
-            logging.warning('Could not read metadata file "%s": %s', metadata_file_path, excep)
+            logging.warning(_('Could not read metadata file "%s": %s'), metadata_file_path, excep)
             return
         except Exception as excep:
-            logging.warning('Could not parse metadata file "%s": %s', metadata_file_path, excep)
+            logging.warning(_('Could not parse metadata file "%s": %s'), metadata_file_path, excep)
             return
 
         # get series info and other elements
@@ -383,10 +389,10 @@ class BookMetadata:
 
         if '.' in self.series_index:
             i = self.series_index.index('.')
-            self.formatted_series_index = f'{self.series_index[0:i]:>03s}.{self.series_index[i+1:]:>02s}'
+            self.formatted_series_index = '{series_index:>03s}.{series_index[i+1:]:>02s}'.format(series_index=self.series_index[0:i])
             return
 
-        self.formatted_series_index = f'{self.series_index:>03s}'
+        self.formatted_series_index = '{series_index:>03s}'.format(series_index=self.series_index)
 
     def write(self, metadata_file_dst_path: Path) -> None:
 
@@ -407,7 +413,7 @@ class BookMetadata:
                 with open(metadata_file_dst_path, 'w', encoding='utf8') as docfile:
                     self.doc.writexml(docfile)
             except OSError as excep:
-                logging.warning('Could not (over) write metadata file "%s": %s', metadata_file_dst_path, excep)
+                logging.warning(_('Could not write or overwrite metadata file "%s": %s'), metadata_file_dst_path, excep)
 
 
 class Book:
@@ -521,17 +527,20 @@ class Book:
         # create the destination folder(s) if they do not exist.
 
         if self.metadata.series and self.construct.foldermode in ['author,series,book', 'series,book']:
-            self.book_folder = sanitize_filename(f'{self.metadata.formatted_series_index} - {self.book_folder}')
+            self.book_folder = sanitize_filename(
+                '{formatted_series_index}'.format(formatted_series_index=self.metadata.formatted_series_index) +
+                ' - {book_folder}'.format(book_folder=self.book_folder)
+            )
             if self.construct.foldermode == 'author,series,book':
                 self.book_folder_dst_path = (
                     self.author_folder_dst_path
-                    / sanitize_filename(f'{self.metadata.series} Series')
+                    / sanitize_filename('{series} Series'.format(series=self.metadata.series))
                     / self.book_folder
                 )
             else:
                 self.book_folder_dst_path = (
                     self.construct.jellyfin_store
-                    / sanitize_filename(f'{self.metadata.series} Series')
+                    / sanitize_filename('{series} Series'.format(series=self.metadata.series))
                     / self.book_folder
                 )
         elif self.construct.foldermode in ['book', 'series,book']:
@@ -609,14 +618,14 @@ class Book:
                     utime(self.book_file_dst_path, follow_symlinks=False)
                 except OSError as excep:
                     logging.warning(
-                        'Could not touch book symlink %s: %s', self.book_file_dst_path, excep
+                        _('Could not touch book symlink %s: %s'), self.book_file_dst_path, excep
                     )
         else:
             try:
                 self.book_file_dst_path.symlink_to(self.book_file_src_path)
             except OSError as excep:
                 logging.warning(
-                    'Could not create book symlink "%s": %s', self.book_file_dst_path, excep
+                    _('Could not create book symlink "%s": %s'), self.book_file_dst_path, excep
                 )
 
     def do_cover(self) -> None:
@@ -641,7 +650,7 @@ class Book:
                         utime(self.cover_file_dst_path, follow_symlinks=False)
                     except OSError as excep:
                         logging.warning(
-                            'Could not touch cover image symlink %s: %s',
+                            _('Could not touch cover image symlink %s: %s'),
                             self.cover_file_dst_path, excep
                         )
             else:
@@ -649,7 +658,7 @@ class Book:
                     self.cover_file_dst_path.symlink_to(self.cover_file_src_path)
                 except OSError as excep:
                     logging.warning(
-                        'Could not create cover image symlink "%s": %s',
+                        _('Could not create cover image symlink "%s": %s'),
                         self.cover_file_dst_path, excep
                     )
 
@@ -671,20 +680,20 @@ class Book:
         if self.metadata.titleel:
             if self.construct.mangle_meta_title == 1:
                 self.metadata.titleel.firstChild.data = (
-                    f'{self.metadata.formatted_series_index}'
-                    f' - {self.metadata.titleel.firstChild.data}'
+                    '{formatted_series_index}'.format(formatted_series_index=self.metadata.formatted_series_index) +
+                    ' - {data}'.format(data=self.metadata.titleel.firstChild.data)
                 )
             elif self.construct.mangle_meta_title == 2:
                 self.metadata.titleel.firstChild.data = (
-                    f'{self.metadata.series_index}'
-                    f' - {self.metadata.titleel.firstChild.data}'
+                    '{series_index}'.format(series_index=self.metadata.series_index) +
+                    ' - {data}'.format(data=self.metadata.titleel.firstChild.data)
                 )
 
         if self.metadata.sortel and self.construct.mangle_meta_title_sort:
             self.metadata.sortel.setAttribute(
                 'content',
-                f'{self.metadata.formatted_series_index}'
-                f' - {self.metadata.sortel.getAttribute("content")}'
+                '{formatted_series_index}'.format(formatted_series_index=self.metadata.formatted_series_index) +
+                ' - {attribute}'.format(attribute=self.metadata.sortel.getAttribute("content"))
             )
 
     def do_metadata(self) -> None:
@@ -723,14 +732,20 @@ class Book:
 
         if self.metadata.series:
             self.mangle_series_metadata()
-            desc_header.append(f'Book {self.metadata.series_index} of <em>{self.metadata.series}</em>')
+            desc_header.append(
+                _('Book') + ' ' + self.metadata.series_index +
+                ' ' + _('of') + ' <em>' + self.metadata.series + '</em>'
+            )
 
         if self.metadata.authors:
-            desc_header.append(f'by {self.metadata.authors}')
+            desc_header.append(_('by') + ' ' + self.metadata.authors)
 
         if self.metadata.descel and desc_header:
             self.metadata.descel.firstChild.data = (
-                f'<H4>{", ".join(desc_header)}</H4>{self.metadata.descel.firstChild.data}'
+                '<H4>{header}</H4>{data}'.format(
+                    header=', '.join(desc_header),
+                    data=self.metadata.descel.firstChild.data
+                )
             )
 
         self.metadata.write(self.metadata_file_dst_path)
@@ -827,16 +842,16 @@ class Book:
                 self.construct.selection_mode in ['author', 'all']
                 and not self.construct.prescan
             ):
-                logging.warning('No book file of configured type was found in "%s"', self.book_folder_src_path)
+                logging.warning(_('No book file of configured type was found in "%s"'), self.book_folder_src_path)
             return
 
         if CMDARGS.debug:
-            print(f'Book attributes:  {vars(self)}', flush=True)
+            print(_('Book attributes:  {vars}').format(vars=vars(self)), flush=True)
             if self.metadata.doc:
-                print(f'Book metadata:    {vars(self.metadata)}', flush=True)
+                print(_('Book metadata:    {vars}').format(vars=vars(self.metadata)), flush=True)
 
         if not self.metadata_file_src_path:
-            logging.warning('No metadata was found in "%s"', self.book_folder_src_path)
+            logging.warning(_('No metadata was found in "%s"'), self.book_folder_src_path)
 
         if self.construct.selection_mode == 'subject':
             if not self.metadata.doc:
@@ -852,29 +867,34 @@ class Book:
         self.do_additional_authors()
 
         if self.override_author_folder_dst_name:
-            print(f'{self.book_folder_src_path} (+ {self.override_author_folder_dst_name})', flush=True)
+            print(
+                '{src_path} (+ {override_author})'.format(
+                    src_path=self.book_folder_src_path,
+                    override_author=self.override_author_folder_dst_name
+                ), flush=True
+            )
         else:
             print(self.book_folder_src_path, flush=True)
 
         if not self.cover_file_src_path:
-            logging.warning('No cover image was found in "%s"', self.book_folder_src_path)
+            logging.warning(_('No cover image was found in "%s"'), self.book_folder_src_path)
 
         if self.metadata.doc and not self.metadata.titleel:
             logging.warning(
-                'Missing normally required <dc:title> element in metadata for "%s"',
+                _('Missing normally required <dc:title> element in metadata for "%s"'),
                 self.book_folder_src_path
             )
 
         if self.metadata.doc and not self.metadata.authors:
             logging.warning(
-                'Missing normally required <dc:creator> (i.e. author) element in metadata for "%s"',
+                _('Missing normally required <dc:creator> (i.e. author) element in metadata for "%s"'),
                 self.book_folder_src_path
             )
 
         if CMDARGS.dryrun:
-            print(f'> {self.book_file_dst_path}', flush=True)
-            print(f'> {self.metadata_file_dst_path}', flush=True)
-            print(f'> {self.cover_file_dst_path}', flush=True)
+            print('> {path}'.format(path=self.book_file_dst_path), flush=True)
+            print('> {path}'.format(path=self.metadata_file_dst_path), flush=True)
+            print('> {path}'.format(path=self.cover_file_dst_path), flush=True)
             return
 
         # Create the destination book folder
@@ -882,8 +902,8 @@ class Book:
             self.book_folder_dst_path.mkdir(parents=True, exist_ok=True)
         except OSError as excep:
             logging.warning(
-                'Could not create book\'s destination folder (or a parent folder thereof) '
-                '"%s": %s', self.book_folder_dst_path, excep
+                _('Could not create book\'s destination folder (or a parent folder thereof) "%s": %s'),
+                self.book_folder_dst_path, excep
             )
             return
 
@@ -928,6 +948,20 @@ class Book:
                 self.matched_subject = ",".join(line)
                 return True
         return False
+
+
+class CustomHelpFormatter(argparse.HelpFormatter):
+	"""Argparse help formatter that supports newlines"""
+	
+	def _split_lines(self, text, width):
+		lines = text.split('\n')
+		formatted_lines = []
+		for line in lines:
+			if line:
+				formatted_lines.extend(textwrap.wrap(line, width))
+			else:
+				formatted_lines.append('')
+		return formatted_lines
 
 
 # ------------------
@@ -991,10 +1025,14 @@ def do_constructs(config: configparser.ConfigParser) -> None:
     if CMDARGS.list_spec:
         for store in report:
             if CMDARGS.invert:
-                selection_str = 'excluded:'
+                selection_str = _('excluded:')
             else:
-                selection_str = 'selected:'
-            print(f'{store}, {selection_str}\n{list_format}', flush=True)
+                selection_str = _('selected:')
+            print('{store}, {selection_str}\n{list_format}'.format(
+                store=store,
+                selection_str=selection_str,
+                list_format=list_format
+            ), flush=True)
             report[store].sort()
             for line in report[store]:
                 print(line, flush=True)
@@ -1051,68 +1089,77 @@ def main(clargs: list[str] | None = None):
 
     # Parse command line arguments
     cmdparser = argparse.ArgumentParser(
-        description='A utility to construct a Jellyfin ebook library from a Calibre library.'
-        f' Configuration file "{CONFIG_FILE_PATH}" is required.'
+        description=_('A utility to construct a Jellyfin ebook library from a Calibre library.') +
+        _(' Configuration file "{path}" is required.').format(path=CONFIG_FILE_PATH),
+        formatter_class = CustomHelpFormatter
     )
     cmdparser.add_argument(
         '--debug',
         dest='debug',
         action='store_true',
-        help='Emit debug information.'
+        help=_('Emit debug information.')
     )
     cmdparser.add_argument(
         '--dryrun',
         dest='dryrun',
         action='store_true',
-        help='Displays normal console output but makes no changes to exported libraries.'
+        help=_('Displays normal console output but makes no changes to exported libraries.')
     )
     cmdparser.add_argument(
         '--invert',
         dest='invert',
         action='store_true',
-        help='Inverts the sense of the --list argument, showing those items that will '
-        'not be exported.  Only valid in combination with --list.'
+        help=_('Inverts the sense of the') + ' --list ' + _('argument, showing those items that will not be exported. ') +
+        _('Only valid in combination with --list.')
     )
     cmdparser.add_argument(
         '--list',
         dest='list_spec',
         action='store',
-        help='Suspends normal export behavior.  Instead prints info from configuration sections '
-        'and file system that is useful for curation.\n LIST_SPEC is a comma-delimited list '
-        'of columns to include in the report.  The output is tab-separated.  Columns may be '
-        'one or more of authors, section, book, bfolder, afolder, subject, series, or index.  '
-        'authors: display author name if the source folder exists.  section: display section name.  '
-        'book: display book title.  bfolder: display book folder.  afolder: display author folder.  '
-        'subject: display subject that matched.  series: display name of the series.  '
-        'index: display series index.  The report output is sorted so there will be a pause while '
-        'all configured sections are processed.'
+        help=_('Suspends normal export behavior.') +
+        ' ' + _('Instead prints information from configuration sections and the file system that is useful for curation.') +
+        '\n\n' + _('LIST_SPEC is a comma-delimited list of columns to include in the report.') +
+        ' ' + _('The output is tab-separated.  Columns must be one or more of the following:') +
+        '\n\n' +
+        '\tauthors   ' + _(': display list of authors') +
+        '\n\tsection   ' + _(': display name of construct section') +
+        '\n\tbook      ' + _(': display book title') +
+        '\n\tbfolder   ' + _(': display book folder') +
+        '\n\tafolder   ' + _(': display author folder') +
+        '\n\tsubject   ' + _(': display matched subject') +
+        '\n\tseries    ' + _(': display name of series') +
+        '\n\tindex     ' + _(': display series index') +
+        '\n\n' + _('The report output is sorted so there will be a pause while all configured sections are processed.') +
+        '\n\n' + _('Example:'' --list afolder,book,series')
     )
     cmdparser.add_argument(
         '--update-all-metadata',
         dest='updateAllMetadata',
         action='store_true',
-        help='Useful to force a one-time update of all metadata files, '
-        'for instance when configurable metadata mangling options have changed. '
-        '(Normally metadata files are only updated when missing or out-of-date.)'
+        help=_(
+            'Useful to force a one-time update of all metadata files, '
+            'for instance when configurable metadata mangling options have changed. '
+            'Normally metadata files are only updated when missing or out-of-date.'
+        )
     )
     cmdparser.add_argument(
         '-v', '--version',
         dest='version',
         action='store_true',
-        help='Display version string.'
+        help=_('Display version string.')
     )
     CMDARGS = cmdparser.parse_args(clargs)
 
     if CMDARGS.version:
-        print(f'version {VERSION}', flush=True)
+        print(_('version {version}').format(version=VERSION), flush=True)
         return
 
     if CMDARGS.dryrun and (CMDARGS.list_spec or CMDARGS.updateAllMetadata):
-        logging.critical('Incompatible arguments')
+        logging.critical(_('Incompatible arguments'))
         sys.exit(-1)
 
     if CMDARGS.invert and not CMDARGS.list_spec:
-        logging.critical('Argument --invert may only be used in conjuction with --list.')
+        logging.critical(_('Argument --invert may only be used in conjuction with --list.'))
         sys.exit(-1)
 
     if CMDARGS.list_spec:
@@ -1120,11 +1167,13 @@ def main(clargs: list[str] | None = None):
         for report_col in cols:
             if report_col not in ['section', 'authors', 'book', 'subject', 'bfolder', 'afolder', 'series', 'index']:
                 logging.critical(
-                    '--list columns must be one or more of "section", "authors", "book", "bfolder", "afolder", '
-                    '"subject", "series", "index"'
+                    _(
+                        '--list columns must be one or more of "section", "authors", "book", "bfolder", "afolder", '
+                        '"subject", "series", "index"'
+                    )
                 )
                 sys.exit(-1)
-        list_format = '\t'.join([f'{{{col}}}' for col in cols])
+        list_format = '\t'.join(['{{{col}}}'.format(col=col) for col in cols])
 
     # read configuration
     try:
@@ -1132,13 +1181,13 @@ def main(clargs: list[str] | None = None):
             config = configparser.ConfigParser()
             config.read_file(configfile)
     except OSError as configexcep:
-        logging.critical('Could not read configuration "%s": %s', CONFIG_FILE_PATH, configexcep)
+        logging.critical(_('Could not read configuration "%s": %s'), CONFIG_FILE_PATH, configexcep)
         sys.exit(-1)
     except configparser.Error as configexcep:
-        logging.critical('Invalid configuration "%s": %s', CONFIG_FILE_PATH, configexcep)
+        logging.critical(_('Invalid configuration "%s": %s'), CONFIG_FILE_PATH, configexcep)
         sys.exit(-1)
 
-    logging.info('Using configuration "%s"', CONFIG_FILE_PATH)
+    logging.info(_('Using configuration "%s"'), CONFIG_FILE_PATH)
 
     # Default mangling behavior to that of original script
     config['DEFAULT']['mangleMetaTitle'] = '1'
@@ -1153,13 +1202,13 @@ def main(clargs: list[str] | None = None):
         do_constructs(config)
     except ValueError as excep:
         logging.critical(
-            'Inappropriate parameter value in configuration file "%s": %s',
+            _('Inappropriate parameter value in configuration file "%s": %s'),
             CONFIG_FILE_PATH, excep
         )
         sys.exit(-1)
     except KeyError as excep:
         logging.critical(
-            'A required parameter (%s) is missing from configuration file "%s".',
+            _('A required parameter (%s) is missing from configuration file "%s".'),
             excep, CONFIG_FILE_PATH
         )
         sys.exit(-1)

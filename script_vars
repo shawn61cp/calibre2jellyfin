@@ -2,6 +2,7 @@
 # Variables for use with message scripts
 
 domain="calibre2jellyfin"
-localedir="bin/calibre2jellyfin.locale"
+localeout="./bin/calibre2jellyfin.locale"
+localein="./locale_src"
 languages="en es fr fi"
 

@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # See "update_messages" script for workflow
-# Update $languages below as needed before running.
 
 . ./script_vars
 
 # compile .mo files for each language
 for lang in $languages; do
-    outputdir="${localedir}/${lang}/LC_MESSAGES"
+    outputdir="${localeout}/${lang}/LC_MESSAGES"
+    inputdir="${localein}/${lang}/LC_MESSAGES"
     if [[ "$lang" != "en" ]]; then
-        msgcmp "${outputdir}/${domain}.po" "${localedir}/calibre2jellyfin.pot"
+        msgcmp "${inputdir}/${domain}.po" "${localein}/${domain}.pot"
     fi
-    msgfmt "${outputdir}/${domain}.po" -o "${outputdir}/${domain}.mo"
+    msgfmt "${inputdir}/${domain}.po" -o "${outputdir}/${domain}.mo"
 done

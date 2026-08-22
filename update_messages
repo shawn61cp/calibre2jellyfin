@@ -6,22 +6,23 @@
 #   these are available in the gettext package.
 #
 #	1: Update languages in "script_vars" as needed
-#   2. Use this script to update message files, adding language codes
-#       to $languages below as needed.
-#   3. Edit .po files in the $localedir hierarchy for each language as needed.
+#   2. Use this script to update message files
+#   3. Edit .po files in the $localeout hierarchy for each language adding translations as needed.
 #   4. Compile the binary .mo files by running the "build_messages_mo" script
 
 . ./script_vars
 
 # extract message strings into template
-pygettext3 -d calibre2jellyfin -o "${localedir}/calibre2jellyfin.pot" "bin/calibre2jellyfin.py"
+pygettext3 -d "${domain}" -o "${localein}/${domain}.pot" "bin/${domain}.py"
 
 # create/merge .po files for each language
 for lang in $languages; do
-    outputdir="${localedir}/${lang}/LC_MESSAGES"
+    outputdir="${localeout}/${lang}/LC_MESSAGES"
+    inputdir="${localein}/${lang}/LC_MESSAGES"
     mkdir -p "$outputdir"
-    if [[ ! -e "${outputdir}/${domain}.po" ]]; then
-        cp "${localedir}/${domain}.pot" "${outputdir}/${domain}.po"
+    mkdir -p "$inputdir"
+    if [[ ! -e "${inputdir}/${domain}.po" ]]; then
+        cp "${localein}/${domain}.pot" "${inputdir}/${domain}.po"
     fi
-    msgmerge --update "${outputdir}/${domain}.po" "${localedir}/${domain}.pot"
+    msgmerge --update "${inputdir}/${domain}.po" "${localein}/${domain}.pot"
 done
