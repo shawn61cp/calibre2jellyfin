@@ -1,0 +1,318 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2026-08-18 18:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Shawn C. Powell <shawncp@scpowell.xyz>\n"
+"Language-Team: Google Translate\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+#: bin/calibre2jellyfin.py:167
+msgid ""
+"calibreStore value \"{calibre_store}\" is not a directory or does not exist"
+msgstr ""
+"El valor de calibreStore \"{calibre_store}\" no es un directorio o no existe."
+
+#: bin/calibre2jellyfin.py:169
+msgid ""
+"jellyfinStore value \"{jellyfin_store}\" is not a directory or does not exist"
+msgstr ""
+"El valor de jellyfinStore \"{jellyfin_store}\" no es un directorio o no "
+"existe."
+
+#: bin/calibre2jellyfin.py:171
+msgid "jellyfinStore and calibreStore must be different locations"
+msgstr "jellyfinStore y calibreStore deben estar en ubicaciones diferentes."
+
+#: bin/calibre2jellyfin.py:173
+msgid "foldermode must be \"book\", \"series,book\" or \"author,series,book\""
+msgstr "foldermode debe ser \"book\", \"series,book\" o \"author,series,book\"."
+
+#: bin/calibre2jellyfin.py:175
+msgid "selectionMode must be \"author\", \"subject\" or \"all\""
+msgstr "selectionMode debe ser \"author\", \"subject\" o \"all\"."
+
+#: bin/calibre2jellyfin.py:177
+msgid "authorFolders must contain at least one entry"
+msgstr "authorFolders debe contener al menos una entrada"
+
+#: bin/calibre2jellyfin.py:179
+msgid "subjects must contain at least one entry"
+msgstr "subjects debe contener al menos una entrada"
+
+#: bin/calibre2jellyfin.py:181
+msgid "bookfiletypes must contain at least one entry"
+msgstr "bookfiletypes debe contener al menos una entrada"
+
+#: bin/calibre2jellyfin.py:183
+msgid "mangleMetaTitle must be 0, 1, or 2"
+msgstr "mangleMetaTitle debe ser 0, 1 o 2."
+
+#: bin/calibre2jellyfin.py:200
+msgid ""
+"Author folder \"%s\" does not exist or is not a directory in Calibre store \"%s\"."
+msgstr ""
+"La carpeta del autor \"%s\" no existe o no es un directorio en el almacén de "
+"Calibre \"%s\"."
+
+#: bin/calibre2jellyfin.py:245
+msgid "Processing [%s]:"
+msgstr "Procesando [%s]:"
+
+#: bin/calibre2jellyfin.py:248
+msgid "[Construct] parameters: {vars}"
+msgstr "Parámetros [Construct]: {vars}"
+
+#: bin/calibre2jellyfin.py:336
+msgid "Could not read metadata file \"%s\": %s"
+msgstr "No se pudo leer el archivo de metadatos \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:339
+msgid "Could not parse metadata file \"%s\": %s"
+msgstr "No se pudo analizar el archivo de metadatos \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:416
+msgid "Could not write or overwrite metadata file \"%s\": %s"
+msgstr "No se pudo escribir ni sobrescribir el archivo de metadatos \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:621
+msgid "Could not touch book symlink %s: %s"
+msgstr "No se pudo acceder al enlace simbólico del libro %s: %s"
+
+#: bin/calibre2jellyfin.py:628
+msgid "Could not create book symlink \"%s\": %s"
+msgstr "No se pudo crear el enlace simbólico del libro \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:653
+msgid "Could not touch cover image symlink %s: %s"
+msgstr "No se pudo acceder al enlace simbólico de la imagen de portada %s: %s"
+
+#: bin/calibre2jellyfin.py:661
+msgid "Could not create cover image symlink \"%s\": %s"
+msgstr ""
+"No se pudo crear el enlace simbólico de la imagen de portada \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:736
+msgid "Book"
+msgstr "Libro"
+
+#: bin/calibre2jellyfin.py:737
+msgid "of"
+msgstr "de"
+
+#: bin/calibre2jellyfin.py:741
+msgid "by"
+msgstr "por"
+
+#: bin/calibre2jellyfin.py:845
+msgid "No book file of configured type was found in \"%s\""
+msgstr "No se encontró ningún archivo de libro del tipo configurado en \"%s\""
+
+#: bin/calibre2jellyfin.py:849
+msgid "Book attributes:  {vars}"
+msgstr "Atributos del libro: {vars}"
+
+#: bin/calibre2jellyfin.py:851
+msgid "Book metadata:    {vars}"
+msgstr "Metadatos del libro: {vars}"
+
+#: bin/calibre2jellyfin.py:854
+msgid "No metadata was found in \"%s\""
+msgstr "No se encontraron metadatos en \"%s\""
+
+#: bin/calibre2jellyfin.py:880
+msgid "No cover image was found in \"%s\""
+msgstr "No se encontró ninguna imagen de portada en \"%s\""
+
+#: bin/calibre2jellyfin.py:884
+msgid "Missing normally required <dc:title> element in metadata for \"%s\""
+msgstr ""
+"Falta el elemento <dc:title> normalmente requerido en los metadatos para "
+"\"%s\""
+
+#: bin/calibre2jellyfin.py:890
+msgid ""
+"Missing normally required <dc:creator> (i.e. author) element in metadata for "
+"\"%s\""
+msgstr ""
+"Falta el elemento <dc:creator> (es decir, autor) normalmente requerido en "
+"los metadatos para \"%s\"."
+
+#: bin/calibre2jellyfin.py:905
+msgid ""
+"Could not create book's destination folder (or a parent folder thereof) "
+"\"%s\": %s"
+msgstr ""
+"No se pudo crear la carpeta de destino del libro (o una carpeta principal de "
+"la misma) \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:1028
+msgid "excluded:"
+msgstr "excluida:"
+
+#: bin/calibre2jellyfin.py:1030
+msgid "selected:"
+msgstr "seleccionada:"
+
+#: bin/calibre2jellyfin.py:1093
+msgid " Configuration file \"{path}\" is required."
+msgstr " Se requiere el archivo de configuración \"{path}\"."
+
+#: bin/calibre2jellyfin.py:1100
+msgid "Emit debug information."
+msgstr "Emitir información de depuración."
+
+#: bin/calibre2jellyfin.py:1106
+msgid ""
+"Displays normal console output but makes no changes to exported libraries."
+msgstr ""
+"Muestra la salida normal de la consola, pero no realiza ningún cambio en las "
+"bibliotecas exportadas."
+
+#: bin/calibre2jellyfin.py:1112
+msgid "Inverts the sense of the"
+msgstr "Invierte el sentido de la"
+
+#: bin/calibre2jellyfin.py:1112
+msgid "argument, showing those items that will not be exported. "
+msgstr "argumento, mostrando aquellos artículos que no serán exportados. "
+
+#: bin/calibre2jellyfin.py:1113
+msgid "Only valid in combination with --list."
+msgstr "Sólo válida en combinación con --list."
+
+#: bin/calibre2jellyfin.py:1119
+msgid "Suspends normal export behavior."
+msgstr "Suspende el comportamiento normal de exportación."
+
+#: bin/calibre2jellyfin.py:1120
+msgid ""
+"Instead prints information from configuration sections and the file system "
+"that is useful for curation."
+msgstr ""
+"En su lugar, imprime información de las secciones de configuración y del "
+"sistema de archivos que resulta útil para la curación."
+
+#: bin/calibre2jellyfin.py:1121
+msgid ""
+"LIST_SPEC is a comma-delimited list of columns to include in the report."
+msgstr ""
+"LIST_SPEC es una lista de columnas separadas por comas que se incluirán en "
+"el informe."
+
+#: bin/calibre2jellyfin.py:1122
+msgid ""
+"The output is tab-separated.  Columns must be one or more of the following:"
+msgstr ""
+"La salida está separada por tabuladores. Las columnas deben ser una o varias "
+"de las siguientes:"
+
+#: bin/calibre2jellyfin.py:1124
+msgid ": display list of authors"
+msgstr ": mostrar lista de los autores"
+
+#: bin/calibre2jellyfin.py:1125
+msgid ": display name of construct section"
+msgstr ": mostrar el nombre de la sección de construcción"
+
+#: bin/calibre2jellyfin.py:1126
+msgid ": display book title"
+msgstr ": mostrar el título del libro"
+
+#: bin/calibre2jellyfin.py:1127
+msgid ": display book folder"
+msgstr ": mostrar carpeta del libro"
+
+#: bin/calibre2jellyfin.py:1128
+msgid ": display author folder"
+msgstr ": mostrar carpeta del autor"
+
+#: bin/calibre2jellyfin.py:1129
+msgid ": display matched subject"
+msgstr ": mostrar el asunto coincidente"
+
+#: bin/calibre2jellyfin.py:1130
+msgid ": display name of series"
+msgstr ": mostrar nombre de la serie"
+
+#: bin/calibre2jellyfin.py:1131
+msgid ": display series index"
+msgstr ": mostrar índice de la serie"
+
+#: bin/calibre2jellyfin.py:1132
+msgid ""
+"The report output is sorted so there will be a pause while all configured "
+"sections are processed."
+msgstr ""
+"El resultado del informe se ordena, por lo que habrá una pausa mientras se "
+"procesan todas las secciones configuradas."
+
+#: bin/calibre2jellyfin.py:1133
+msgid "Example: --list afolder,book,series"
+msgstr "Ejemplo: --list afolder,book,series"
+
+#: bin/calibre2jellyfin.py:1139
+msgid ""
+"Useful to force a one-time update of all metadata files, for instance when "
+"configurable metadata mangling options have changed. Normally metadata files "
+"are only updated when missing or out-of-date."
+msgstr "Útil para forzar una actualización única de todos los archivos de metadatos, por ejemplo, cuando han cambiado las opciones configurables de manipulación de metadatos. Normalmente, los archivos de metadatos solo se actualizan cuando faltan o están desactualizados."
+
+#: bin/calibre2jellyfin.py:1149
+msgid "Display version string."
+msgstr "Mostrar cadena de versión."
+
+#: bin/calibre2jellyfin.py:1154
+msgid "version {version}"
+msgstr "versión {versión}"
+
+#: bin/calibre2jellyfin.py:1158
+msgid "Incompatible arguments"
+msgstr "Argumentos incompatibles"
+
+#: bin/calibre2jellyfin.py:1162
+msgid "Argument --invert may only be used in conjuction with --list."
+msgstr "El argumento --invert solo puede usarse junto con --list."
+
+#: bin/calibre2jellyfin.py:1170
+msgid ""
+"--list columns must be one or more of \"section\", \"authors\", \"book\", \"bfolder\", \"afolder\", \"subject\", \"series\", \"index\""
+msgstr ""
+"Las columnas --list deben ser una o más de las siguientes: \"section\", \"authors\", \"book\", \"bfolder\", \"afolder\", \"subject\", \"series\" o \"index\"."
+
+
+#: bin/calibre2jellyfin.py:1184
+msgid "Could not read configuration \"%s\": %s"
+msgstr "No se pudo leer la configuración \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:1187
+msgid "Invalid configuration \"%s\": %s"
+msgstr "Configuración no válida \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:1190
+msgid "Using configuration \"%s\""
+msgstr "Utilizando la configuración \"%s\""
+
+#: bin/calibre2jellyfin.py:1205
+msgid "Inappropriate parameter value in configuration file \"%s\": %s"
+msgstr ""
+"Valor de parámetro inapropiado en el archivo de configuración \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:1211
+msgid "A required parameter (%s) is missing from configuration file \"%s\"."
+msgstr ""
+"Falta un parámetro obligatorio (%s) en el archivo de configuración \"%s\"."
+
+#~ msgid "and"
+#~ msgstr "y"
+
+#~ msgid "or"
+#~ msgstr "o"
