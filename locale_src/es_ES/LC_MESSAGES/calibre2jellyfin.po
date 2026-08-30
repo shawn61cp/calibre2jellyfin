@@ -1,11 +1,7 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR ORGANIZATION
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-08-29 17:37-0500\n"
+"POT-Creation-Date: 2026-08-29 19:50-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Shawn C. Powell <shawncp@scpowell.xyz>\n"
 "Language-Team: Google Translate\n"
