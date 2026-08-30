@@ -1170,7 +1170,7 @@ def main(clargs: list[str] | None = None):
 			'\n'
 			'\t\t\t\t\t'					+_('Required.') + '\n'
 			'\t──────────────────────────────────\n'
-			'\t'+_('Parameter:')+	'\t\t'		'folderMode\n'
+			'\t'+_('Parameter:')+	'\t\t'		'foldermode\n'
 			'\n'
 			+custom_textwrap(_('Control file and directory structure of the output Jellyfin library.'),50,'\t\t\t\t\t','\n')+
 			'\n'
@@ -1197,7 +1197,7 @@ def main(clargs: list[str] | None = None):
 													50, '\t\t\t\t\t\t', '\n'
 												)[6:] +
 			'\n'
-			'\t\t\t\t\t'					+_('Has no effect unless folderMode is one of:') + '\n'
+			'\t\t\t\t\t'					+_('Has no effect unless foldermode is one of:') + '\n'
 											+custom_textwrap(
 												'author,series,book\n'
 												'series,book\n'
@@ -1219,7 +1219,7 @@ def main(clargs: list[str] | None = None):
 													50, '\t\t\t\t\t\t', '\n'
 												)[6:] +
 			'\n'
-			'\t\t\t\t\t'					+_('Has no effect unless folderMode is one of:') + '\n'
+			'\t\t\t\t\t'					+_('Has no effect unless foldermode is one of:') + '\n'
 			'\t\t\t\t\t\t'						'author,series,book''\n'
 			'\t\t\t\t\t\t'						'series,book''\n'
 			'\t──────────────────────────────────\n'
@@ -1241,7 +1241,7 @@ def main(clargs: list[str] | None = None):
 			'\t\t\t\t\t'					+_('Default:') + '\n'
 			'\t\t\t\t\t\t'						'0''\n'
 			'\n'
-			'\t\t\t\t\t'					+_('Has no effect unless folderMode is:') + '\n'
+			'\t\t\t\t\t'					+_('Has no effect unless foldermode is:') + '\n'
 			'\t\t\t\t\t\t'						'author,series,book''\n'
 			'\t──────────────────────────────────\n'
 			'\t'+_('Parameter:')+	'\t\t'		'bookfiletypes\n'
@@ -1338,6 +1338,11 @@ def main(clargs: list[str] | None = None):
 				),
 				50, '\t\t\t\t\t', '\n'
 			) +
+			'\n'
+			'\t\t\t\t\t'	+_('Example:') + '\n'
+			'\t\t\t\t\t'	'subjects =\n'
+			'\t\t\t\t\t\t'		+_('science fiction, alien contact') + '\n'
+			'\t\t\t\t\t\t'		+_('thriller') + '\n'
 			'\n'
 			'─────────────────────\n'
 			+_('CONFIGURATION EXAMPLES') + '\n'

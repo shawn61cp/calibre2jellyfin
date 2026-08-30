@@ -4,5 +4,16 @@
 domain="calibre2jellyfin"
 localeout="./bin/calibre2jellyfin.locale"
 localein="./locale_src"
-languages="en es fr fi"
+languages="en_US es_ES fr_FR fi_FI ga_IE nl_NL it_IT de_DE bg_BG no_NO tr_TR"
 
+#en: English
+#es: Spanish
+#fr: French
+#fi: Finnish
+#ga: Irish
+#nl: Dutch
+#it: Italian
+#de: German
+#bg: Bulgarian
+#no: Norwegian
+#tr: Turkish
