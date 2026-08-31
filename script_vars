@@ -4,7 +4,7 @@
 domain="calibre2jellyfin"
 localeout="./bin/calibre2jellyfin.locale"
 localein="./locale_src"
-languages="en_US es_ES fr_FR fi_FI ga_IE nl_NL it_IT de_DE bg_BG no_NO tr_TR"
+languages="en_US es_ES fr_FR fi_FI ga_IE nl_NL it_IT de_DE bg_BG no_NO tr_TR zh_CN ja_JP"
 
 #en: English
 #es: Spanish
@@ -17,3 +17,5 @@ languages="en_US es_ES fr_FR fi_FI ga_IE nl_NL it_IT de_DE bg_BG no_NO tr_TR"
 #bg: Bulgarian
 #no: Norwegian
 #tr: Turkish
+#zh: Chinese
+#ja: Japanese
