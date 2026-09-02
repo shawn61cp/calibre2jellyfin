@@ -9,31 +9,33 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
-
 #: bin/calibre2jellyfin.py:167
-msgid "calibreStore value \"{calibre_store}\" is not a directory or does not exist"
-msgstr ""
+msgid ""
+"calibreStore value \"{calibre_store}\" is not a directory or does not exist"
+msgstr "Il valore calibreStore \"{calibre_store}\" non è una directory o non esiste."
 
 #: bin/calibre2jellyfin.py:169
-msgid "jellyfinStore value \"{jellyfin_store}\" is not a directory or does not exist"
-msgstr ""
+msgid ""
+"jellyfinStore value \"{jellyfin_store}\" is not a directory or does not exist"
+msgstr "Il valore jellyfinStore \"{jellyfin_store}\" non è una directory o non esiste."
 
 #: bin/calibre2jellyfin.py:171
 msgid "jellyfinStore and calibreStore must be different locations"
-msgstr ""
+msgstr "jellyfinStore e calibreStore devono essere posizioni diverse."
 
 #: bin/calibre2jellyfin.py:173
 msgid "foldermode must be \"book\", \"series,book\" or \"author,series,book\""
-msgstr ""
+msgstr "foldermode deve essere \"book\", \"series,book\" oppure \"author,series,book\""
 
 #: bin/calibre2jellyfin.py:175
 msgid "selectionMode must be \"author\", \"subject\" or \"all\""
-msgstr ""
+msgstr "selectionMode deve essere \"author\", \"subject\" o \"all\""
 
 #: bin/calibre2jellyfin.py:177
 msgid "authorFolders must contain at least one entry"
@@ -52,7 +54,9 @@ msgid "mangleMetaTitle must be 0, 1, or 2"
 msgstr ""
 
 #: bin/calibre2jellyfin.py:200
-msgid "Author folder \"%s\" does not exist or is not a directory in Calibre store \"%s\"."
+msgid ""
+"Author folder \"%s\" does not exist or is not a directory in Calibre store "
+"\"%s\"."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:245
@@ -132,11 +136,15 @@ msgid "Missing normally required <dc:title> element in metadata for \"%s\""
 msgstr ""
 
 #: bin/calibre2jellyfin.py:890
-msgid "Missing normally required <dc:creator> (i.e. author) element in metadata for \"%s\""
+msgid ""
+"Missing normally required <dc:creator> (i.e. author) element in metadata for "
+"\"%s\""
 msgstr ""
 
 #: bin/calibre2jellyfin.py:905
-msgid "Could not create book's destination folder (or a parent folder thereof) \"%s\": %s"
+msgid ""
+"Could not create book's destination folder (or a parent folder thereof) "
+"\"%s\": %s"
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1043
@@ -148,7 +156,9 @@ msgid "selected:"
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1108
-msgid "A utility to construct a Jellyfin ebook library from a Calibre library. Configuration file \"{path}\" is required (see below)."
+msgid ""
+"A utility to construct a Jellyfin ebook library from a Calibre library. "
+"Configuration file \"{path}\" is required (see below)."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1118
@@ -164,7 +174,9 @@ msgid "Configuration Sections:"
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1124
-msgid "The configuration file must consist of [Construct] sections that contain parameters."
+msgid ""
+"The configuration file must consist of [Construct] sections that contain "
+"parameters."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1125
@@ -176,7 +188,9 @@ msgid "[Construct] section names must be uniquely named or numbered."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1127
-msgid "[Construct] section names must begin with exactly the nine letters \"Construct\""
+msgid ""
+"[Construct] section names must begin with exactly the nine letters "
+"\"Construct\""
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1128
@@ -196,11 +210,15 @@ msgid "Parameters must be indented within a preceding section."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1139
-msgid "Parameters consist of the parameter label followed by \" = \" followed by the parameter value."
+msgid ""
+"Parameters consist of the parameter label followed by \" = \" followed by "
+"the parameter value."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1144
-msgid "Multiline parameters begin on the line following the \"parameter =\" statement and must be indented."
+msgid ""
+"Multiline parameters begin on the line following the \"parameter =\" "
+"statement and must be indented."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1149
@@ -228,7 +246,9 @@ msgid "The full path to the destination Jellyfin library."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1164
-msgid "You may also point this to a subfolder within the Jellyfin library, for instance in the case where you are creating category subfolders."
+msgid ""
+"You may also point this to a subfolder within the Jellyfin library, for "
+"instance in the case where you are creating category subfolders."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1175
@@ -286,7 +306,9 @@ msgid "This is for backward compatibility.  Mode 1 will likely be preferred."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1229
-msgid "Controls whether books are output under each of multiple authors, or only under the \"primary\" author."
+msgid ""
+"Controls whether books are output under each of multiple authors, or only "
+"under the \"primary\" author."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1238
@@ -306,15 +328,22 @@ msgid "Has no effect unless foldermode is:"
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1250
-msgid "Multiline list of book file extensions, in order of preference first to last, and excluding \".\" separator."
+msgid ""
+"Multiline list of book file extensions, in order of preference first to "
+"last, and excluding \".\" separator."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1258
-msgid "Calibre2jellyfin will only output a single file for the text of each book.  Outputting books in multiple formats results in a suboptimal Jellyfin presentation."
+msgid ""
+"Calibre2jellyfin will only output a single file for the text of each book.  "
+"Outputting books in multiple formats results in a suboptimal Jellyfin "
+"presentation."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1268
-msgid "Must be one or more of the book file extension types that Jellyfin recognizes such as: azw, azw3,epub, mobi, pdf, cbz, and cbr."
+msgid ""
+"Must be one or more of the book file extension types that Jellyfin "
+"recognizes such as: azw, azw3,epub, mobi, pdf, cbz, and cbr."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1278
@@ -338,11 +367,15 @@ msgid "If not present defaults to:"
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1289
-msgid "Note that in the case of selection by subject, if the Calibre metadata file cannot be found then the book cannot be selected."
+msgid ""
+"Note that in the case of selection by subject, if the Calibre metadata file "
+"cannot be found then the book cannot be selected."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1300
-msgid "Multiline list of author folders within the source Calibre library.  All books in these author folders will be selected and output."
+msgid ""
+"Multiline list of author folders within the source Calibre library.  All "
+"books in these author folders will be selected and output."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1309
@@ -358,7 +391,10 @@ msgid "Required when selectionMode is subject."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1332
-msgid "Individual lines implement OR logic. Comma delimited lists implement AND logic. The example below would select any book having both \"science fiction\" AND \"alien contact\" tags, OR a \"thriller\" tag."
+msgid ""
+"Individual lines implement OR logic. Comma delimited lists implement AND "
+"logic. The example below would select any book having both \"science "
+"fiction\" AND \"alien contact\" tags, OR a \"thriller\" tag."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1342
@@ -394,11 +430,14 @@ msgid "Emit debug information."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1419
-msgid "Displays normal console output but makes no changes to exported libraries."
+msgid ""
+"Displays normal console output but makes no changes to exported libraries."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1425
-msgid "Inverts the sense of the --list argument, showing those items that will not be exported. "
+msgid ""
+"Inverts the sense of the --list argument, showing those items that will not "
+"be exported. "
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1426
@@ -410,15 +449,19 @@ msgid "Suspends normal export behavior."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1434
-msgid "Instead prints information from configuration sections and the file system that is useful for curation."
+msgid ""
+"Instead prints information from configuration sections and the file system "
+"that is useful for curation."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1435
-msgid "LIST_SPEC is a comma-delimited list of columns to include in the report."
+msgid ""
+"LIST_SPEC is a comma-delimited list of columns to include in the report."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1436
-msgid "The output is tab-separated.  Columns must be one or more of the following:"
+msgid ""
+"The output is tab-separated.  Columns must be one or more of the following:"
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1438
@@ -454,7 +497,9 @@ msgid ": display series index"
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1446
-msgid "The report output is sorted so there will be a pause while all configured sections are processed."
+msgid ""
+"The report output is sorted so there will be a pause while all configured "
+"sections are processed."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1447
@@ -462,7 +507,10 @@ msgid "Example: --list afolder,book,series"
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1453
-msgid "Useful to force a one-time update of all metadata files, for instance when configurable metadata mangling options have changed. Normally metadata files are only updated when missing or out-of-date."
+msgid ""
+"Useful to force a one-time update of all metadata files, for instance when "
+"configurable metadata mangling options have changed. Normally metadata files "
+"are only updated when missing or out-of-date."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1463
@@ -482,7 +530,9 @@ msgid "Argument --invert may only be used in conjunction with --list."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1484
-msgid "--list columns must be one or more of \"section\", \"authors\", \"book\", \"bfolder\", \"afolder\", \"subject\", \"series\", \"index\""
+msgid ""
+"--list columns must be one or more of \"section\", \"authors\", \"book\", "
+"\"bfolder\", \"afolder\", \"subject\", \"series\", \"index\""
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1498
@@ -504,4 +554,3 @@ msgstr ""
 #: bin/calibre2jellyfin.py:1525
 msgid "A required parameter (%s) is missing from configuration file \"%s\"."
 msgstr ""
-

@@ -1,6 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2026-08-29 19:50-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10,52 +11,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
+#: bin/calibre2jellyfin.py:167
 msgid ""
-"--list columns must be one or more of \"section\", \"authors\", \"book\", "
-"\"bfolder\", \"afolder\", \"subject\", \"series\", \"index\""
+"calibreStore value \"{calibre_store}\" is not a directory or does not exist"
 msgstr ""
-"--list-sarakkeiden on oltava vähintään yksi seuraavista: \"section\", "
-"\"authors\", \"book\", \"bfolder\", \"afolder\", \"subject\", \"series\", "
-"\"index\""
+"calibreStore-arvo \"{calibre_store}\" ei ole hakemisto tai sitä ei ole "
+"olemassa"
 
-msgid ": display author folder"
-msgstr ": näytä tekijäkansio"
-
-msgid ": display book folder"
-msgstr ": kirjan kansion näyttö"
-
-msgid ": display book title"
-msgstr ": näytä kirjan nimi"
-
-msgid ": display list of authors"
-msgstr ": näytä luettelo kirjoittajista"
-
-msgid ": display matched subject"
-msgstr ": näytä vastaava aihe"
-
-msgid ": display name of construct section"
-msgstr ": rakenneosan näyttönimi"
-
-msgid ": display name of series"
-msgstr ": sarjan näyttönimi"
-
-msgid ": display series index"
-msgstr ": näytä sarjan indeksi"
-
-msgid "A required parameter (%s) is missing from configuration file \"%s\"."
-msgstr "Pakollinen parametri (%s) puuttuu määritystiedostosta \"%s\"."
-
+#: bin/calibre2jellyfin.py:169
 msgid ""
-"A utility to construct a Jellyfin ebook library from a Calibre library. "
-"Configuration file \"{path}\" is required (see below)."
+"jellyfinStore value \"{jellyfin_store}\" is not a directory or does not exist"
 msgstr ""
-"Apuohjelma Jellyfin-e-kirjaston rakentamiseen Calibre-kirjastosta. "
-"Konfiguraatiotiedosto \"{path}\" vaaditaan (katso alla)."
+"jellyfinStore-arvo \"{jellyfin_store}\" ei ole hakemisto tai sitä ei ole "
+"olemassa"
 
-msgid "Argument --invert may only be used in conjunction with --list."
+#: bin/calibre2jellyfin.py:171
+msgid "jellyfinStore and calibreStore must be different locations"
+msgstr "jellyfinStore ja calibreStore täytyy olla eri paikoissa"
+
+#: bin/calibre2jellyfin.py:173
+msgid "foldermode must be \"book\", \"series,book\" or \"author,series,book\""
 msgstr ""
-"Argumenttia --invert saa käyttää vain yhdessä --list-valitsimen kanssa."
+"foldermode on oltava \"book\", \"series,book\" tai \"author,series,book\""
 
+#: bin/calibre2jellyfin.py:175
+msgid "selectionMode must be \"author\", \"subject\" or \"all\""
+msgstr "selectionMode on oltava \"author\", \"subject\" tai \"all\""
+
+#: bin/calibre2jellyfin.py:177
+msgid "authorFolders must contain at least one entry"
+msgstr "authorFolders on sisällettävä vähintään yksi merkintä"
+
+#: bin/calibre2jellyfin.py:179
+msgid "subjects must contain at least one entry"
+msgstr "subjects on sisällettävä vähintään yksi merkintä"
+
+#: bin/calibre2jellyfin.py:181
+msgid "bookfiletypes must contain at least one entry"
+msgstr "bookfiletypes on sisällettävä vähintään yksi merkintä"
+
+#: bin/calibre2jellyfin.py:183
+msgid "mangleMetaTitle must be 0, 1, or 2"
+msgstr "mangleMetaTitle on oltava 0, 1 tai 2"
+
+#: bin/calibre2jellyfin.py:200
 msgid ""
 "Author folder \"%s\" does not exist or is not a directory in Calibre store "
 "\"%s\"."
@@ -63,21 +62,308 @@ msgstr ""
 "Tekijän kansiota \"%s\" ei ole olemassa tai se ei ole hakemisto Calibre "
 "tallennustilassa \"%s\"."
 
+#: bin/calibre2jellyfin.py:245
+msgid "Processing [%s]:"
+msgstr "Käsitellään [%s]:"
+
+#: bin/calibre2jellyfin.py:248
+msgid "[Construct] parameters: {vars}"
+msgstr "[Construct]-parametrit: {vars}"
+
+#: bin/calibre2jellyfin.py:336
+msgid "Could not read metadata file \"%s\": %s"
+msgstr "Metatietotiedoston \"%s\" lukeminen epäonnistui: %s"
+
+#: bin/calibre2jellyfin.py:339
+msgid "Could not parse metadata file \"%s\": %s"
+msgstr "Metatietotiedostoa \"%s\" ei voitu jäsentää: %s"
+
+#: bin/calibre2jellyfin.py:416
+msgid "Could not write or overwrite metadata file \"%s\": %s"
+msgstr "Metatietotiedostoon \"%s\" ei voitu kirjoittaa tai korvata: %s"
+
+#: bin/calibre2jellyfin.py:537 bin/calibre2jellyfin.py:543
+msgid "{series} Series"
+msgstr "{series} Sarja"
+
+#: bin/calibre2jellyfin.py:621
+msgid "Could not touch book symlink %s: %s"
+msgstr "Kirjan symlinkkiin %s ei voitu koskea: %s"
+
+#: bin/calibre2jellyfin.py:628
+msgid "Could not create book symlink \"%s\": %s"
+msgstr "Kirjan symlinkkiä \"%s\" ei voitu luoda: %s"
+
+#: bin/calibre2jellyfin.py:653
+msgid "Could not touch cover image symlink %s: %s"
+msgstr "Kansikuvan symlinkkiä %s ei voitu koskettaa: %s"
+
+#: bin/calibre2jellyfin.py:661
+msgid "Could not create cover image symlink \"%s\": %s"
+msgstr "Kansikuvan symlinkkiä \"%s\" ei voitu luoda: %s"
+
+#: bin/calibre2jellyfin.py:736
 msgid "Book"
 msgstr "Kirja"
 
+#: bin/calibre2jellyfin.py:737
+msgid "of"
+msgstr "jostakin"
+
+#: bin/calibre2jellyfin.py:741
+msgid "by"
+msgstr "kirjoittanut"
+
+#: bin/calibre2jellyfin.py:845
+msgid "No book file of configured type was found in \"%s\""
+msgstr "Määritetyn tyyppistä kirjatiedostoa ei löytynyt hakemistosta \"%s\""
+
+#: bin/calibre2jellyfin.py:849
 msgid "Book attributes:  {vars}"
 msgstr "Kirjan ominaisuudet: {vars}"
 
+#: bin/calibre2jellyfin.py:851
 msgid "Book metadata:    {vars}"
 msgstr "Kirjan metatiedot: {vars}"
 
-msgid "Book selection mode."
-msgstr "Kirjan valintatila."
+#: bin/calibre2jellyfin.py:854
+msgid "No metadata was found in \"%s\""
+msgstr "Metatietoja ei löytynyt kohteesta \"%s\""
 
-msgid "CONFIGURATION EXAMPLES"
-msgstr "MÄÄRITYSESIMERKKEJÄ"
+#: bin/calibre2jellyfin.py:880
+msgid "No cover image was found in \"%s\""
+msgstr "Kansikuvaa ei löytynyt kohteesta \"%s\""
 
+#: bin/calibre2jellyfin.py:884
+msgid "Missing normally required <dc:title> element in metadata for \"%s\""
+msgstr ""
+"Normaalisti pakollinen <dc:title>-elementti puuttuu metatiedoista kohteelle "
+"\"%s\""
+
+#: bin/calibre2jellyfin.py:890
+msgid ""
+"Missing normally required <dc:creator> (i.e. author) element in metadata for "
+"\"%s\""
+msgstr ""
+"Normaalisti pakollinen <dc:creator>-elementti (eli tekijäelementti) puuttuu "
+"kohteen \"%s\" metatiedoista."
+
+#: bin/calibre2jellyfin.py:905
+msgid ""
+"Could not create book's destination folder (or a parent folder thereof) "
+"\"%s\": %s"
+msgstr ""
+"Kirjan kohdekansion (tai sen pääkansion) \"%s\" luominen epäonnistui: %s"
+
+#: bin/calibre2jellyfin.py:1043
+msgid "excluded:"
+msgstr "poissuljettu:"
+
+#: bin/calibre2jellyfin.py:1045
+msgid "selected:"
+msgstr "valittu:"
+
+#: bin/calibre2jellyfin.py:1108
+msgid ""
+"A utility to construct a Jellyfin ebook library from a Calibre library. "
+"Configuration file \"{path}\" is required (see below)."
+msgstr ""
+"Apuohjelma Jellyfin-e-kirjaston rakentamiseen Calibre-kirjastosta. "
+"Konfiguraatiotiedosto \"{path}\" vaaditaan (katso alla)."
+
+#: bin/calibre2jellyfin.py:1118
+msgid "THE CONFIGURATION FILE"
+msgstr "MÄÄRITYSTIEDOSTO"
+
+#: bin/calibre2jellyfin.py:1120
+msgid "Required configuration file name and location:"
+msgstr "Vaaditun määritystiedoston nimi ja sijainti:"
+
+#: bin/calibre2jellyfin.py:1123
+msgid "Configuration Sections:"
+msgstr "Määritysosiot:"
+
+#: bin/calibre2jellyfin.py:1124
+msgid ""
+"The configuration file must consist of [Construct] sections that contain "
+"parameters."
+msgstr ""
+"Konfiguraatiotiedoston on koostuttava [Construct]-osioista, jotka sisältävät "
+"parametreja."
+
+#: bin/calibre2jellyfin.py:1125
+msgid "There may be multiple [Construct] sections."
+msgstr "[Construct]-osioita voi olla useita."
+
+#: bin/calibre2jellyfin.py:1126
+msgid "[Construct] section names must be uniquely named or numbered."
+msgstr ""
+"[Construct]-osioiden nimien on oltava yksilöllisesti nimettyjä tai "
+"numeroituja."
+
+#: bin/calibre2jellyfin.py:1127
+msgid ""
+"[Construct] section names must begin with exactly the nine letters "
+"\"Construct\""
+msgstr ""
+"[Construct]-osioiden nimien on alettava täsmälleen yhdeksällä kirjaimella "
+"\"Construct\""
+
+#: bin/calibre2jellyfin.py:1128
+msgid "[Construct] section identifiers should not be indented."
+msgstr "[Construct]-osan tunnisteita ei tule sisentää."
+
+#: bin/calibre2jellyfin.py:1130
+msgid "Examples:"
+msgstr "Esimerkkejä:"
+
+#: bin/calibre2jellyfin.py:1136
+msgid "Configuration Parameters:"
+msgstr "Konfiguraatioparametrit:"
+
+#: bin/calibre2jellyfin.py:1137
+msgid "Parameters must be indented within a preceding section."
+msgstr "Parametrit on sisennettävä edellisen osan sisällä."
+
+#: bin/calibre2jellyfin.py:1139
+msgid ""
+"Parameters consist of the parameter label followed by \" = \" followed by "
+"the parameter value."
+msgstr ""
+"Parametrit koostuvat parametrin nimestä, jota seuraa \" = \" ja sen jälkeen "
+"parametrin arvo."
+
+#: bin/calibre2jellyfin.py:1144
+msgid ""
+"Multiline parameters begin on the line following the \"parameter =\" "
+"statement and must be indented."
+msgstr ""
+"Moniriviset parametrit alkavat riviltä, ​​joka seuraa \"parameter =\" -"
+"lauseketta, ja ne on sisennettävä."
+
+#: bin/calibre2jellyfin.py:1149
+msgid "See below for configuration examples."
+msgstr "Katso alta määritysesimerkkejä."
+
+#: bin/calibre2jellyfin.py:1154 bin/calibre2jellyfin.py:1160
+#: bin/calibre2jellyfin.py:1173 bin/calibre2jellyfin.py:1185
+#: bin/calibre2jellyfin.py:1208 bin/calibre2jellyfin.py:1226
+#: bin/calibre2jellyfin.py:1247 bin/calibre2jellyfin.py:1276
+#: bin/calibre2jellyfin.py:1297 bin/calibre2jellyfin.py:1316
+msgid "Parameter:"
+msgstr "Parametri:"
+
+#: bin/calibre2jellyfin.py:1156
+msgid "The full path to the source Calibre library."
+msgstr "Lähdekoodin Calibre-kirjaston koko polku."
+
+#: bin/calibre2jellyfin.py:1158 bin/calibre2jellyfin.py:1171
+msgid "Required."
+msgstr "Pakollinen."
+
+#: bin/calibre2jellyfin.py:1162
+msgid "The full path to the destination Jellyfin library."
+msgstr "Koko polku kohde-Jellyfin-kirjastoon."
+
+#: bin/calibre2jellyfin.py:1164
+msgid ""
+"You may also point this to a subfolder within the Jellyfin library, for "
+"instance in the case where you are creating category subfolders."
+msgstr ""
+"Voit myös osoittaa tämän Jellyfin-kirjaston alikansioon, esimerkiksi jos "
+"luot luokkien alikansioita."
+
+#: bin/calibre2jellyfin.py:1175
+msgid "Control file and directory structure of the output Jellyfin library."
+msgstr "Jellyfin-tulostuskirjaston ohjaustiedosto- ja hakemistorakenne."
+
+#: bin/calibre2jellyfin.py:1177 bin/calibre2jellyfin.py:1189
+#: bin/calibre2jellyfin.py:1212 bin/calibre2jellyfin.py:1237
+#: bin/calibre2jellyfin.py:1280
+msgid "Must be one of:"
+msgstr "Täytyy olla yksi seuraavista:"
+
+#: bin/calibre2jellyfin.py:1187
+msgid "Controls mangling of the metadata title element."
+msgstr "Ohjaa metatiedon otsikkoelementin muokkaamista."
+
+#: bin/calibre2jellyfin.py:1190
+msgid "Disable title mangling"
+msgstr "Poista otsikoiden manipulointi käytöstä"
+
+#: bin/calibre2jellyfin.py:1191
+msgid "Prefix title with formatted series index (e.g. \"007\")"
+msgstr "Lisää otsikon etuliitteeksi muotoiltu sarjan indeksi (esim. \"007\")"
+
+#: bin/calibre2jellyfin.py:1192
+msgid "Prefix title with unformatted series index (e.g. \"7\")"
+msgstr "Lisää otsikon etuliitteeksi muotoilematon sarjaindeksi (esim. \"7\")"
+
+#: bin/calibre2jellyfin.py:1194 bin/calibre2jellyfin.py:1216
+msgid "If not specified, defaults to:"
+msgstr "Jos ei ole määritetty, oletusarvo on:"
+
+#: bin/calibre2jellyfin.py:1196
+msgid "This is for backward compatibility.  Mode 2 will likely be preferred."
+msgstr ""
+"Tämä on taaksepäin yhteensopivuuden takaamiseksi. Tila 2 on todennäköisesti "
+"parempi."
+
+#: bin/calibre2jellyfin.py:1200 bin/calibre2jellyfin.py:1222
+msgid "Has no effect unless foldermode is one of:"
+msgstr "Ei vaikutusta, ellei foldermode ole jokin seuraavista:"
+
+#: bin/calibre2jellyfin.py:1210
+msgid "Controls mangling of the metadata title sort value."
+msgstr "Ohjaa metatietojen otsikon lajitteluarvon muokkaamista."
+
+#: bin/calibre2jellyfin.py:1213
+msgid "Disable title sort mangling"
+msgstr "Poista otsikon lajittelun muokkaaminen käytöstä"
+
+#: bin/calibre2jellyfin.py:1214
+msgid "Enable title sort mangling"
+msgstr "Ota käyttöön otsikon lajittelun muokkaaminen"
+
+#: bin/calibre2jellyfin.py:1218
+msgid "This is for backward compatibility.  Mode 1 will likely be preferred."
+msgstr ""
+"Tämä on taaksepäin yhteensopivuuden takaamiseksi. Tilaa 1 todennäköisesti "
+"suositaan."
+
+#: bin/calibre2jellyfin.py:1229
+msgid ""
+"Controls whether books are output under each of multiple authors, or only "
+"under the \"primary\" author."
+msgstr ""
+"Määrittää, tulostetaanko kirjat useiden eri kirjoittajien vai vain "
+"\"ensisijaisen\" kirjoittajan mukaan."
+
+#: bin/calibre2jellyfin.py:1238
+msgid "Disable output for additional authors."
+msgstr "Poista käytöstä lisäkirjoittajien tulostus."
+
+#: bin/calibre2jellyfin.py:1239
+msgid "Enable output for additional authors."
+msgstr "Ota käyttöön tulostus muille kirjoittajille."
+
+#: bin/calibre2jellyfin.py:1241
+msgid "Default:"
+msgstr "Oletus:"
+
+#: bin/calibre2jellyfin.py:1244
+msgid "Has no effect unless foldermode is:"
+msgstr "Ei vaikutusta, ellei foldermode ole:"
+
+#: bin/calibre2jellyfin.py:1250
+msgid ""
+"Multiline list of book file extensions, in order of preference first to "
+"last, and excluding \".\" separator."
+msgstr ""
+"Kirjatiedostojen tiedostopäätteiden monirivinen luettelo "
+"mieltymysjärjestyksessä ensimmäisestä viimeiseen, ilman erotinmerkkiä \".\"."
+
+#: bin/calibre2jellyfin.py:1258
 msgid ""
 "Calibre2jellyfin will only output a single file for the text of each book.  "
 "Outputting books in multiple formats results in a suboptimal Jellyfin "
@@ -87,115 +373,63 @@ msgstr ""
 "Kirjojen tulostaminen useissa eri muodoissa johtaa Jellyfin-esityslaadun "
 "heikompaan laatuun."
 
-msgid "Configuration Parameters:"
-msgstr "Konfiguraatioparametrit:"
-
-msgid "Configuration Sections:"
-msgstr "Määritysosiot:"
-
-msgid "Control file and directory structure of the output Jellyfin library."
-msgstr "Jellyfin-tulostuskirjaston ohjaustiedosto- ja hakemistorakenne."
-
-msgid "Controls mangling of the metadata title element."
-msgstr "Ohjaa metatiedon otsikkoelementin muokkaamista."
-
-msgid "Controls mangling of the metadata title sort value."
-msgstr "Ohjaa metatietojen otsikon lajitteluarvon muokkaamista."
-
+#: bin/calibre2jellyfin.py:1268
 msgid ""
-"Controls whether books are output under each of multiple authors, or only "
-"under the \"primary\" author."
+"Must be one or more of the book file extension types that Jellyfin "
+"recognizes such as: azw, azw3,epub, mobi, pdf, cbz, and cbr."
 msgstr ""
-"Määrittää, tulostetaanko kirjat useiden eri kirjoittajien vai vain "
-"\"ensisijaisen\" kirjoittajan mukaan."
+"Kirjan tiedostopäätteen on oltava yksi tai useampi Jellyfinin tunnistamista, "
+"kuten: azw, azw3, epub, mobi, pdf, cbz ja cbr."
 
-msgid "Could not create book symlink \"%s\": %s"
-msgstr "Kirjan symlinkkiä \"%s\" ei voitu luoda: %s"
+#: bin/calibre2jellyfin.py:1278
+msgid "Book selection mode."
+msgstr "Kirjan valintatila."
 
-msgid ""
-"Could not create book's destination folder (or a parent folder thereof) "
-"\"%s\": %s"
-msgstr ""
-"Kirjan kohdekansion (tai sen pääkansion) \"%s\" luominen epäonnistui: %s"
+#: bin/calibre2jellyfin.py:1281
+msgid "select by author folder"
+msgstr "valitse tekijäkansion mukaan"
 
-msgid "Could not create cover image symlink \"%s\": %s"
-msgstr "Kansikuvan symlinkkiä \"%s\" ei voitu luoda: %s"
+#: bin/calibre2jellyfin.py:1282
+msgid "select by metadata subject (aka tag)"
+msgstr "valitse metadatan aiheen (eli tagin) mukaan"
 
-msgid "Could not parse metadata file \"%s\": %s"
-msgstr "Metatietotiedostoa \"%s\" ei voitu jäsentää: %s"
+#: bin/calibre2jellyfin.py:1283
+msgid "select all books in source library"
+msgstr "valitse kaikki lähdekirjaston kirjat"
 
-msgid "Could not read configuration \"%s\": %s"
-msgstr "Konfiguraatiota \"%s\" ei voitu lukea: %s"
-
-msgid "Could not read metadata file \"%s\": %s"
-msgstr "Metatietotiedoston \"%s\" lukeminen epäonnistui: %s"
-
-msgid "Could not touch book symlink %s: %s"
-msgstr "Kirjan symlinkkiin %s ei voitu koskea: %s"
-
-msgid "Could not touch cover image symlink %s: %s"
-msgstr "Kansikuvan symlinkkiä %s ei voitu koskettaa: %s"
-
-msgid "Could not write or overwrite metadata file \"%s\": %s"
-msgstr "Metatietotiedostoon \"%s\" ei voitu kirjoittaa tai korvata: %s"
-
-msgid "Default:"
-msgstr "Oletus:"
-
-msgid "Disable output for additional authors."
-msgstr "Poista käytöstä lisäkirjoittajien tulostus."
-
-msgid "Disable title mangling"
-msgstr "Poista otsikoiden manipulointi käytöstä"
-
-msgid "Disable title sort mangling"
-msgstr "Poista otsikon lajittelun muokkaaminen käytöstä"
-
-msgid "Display version string."
-msgstr "Näytä versiomerkkijono."
-
-msgid ""
-"Displays normal console output but makes no changes to exported libraries."
-msgstr ""
-"Näyttää normaalin konsolitulosteen, mutta ei tee muutoksia vietyihin "
-"kirjastoihin."
-
-msgid "Emit debug information."
-msgstr "Lähetä virheenkorjaustietoja."
-
-msgid "Enable output for additional authors."
-msgstr "Ota käyttöön tulostus muille kirjoittajille."
-
-msgid "Enable title sort mangling"
-msgstr "Ota käyttöön otsikon lajittelun muokkaaminen"
-
-msgid "Example:"
-msgstr "Esimerkki:"
-
-msgid "Example: --list afolder,book,series"
-msgstr "Esimerkki: --list afolder,book,series"
-
-msgid "Examples:"
-msgstr "Esimerkkejä:"
-
-msgid "Has no effect unless foldermode is one of:"
-msgstr "Ei vaikutusta, ellei foldermode ole jokin seuraavista:"
-
-msgid "Has no effect unless foldermode is:"
-msgstr "Ei vaikutusta, ellei foldermode ole:"
-
+#: bin/calibre2jellyfin.py:1285
 msgid "If not present defaults to:"
 msgstr "Jos ei ole, oletusarvo on:"
 
-msgid "If not specified, defaults to:"
-msgstr "Jos ei ole määritetty, oletusarvo on:"
+#: bin/calibre2jellyfin.py:1289
+msgid ""
+"Note that in the case of selection by subject, if the Calibre metadata file "
+"cannot be found then the book cannot be selected."
+msgstr ""
+"Huomaa, että aiheen mukaan valittaessa kirjaa ei voida valita, jos Calibre-"
+"metatietotiedostoa ei löydy."
 
-msgid "Inappropriate parameter value in configuration file \"%s\": %s"
-msgstr "Virheellinen parametrin arvo määritystiedostossa \"%s\": %s"
+#: bin/calibre2jellyfin.py:1300
+msgid ""
+"Multiline list of author folders within the source Calibre library.  All "
+"books in these author folders will be selected and output."
+msgstr ""
+"Lähdetiedoston Calibre kirjaston tekijäkansioiden monirivinen luettelo. "
+"Kaikki näissä tekijäkansioissa olevat kirjat valitaan ja tulostetaan."
 
-msgid "Incompatible arguments"
-msgstr "Yhteensopimattomat argumentit"
+#: bin/calibre2jellyfin.py:1309
+msgid "Required when selectionMode is author. Ignored otherwise."
+msgstr "Pakollinen, kun selectionMode on tekijä. Muuten ohitetaan."
 
+#: bin/calibre2jellyfin.py:1319
+msgid "Multiline list of subjects (aka tags in Calibre)."
+msgstr "Monirivinen luettelo aiheista (eli tägeistä Calibre)."
+
+#: bin/calibre2jellyfin.py:1327
+msgid "Required when selectionMode is subject."
+msgstr "Pakollinen, kun selectionMode on valittu."
+
+#: bin/calibre2jellyfin.py:1332
 msgid ""
 "Individual lines implement OR logic. Comma delimited lists implement AND "
 "logic. The example below would select any book having both \"science "
@@ -206,6 +440,61 @@ msgstr ""
 "jossa on sekä tieteiskirjallisuus- ETTÄ avaruusolento-kontaktitunnisteita "
 "TAI jännityskirjallisuustunnisteita."
 
+#: bin/calibre2jellyfin.py:1342
+msgid "Example:"
+msgstr "Esimerkki:"
+
+#: bin/calibre2jellyfin.py:1344
+msgid "science fiction, alien contact"
+msgstr "tieteiskirjallisuus, yhteydenotto avaruusolentoon"
+
+#: bin/calibre2jellyfin.py:1345
+msgid "thriller"
+msgstr "trilleri"
+
+#: bin/calibre2jellyfin.py:1348
+msgid "CONFIGURATION EXAMPLES"
+msgstr "MÄÄRITYSESIMERKKEJÄ"
+
+#: bin/calibre2jellyfin.py:1350
+msgid "Sample configuration for fiction books:"
+msgstr "Esimerkki fiktiokirjojen kokoonpanosta:"
+
+#: bin/calibre2jellyfin.py:1373
+msgid "Sample configuration for comic books:"
+msgstr "Sarjakuvien esimerkkikonfiguraatio:"
+
+#: bin/calibre2jellyfin.py:1391
+msgid "Sample configuration for nonfiction books:"
+msgstr "Esimerkki tietokirjojen kokoonpanosta:"
+
+#: bin/calibre2jellyfin.py:1413
+msgid "Emit debug information."
+msgstr "Lähetä virheenkorjaustietoja."
+
+#: bin/calibre2jellyfin.py:1419
+msgid ""
+"Displays normal console output but makes no changes to exported libraries."
+msgstr ""
+"Näyttää normaalin konsolitulosteen, mutta ei tee muutoksia vietyihin "
+"kirjastoihin."
+
+#: bin/calibre2jellyfin.py:1425
+msgid ""
+"Inverts the sense of the --list argument, showing those items that will not "
+"be exported. "
+msgstr ""
+"Kääntää --list-argumentin merkityksen ja näyttää ne kohteet, joita ei viedä."
+
+#: bin/calibre2jellyfin.py:1426
+msgid "Only valid in combination with --list."
+msgstr "Voimassa vain yhdessä --list-valitsimen kanssa."
+
+#: bin/calibre2jellyfin.py:1433
+msgid "Suspends normal export behavior."
+msgstr "Keskeyttää normaalin vientitoiminnan."
+
+#: bin/calibre2jellyfin.py:1434
 msgid ""
 "Instead prints information from configuration sections and the file system "
 "that is useful for curation."
@@ -213,157 +502,53 @@ msgstr ""
 "Sen sijaan se tulostaa tietoja määritysosioista ja tiedostojärjestelmästä, "
 "jotka ovat hyödyllisiä kuratoinnin kannalta."
 
-msgid "Invalid configuration \"%s\": %s"
-msgstr "Virheellinen määritys \"%s\": %s"
-
-msgid ""
-"Inverts the sense of the --list argument, showing those items that will not "
-"be exported. "
-msgstr ""
-"Kääntää --list-argumentin merkityksen ja näyttää ne kohteet, joita ei viedä."
-
+#: bin/calibre2jellyfin.py:1435
 msgid ""
 "LIST_SPEC is a comma-delimited list of columns to include in the report."
 msgstr ""
 "LIST_SPEC on pilkulla erotettu luettelo raporttiin sisällytettävistä "
 "sarakkeista."
 
-msgid ""
-"Missing normally required <dc:creator> (i.e. author) element in metadata for "
-"\"%s\""
-msgstr ""
-"Normaalisti pakollinen <dc:creator>-elementti (eli tekijäelementti) puuttuu "
-"kohteen \"%s\" metatiedoista."
-
-msgid "Missing normally required <dc:title> element in metadata for \"%s\""
-msgstr ""
-"Normaalisti pakollinen <dc:title>-elementti puuttuu metatiedoista kohteelle "
-"\"%s\""
-
-msgid ""
-"Multiline list of author folders within the source Calibre library.  All "
-"books in these author folders will be selected and output."
-msgstr ""
-"Lähdetiedoston Calibre kirjaston tekijäkansioiden monirivinen luettelo. "
-"Kaikki näissä tekijäkansioissa olevat kirjat valitaan ja tulostetaan."
-
-msgid ""
-"Multiline list of book file extensions, in order of preference first to "
-"last, and excluding \".\" separator."
-msgstr ""
-"Kirjatiedostojen tiedostopäätteiden monirivinen luettelo "
-"mieltymysjärjestyksessä ensimmäisestä viimeiseen, ilman erotinmerkkiä \".\"."
-
-msgid "Multiline list of subjects (aka tags in Calibre)."
-msgstr "Monirivinen luettelo aiheista (eli tägeistä Calibre)."
-
-msgid ""
-"Multiline parameters begin on the line following the \"parameter =\" "
-"statement and must be indented."
-msgstr ""
-"Moniriviset parametrit alkavat riviltä, ​​joka seuraa \"parameter =\" -"
-"lauseketta, ja ne on sisennettävä."
-
-msgid "Must be one of:"
-msgstr "Täytyy olla yksi seuraavista:"
-
-msgid ""
-"Must be one or more of the book file extension types that Jellyfin "
-"recognizes such as: azw, azw3,epub, mobi, pdf, cbz, and cbr."
-msgstr ""
-"Kirjan tiedostopäätteen on oltava yksi tai useampi Jellyfinin tunnistamista, "
-"kuten: azw, azw3, epub, mobi, pdf, cbz ja cbr."
-
-msgid "No book file of configured type was found in \"%s\""
-msgstr "Määritetyn tyyppistä kirjatiedostoa ei löytynyt hakemistosta \"%s\""
-
-msgid "No cover image was found in \"%s\""
-msgstr "Kansikuvaa ei löytynyt kohteesta \"%s\""
-
-msgid "No metadata was found in \"%s\""
-msgstr "Metatietoja ei löytynyt kohteesta \"%s\""
-
-msgid ""
-"Note that in the case of selection by subject, if the Calibre metadata file "
-"cannot be found then the book cannot be selected."
-msgstr ""
-"Huomaa, että aiheen mukaan valittaessa kirjaa ei voida valita, jos Calibre-"
-"metatietotiedostoa ei löydy."
-
-msgid "Only valid in combination with --list."
-msgstr "Voimassa vain yhdessä --list-valitsimen kanssa."
-
-msgid "Parameter:"
-msgstr "Parametri:"
-
-msgid ""
-"Parameters consist of the parameter label followed by \" = \" followed by "
-"the parameter value."
-msgstr ""
-"Parametrit koostuvat parametrin nimestä, jota seuraa \" = \" ja sen jälkeen "
-"parametrin arvo."
-
-msgid "Parameters must be indented within a preceding section."
-msgstr "Parametrit on sisennettävä edellisen osan sisällä."
-
-msgid "Prefix title with formatted series index (e.g. \"007\")"
-msgstr "Lisää otsikon etuliitteeksi muotoiltu sarjan indeksi (esim. \"007\")"
-
-msgid "Prefix title with unformatted series index (e.g. \"7\")"
-msgstr "Lisää otsikon etuliitteeksi muotoilematon sarjaindeksi (esim. \"7\")"
-
-msgid "Processing [%s]:"
-msgstr "Käsitellään [%s]:"
-
-msgid "Required configuration file name and location:"
-msgstr "Vaaditun määritystiedoston nimi ja sijainti:"
-
-msgid "Required when selectionMode is author. Ignored otherwise."
-msgstr "Pakollinen, kun selectionMode on tekijä. Muuten ohitetaan."
-
-msgid "Required when selectionMode is subject."
-msgstr "Pakollinen, kun selectionMode on valittu."
-
-msgid "Required."
-msgstr "Pakollinen."
-
-msgid "Sample configuration for comic books:"
-msgstr "Sarjakuvien esimerkkikonfiguraatio:"
-
-msgid "Sample configuration for fiction books:"
-msgstr "Esimerkki fiktiokirjojen kokoonpanosta:"
-
-msgid "Sample configuration for nonfiction books:"
-msgstr "Esimerkki tietokirjojen kokoonpanosta:"
-
-msgid "See below for configuration examples."
-msgstr "Katso alta määritysesimerkkejä."
-
-msgid "Suspends normal export behavior."
-msgstr "Keskeyttää normaalin vientitoiminnan."
-
-msgid "THE CONFIGURATION FILE"
-msgstr "MÄÄRITYSTIEDOSTO"
-
-msgid ""
-"The configuration file must consist of [Construct] sections that contain "
-"parameters."
-msgstr ""
-"Konfiguraatiotiedoston on koostuttava [Construct]-osioista, jotka sisältävät "
-"parametreja."
-
-msgid "The full path to the destination Jellyfin library."
-msgstr "Koko polku kohde-Jellyfin-kirjastoon."
-
-msgid "The full path to the source Calibre library."
-msgstr "Lähdekoodin Calibre-kirjaston koko polku."
-
+#: bin/calibre2jellyfin.py:1436
 msgid ""
 "The output is tab-separated.  Columns must be one or more of the following:"
 msgstr ""
 "Tuloste on erotettu sarkaimilla. Sarakkeiden on oltava vähintään yhtä "
 "seuraavista:"
 
+#: bin/calibre2jellyfin.py:1438
+msgid ": display list of authors"
+msgstr ": näytä luettelo kirjoittajista"
+
+#: bin/calibre2jellyfin.py:1439
+msgid ": display name of construct section"
+msgstr ": rakenneosan näyttönimi"
+
+#: bin/calibre2jellyfin.py:1440
+msgid ": display book title"
+msgstr ": näytä kirjan nimi"
+
+#: bin/calibre2jellyfin.py:1441
+msgid ": display book folder"
+msgstr ": kirjan kansion näyttö"
+
+#: bin/calibre2jellyfin.py:1442
+msgid ": display author folder"
+msgstr ": näytä tekijäkansio"
+
+#: bin/calibre2jellyfin.py:1443
+msgid ": display matched subject"
+msgstr ": näytä vastaava aihe"
+
+#: bin/calibre2jellyfin.py:1444
+msgid ": display name of series"
+msgstr ": sarjan näyttönimi"
+
+#: bin/calibre2jellyfin.py:1445
+msgid ": display series index"
+msgstr ": näytä sarjan indeksi"
+
+#: bin/calibre2jellyfin.py:1446
 msgid ""
 "The report output is sorted so there will be a pause while all configured "
 "sections are processed."
@@ -371,19 +556,11 @@ msgstr ""
 "Raportin tuloste on lajiteltu, joten kaikkien määritettyjen osioiden "
 "käsittelyssä on tauko."
 
-msgid "There may be multiple [Construct] sections."
-msgstr "[Construct]-osioita voi olla useita."
+#: bin/calibre2jellyfin.py:1447
+msgid "Example: --list afolder,book,series"
+msgstr "Esimerkki: --list afolder,book,series"
 
-msgid "This is for backward compatibility.  Mode 1 will likely be preferred."
-msgstr ""
-"Tämä on taaksepäin yhteensopivuuden takaamiseksi. Tilaa 1 todennäköisesti "
-"suositaan."
-
-msgid "This is for backward compatibility.  Mode 2 will likely be preferred."
-msgstr ""
-"Tämä on taaksepäin yhteensopivuuden takaamiseksi. Tila 2 on todennäköisesti "
-"parempi."
-
+#: bin/calibre2jellyfin.py:1453
 msgid ""
 "Useful to force a one-time update of all metadata files, for instance when "
 "configurable metadata mangling options have changed. Normally metadata files "
@@ -394,97 +571,48 @@ msgstr ""
 "muokkausasetuksia on muutettu. Normaalisti metatietotiedostot päivitetään "
 "vain, jos ne puuttuvat tai ovat vanhentuneita."
 
-msgid "Using configuration \"%s\""
-msgstr "Käytetään konfiguraatiota \"%s\""
+#: bin/calibre2jellyfin.py:1463
+msgid "Display version string."
+msgstr "Näytä versiomerkkijono."
 
-msgid ""
-"You may also point this to a subfolder within the Jellyfin library, for "
-"instance in the case where you are creating category subfolders."
-msgstr ""
-"Voit myös osoittaa tämän Jellyfin-kirjaston alikansioon, esimerkiksi jos "
-"luot luokkien alikansioita."
-
-msgid "[Construct] parameters: {vars}"
-msgstr "[Construct]-parametrit: {vars}"
-
-msgid "[Construct] section identifiers should not be indented."
-msgstr "[Construct]-osan tunnisteita ei tule sisentää."
-
-msgid "[Construct] section names must be uniquely named or numbered."
-msgstr ""
-"[Construct]-osioiden nimien on oltava yksilöllisesti nimettyjä tai "
-"numeroituja."
-
-msgid ""
-"[Construct] section names must begin with exactly the nine letters "
-"\"Construct\""
-msgstr ""
-"[Construct]-osioiden nimien on alettava täsmälleen yhdeksällä kirjaimella "
-"\"Construct\""
-
-msgid "authorFolders must contain at least one entry"
-msgstr "authorFolders on sisällettävä vähintään yksi merkintä"
-
-msgid "bookfiletypes must contain at least one entry"
-msgstr "bookfiletypes on sisällettävä vähintään yksi merkintä"
-
-msgid "by"
-msgstr "kirjoittanut"
-
-msgid ""
-"calibreStore value \"{calibre_store}\" is not a directory or does not exist"
-msgstr ""
-"calibreStore-arvo \"{calibre_store}\" ei ole hakemisto tai sitä ei ole "
-"olemassa"
-
-msgid "excluded:"
-msgstr "poissuljettu:"
-
-msgid "foldermode must be \"book\", \"series,book\" or \"author,series,book\""
-msgstr ""
-"foldermode on oltava \"book\", \"series,book\" tai \"author,series,book\""
-
-msgid "jellyfinStore and calibreStore must be different locations"
-msgstr "jellyfinStore ja calibreStore täytyy olla eri paikoissa"
-
-msgid ""
-"jellyfinStore value \"{jellyfin_store}\" is not a directory or does not exist"
-msgstr ""
-"jellyfinStore-arvo \"{jellyfin_store}\" ei ole hakemisto tai sitä ei ole "
-"olemassa"
-
-msgid "mangleMetaTitle must be 0, 1, or 2"
-msgstr "mangleMetaTitle on oltava 0, 1 tai 2"
-
-msgid "of"
-msgstr "jostakin"
-
-msgid "science fiction, alien contact"
-msgstr "tieteiskirjallisuus, yhteydenotto avaruusolentoon"
-
-msgid "select all books in source library"
-msgstr "valitse kaikki lähdekirjaston kirjat"
-
-msgid "select by author folder"
-msgstr "valitse tekijäkansion mukaan"
-
-msgid "select by metadata subject (aka tag)"
-msgstr "valitse metadatan aiheen (eli tagin) mukaan"
-
-msgid "selected:"
-msgstr "valittu:"
-
-msgid "selectionMode must be \"author\", \"subject\" or \"all\""
-msgstr "selectionMode on oltava \"author\", \"subject\" tai \"all\""
-
-msgid "subjects must contain at least one entry"
-msgstr "subjects on sisällettävä vähintään yksi merkintä"
-
-msgid "thriller"
-msgstr "trilleri"
-
+#: bin/calibre2jellyfin.py:1468
 msgid "version {version}"
 msgstr "versio {version}"
 
-msgid "{series} Series"
-msgstr "{series} Sarja"
+#: bin/calibre2jellyfin.py:1472
+msgid "Incompatible arguments"
+msgstr "Yhteensopimattomat argumentit"
+
+#: bin/calibre2jellyfin.py:1476
+msgid "Argument --invert may only be used in conjunction with --list."
+msgstr ""
+"Argumenttia --invert saa käyttää vain yhdessä --list-valitsimen kanssa."
+
+#: bin/calibre2jellyfin.py:1484
+msgid ""
+"--list columns must be one or more of \"section\", \"authors\", \"book\", "
+"\"bfolder\", \"afolder\", \"subject\", \"series\", \"index\""
+msgstr ""
+"--list-sarakkeiden on oltava vähintään yksi seuraavista: \"section\", "
+"\"authors\", \"book\", \"bfolder\", \"afolder\", \"subject\", \"series\", "
+"\"index\""
+
+#: bin/calibre2jellyfin.py:1498
+msgid "Could not read configuration \"%s\": %s"
+msgstr "Konfiguraatiota \"%s\" ei voitu lukea: %s"
+
+#: bin/calibre2jellyfin.py:1501
+msgid "Invalid configuration \"%s\": %s"
+msgstr "Virheellinen määritys \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:1504
+msgid "Using configuration \"%s\""
+msgstr "Käytetään konfiguraatiota \"%s\""
+
+#: bin/calibre2jellyfin.py:1519
+msgid "Inappropriate parameter value in configuration file \"%s\": %s"
+msgstr "Virheellinen parametrin arvo määritystiedostossa \"%s\": %s"
+
+#: bin/calibre2jellyfin.py:1525
+msgid "A required parameter (%s) is missing from configuration file \"%s\"."
+msgstr "Pakollinen parametri (%s) puuttuu määritystiedostosta \"%s\"."

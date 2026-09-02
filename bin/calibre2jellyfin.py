@@ -1029,7 +1029,7 @@ def do_constructs(config: configparser.ConfigParser) -> None:
 
 	"""
 
-	logging.info('Scanning ...')
+	logging.info(_('Scanning ...'))
 
 	# for each configured Construct
 	for section in config:
