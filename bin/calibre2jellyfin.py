@@ -1102,7 +1102,7 @@ def main(clargs: list[str] | None = None):
 									calibre2jellyfin.main(['--update-all-metadata', ...])
 	"""
 
-	global CMDARGS, list_format
+	global CMDARGS, list_format, _
 
 	logging.basicConfig(format='%(levelname)s:%(filename)s:%(lineno)s: %(message)s', level=logging.DEBUG)
 
@@ -1466,6 +1466,18 @@ def main(clargs: list[str] | None = None):
 		action='store_true',
 		help=_('Display version string.')
 	)
+	cmdparser.add_argument(
+		'--i18n',
+		dest='enable_i18n',
+		action='store_true',
+		help=_(
+			custom_textwrap(
+				'Enable i18n language support during script operation.'
+				'  Language support is always enabled on -h help text.'
+				, 50, '', '\n'
+			)
+		)
+	)
 	CMDARGS = cmdparser.parse_args(clargs)
 
 	if CMDARGS.version:
@@ -1504,6 +1516,9 @@ def main(clargs: list[str] | None = None):
 	except configparser.Error as configexcep:
 		logging.critical(_('Invalid configuration "%s": %s'), CONFIG_FILE_PATH, configexcep)
 		sys.exit(-1)
+
+	if not CMDARGS.enable_i18n:
+		_ = lambda s: s
 
 	logging.info(_('Using configuration "%s"'), CONFIG_FILE_PATH)
 
