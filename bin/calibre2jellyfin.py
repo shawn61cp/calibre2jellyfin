@@ -733,12 +733,16 @@ class Book:
 		if self.metadata.series:
 			self.mangle_series_metadata()
 			desc_header.append(
-				_('Book') + ' ' + self.metadata.series_index +
-				' ' + _('of') + ' <em>' + self.metadata.series + '</em>'
+                _('Book {series_index} of <em>{series}</em>').format(
+                    series_index=self.metadata.series_index,
+                    series=self.metadata.series
+                )
 			)
 
 		if self.metadata.authors:
-			desc_header.append(_('by') + ' ' + self.metadata.authors)
+			desc_header.append(
+                _('by {authors}').format(authors=self.metadata.authors)
+            )
 
 		if self.metadata.descel and desc_header:
 			self.metadata.descel.firstChild.data = (

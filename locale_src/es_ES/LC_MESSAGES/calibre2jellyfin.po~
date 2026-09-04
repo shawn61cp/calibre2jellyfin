@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-08-29 19:50-0500\n"
+"POT-Creation-Date: 2026-09-01 21:22-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Shawn C. Powell <shawncp@scpowell.xyz>\n"
 "Language-Team: Google Translate\n"
@@ -112,7 +112,7 @@ msgstr "de"
 
 #: bin/calibre2jellyfin.py:741
 msgid "by"
-msgstr "por"
+msgstr "de"
 
 #: bin/calibre2jellyfin.py:845
 msgid "No book file of configured type was found in \"%s\""
@@ -155,6 +155,10 @@ msgid ""
 msgstr ""
 "No se pudo crear la carpeta de destino del libro (o una carpeta principal de "
 "la misma) « %s »: %s"
+
+#: bin/calibre2jellyfin.py:1032
+msgid "Scanning ..."
+msgstr "Escaneando..."
 
 #: bin/calibre2jellyfin.py:1043
 msgid "excluded:"

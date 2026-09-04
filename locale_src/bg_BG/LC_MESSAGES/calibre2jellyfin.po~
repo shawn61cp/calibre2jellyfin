@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-08-29 19:50-0500\n"
+"POT-Creation-Date: 2026-09-01 21:22-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -145,6 +145,10 @@ msgstr ""
 msgid ""
 "Could not create book's destination folder (or a parent folder thereof) "
 "\"%s\": %s"
+msgstr ""
+
+#: bin/calibre2jellyfin.py:1032
+msgid "Scanning ..."
 msgstr ""
 
 #: bin/calibre2jellyfin.py:1043

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-08-29 19:50-0500\n"
+"POT-Creation-Date: 2026-09-01 21:22-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -154,6 +154,10 @@ msgid ""
 "\"%s\": %s"
 msgstr ""
 "Kirjan kohdekansion (tai sen pääkansion) \"%s\" luominen epäonnistui: %s"
+
+#: bin/calibre2jellyfin.py:1032
+msgid "Scanning ..."
+msgstr "Skannataan..."
 
 #: bin/calibre2jellyfin.py:1043
 msgid "excluded:"
