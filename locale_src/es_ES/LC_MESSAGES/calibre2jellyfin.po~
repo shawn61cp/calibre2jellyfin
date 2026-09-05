@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-09-01 21:22-0500\n"
+"POT-Creation-Date: 2026-09-04 19:02-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Shawn C. Powell <shawncp@scpowell.xyz>\n"
 "Language-Team: Google Translate\n"
@@ -103,44 +103,40 @@ msgstr ""
 "No se pudo crear el enlace simbólico de la imagen de portada « %s »: %s"
 
 #: bin/calibre2jellyfin.py:736
-msgid "Book"
-msgstr "Libro"
+msgid "Book {series_index} of <em>{series}</em>"
+msgstr "Libro {series_index} de <em>{series}</em>"
 
-#: bin/calibre2jellyfin.py:737
-msgid "of"
-msgstr "de"
+#: bin/calibre2jellyfin.py:744
+msgid "by {authors}"
+msgstr "de {authors}"
 
-#: bin/calibre2jellyfin.py:741
-msgid "by"
-msgstr "de"
-
-#: bin/calibre2jellyfin.py:845
+#: bin/calibre2jellyfin.py:849
 msgid "No book file of configured type was found in \"%s\""
 msgstr "No se encontró ningún archivo de libro del tipo configurado en « %s »"
 
-#: bin/calibre2jellyfin.py:849
+#: bin/calibre2jellyfin.py:853
 msgid "Book attributes:  {vars}"
 msgstr "Atributos del libro: {vars}"
 
-#: bin/calibre2jellyfin.py:851
+#: bin/calibre2jellyfin.py:855
 msgid "Book metadata:    {vars}"
 msgstr "Metadatos del libro: {vars}"
 
-#: bin/calibre2jellyfin.py:854
+#: bin/calibre2jellyfin.py:858
 msgid "No metadata was found in \"%s\""
 msgstr "No se encontraron metadatos en « %s »"
 
-#: bin/calibre2jellyfin.py:880
+#: bin/calibre2jellyfin.py:884
 msgid "No cover image was found in \"%s\""
 msgstr "No se encontró ninguna imagen de portada en « %s »"
 
-#: bin/calibre2jellyfin.py:884
+#: bin/calibre2jellyfin.py:888
 msgid "Missing normally required <dc:title> element in metadata for \"%s\""
 msgstr ""
 "Falta el elemento <dc:title> normalmente requerido en los metadatos para « "
 "%s »"
 
-#: bin/calibre2jellyfin.py:890
+#: bin/calibre2jellyfin.py:894
 msgid ""
 "Missing normally required <dc:creator> (i.e. author) element in metadata for "
 "\"%s\""
@@ -148,7 +144,7 @@ msgstr ""
 "Falta el elemento <dc:creator> (es decir, autor) normalmente requerido en "
 "los metadatos para « %s »."
 
-#: bin/calibre2jellyfin.py:905
+#: bin/calibre2jellyfin.py:909
 msgid ""
 "Could not create book's destination folder (or a parent folder thereof) "
 "\"%s\": %s"
@@ -156,19 +152,19 @@ msgstr ""
 "No se pudo crear la carpeta de destino del libro (o una carpeta principal de "
 "la misma) « %s »: %s"
 
-#: bin/calibre2jellyfin.py:1032
+#: bin/calibre2jellyfin.py:1036
 msgid "Scanning ..."
 msgstr "Escaneando..."
 
-#: bin/calibre2jellyfin.py:1043
+#: bin/calibre2jellyfin.py:1047
 msgid "excluded:"
 msgstr "excluida:"
 
-#: bin/calibre2jellyfin.py:1045
+#: bin/calibre2jellyfin.py:1049
 msgid "selected:"
 msgstr "seleccionada:"
 
-#: bin/calibre2jellyfin.py:1108
+#: bin/calibre2jellyfin.py:1112
 msgid ""
 "A utility to construct a Jellyfin ebook library from a Calibre library. "
 "Configuration file \"{path}\" is required (see below)."
@@ -177,19 +173,19 @@ msgstr ""
 "partir de una biblioteca Calibre. Se requiere el archivo de configuración "
 "« {path} » (ver más abajo)."
 
-#: bin/calibre2jellyfin.py:1118
+#: bin/calibre2jellyfin.py:1122
 msgid "THE CONFIGURATION FILE"
 msgstr "EL ARCHIVO DE CONFIGURACIÓN"
 
-#: bin/calibre2jellyfin.py:1120
+#: bin/calibre2jellyfin.py:1124
 msgid "Required configuration file name and location:"
 msgstr "Nombre y ubicación del archivo de configuración requerido:"
 
-#: bin/calibre2jellyfin.py:1123
+#: bin/calibre2jellyfin.py:1127
 msgid "Configuration Sections:"
 msgstr "Secciones de configuración:"
 
-#: bin/calibre2jellyfin.py:1124
+#: bin/calibre2jellyfin.py:1128
 msgid ""
 "The configuration file must consist of [Construct] sections that contain "
 "parameters."
@@ -197,17 +193,17 @@ msgstr ""
 "El archivo de configuración debe constar de secciones [Construct] que "
 "contengan parámetros."
 
-#: bin/calibre2jellyfin.py:1125
+#: bin/calibre2jellyfin.py:1129
 msgid "There may be multiple [Construct] sections."
 msgstr "Puede haber varias secciones [Construct]."
 
-#: bin/calibre2jellyfin.py:1126
+#: bin/calibre2jellyfin.py:1130
 msgid "[Construct] section names must be uniquely named or numbered."
 msgstr ""
 "Los nombres de las secciones [Construct] deben tener un nombre o numerarse "
 "de forma única."
 
-#: bin/calibre2jellyfin.py:1127
+#: bin/calibre2jellyfin.py:1131
 msgid ""
 "[Construct] section names must begin with exactly the nine letters "
 "\"Construct\""
@@ -215,23 +211,23 @@ msgstr ""
 "Los nombres de las secciones [Construct] deben comenzar exactamente con las "
 "nueve letras « Construct »"
 
-#: bin/calibre2jellyfin.py:1128
+#: bin/calibre2jellyfin.py:1132
 msgid "[Construct] section identifiers should not be indented."
 msgstr "Los identificadores de sección [Construct] no deben tener sangría."
 
-#: bin/calibre2jellyfin.py:1130
+#: bin/calibre2jellyfin.py:1134
 msgid "Examples:"
 msgstr "Ejemplos:"
 
-#: bin/calibre2jellyfin.py:1136
+#: bin/calibre2jellyfin.py:1140
 msgid "Configuration Parameters:"
 msgstr "Parámetros de configuración:"
 
-#: bin/calibre2jellyfin.py:1137
+#: bin/calibre2jellyfin.py:1141
 msgid "Parameters must be indented within a preceding section."
 msgstr "Los parámetros deben tener sangría dentro de una sección anterior."
 
-#: bin/calibre2jellyfin.py:1139
+#: bin/calibre2jellyfin.py:1143
 msgid ""
 "Parameters consist of the parameter label followed by \" = \" followed by "
 "the parameter value."
@@ -239,7 +235,7 @@ msgstr ""
 "Los parámetros constan de la etiqueta del parámetro seguida de \" = \" "
 "seguido del valor del parámetro."
 
-#: bin/calibre2jellyfin.py:1144
+#: bin/calibre2jellyfin.py:1148
 msgid ""
 "Multiline parameters begin on the line following the \"parameter =\" "
 "statement and must be indented."
@@ -247,31 +243,31 @@ msgstr ""
 "Los parámetros multilínea comienzan en la línea que sigue a la instrucción "
 "\"parameter =\" y deben tener sangría."
 
-#: bin/calibre2jellyfin.py:1149
+#: bin/calibre2jellyfin.py:1153
 msgid "See below for configuration examples."
 msgstr "Consulte a continuación ejemplos de configuración."
 
-#: bin/calibre2jellyfin.py:1154 bin/calibre2jellyfin.py:1160
-#: bin/calibre2jellyfin.py:1173 bin/calibre2jellyfin.py:1185
-#: bin/calibre2jellyfin.py:1208 bin/calibre2jellyfin.py:1226
-#: bin/calibre2jellyfin.py:1247 bin/calibre2jellyfin.py:1276
-#: bin/calibre2jellyfin.py:1297 bin/calibre2jellyfin.py:1316
+#: bin/calibre2jellyfin.py:1158 bin/calibre2jellyfin.py:1164
+#: bin/calibre2jellyfin.py:1177 bin/calibre2jellyfin.py:1189
+#: bin/calibre2jellyfin.py:1212 bin/calibre2jellyfin.py:1230
+#: bin/calibre2jellyfin.py:1251 bin/calibre2jellyfin.py:1280
+#: bin/calibre2jellyfin.py:1301 bin/calibre2jellyfin.py:1320
 msgid "Parameter:"
 msgstr "Parámetro:"
 
-#: bin/calibre2jellyfin.py:1156
+#: bin/calibre2jellyfin.py:1160
 msgid "The full path to the source Calibre library."
 msgstr "La ruta completa a la biblioteca fuente de Calibre."
 
-#: bin/calibre2jellyfin.py:1158 bin/calibre2jellyfin.py:1171
+#: bin/calibre2jellyfin.py:1162 bin/calibre2jellyfin.py:1175
 msgid "Required."
 msgstr "Requerida."
 
-#: bin/calibre2jellyfin.py:1162
+#: bin/calibre2jellyfin.py:1166
 msgid "The full path to the destination Jellyfin library."
 msgstr "La ruta completa a la biblioteca Jellyfin de destino."
 
-#: bin/calibre2jellyfin.py:1164
+#: bin/calibre2jellyfin.py:1168
 msgid ""
 "You may also point this to a subfolder within the Jellyfin library, for "
 "instance in the case where you are creating category subfolders."
@@ -279,68 +275,68 @@ msgstr ""
 "También puedes apuntar esto a una subcarpeta dentro de la biblioteca de "
 "Jellyfin; por ejemplo, si estás creando subcarpetas por categorías."
 
-#: bin/calibre2jellyfin.py:1175
+#: bin/calibre2jellyfin.py:1179
 msgid "Control file and directory structure of the output Jellyfin library."
 msgstr ""
 "Controle la estructura de archivos y directorios de la biblioteca Jellyfin "
 "de salida."
 
-#: bin/calibre2jellyfin.py:1177 bin/calibre2jellyfin.py:1189
-#: bin/calibre2jellyfin.py:1212 bin/calibre2jellyfin.py:1237
-#: bin/calibre2jellyfin.py:1280
+#: bin/calibre2jellyfin.py:1181 bin/calibre2jellyfin.py:1193
+#: bin/calibre2jellyfin.py:1216 bin/calibre2jellyfin.py:1241
+#: bin/calibre2jellyfin.py:1284
 msgid "Must be one of:"
 msgstr "Debe ser uno de:"
 
-#: bin/calibre2jellyfin.py:1187
+#: bin/calibre2jellyfin.py:1191
 msgid "Controls mangling of the metadata title element."
 msgstr "Controla la manipulación del elemento de título de metadatos."
 
-#: bin/calibre2jellyfin.py:1190
+#: bin/calibre2jellyfin.py:1194
 msgid "Disable title mangling"
 msgstr "Deshabilitar la manipulación de títulos"
 
-#: bin/calibre2jellyfin.py:1191
+#: bin/calibre2jellyfin.py:1195
 msgid "Prefix title with formatted series index (e.g. \"007\")"
 msgstr "Anteponer al título el índice de la serie con formato (p. ej., «007»)"
 
-#: bin/calibre2jellyfin.py:1192
+#: bin/calibre2jellyfin.py:1196
 msgid "Prefix title with unformatted series index (e.g. \"7\")"
 msgstr "Anteponga al título el índice de la serie sin formato (p. ej., «7»)"
 
-#: bin/calibre2jellyfin.py:1194 bin/calibre2jellyfin.py:1216
+#: bin/calibre2jellyfin.py:1198 bin/calibre2jellyfin.py:1220
 msgid "If not specified, defaults to:"
 msgstr "Si no se especifica, el valor predeterminado es:"
 
-#: bin/calibre2jellyfin.py:1196
+#: bin/calibre2jellyfin.py:1200
 msgid "This is for backward compatibility.  Mode 2 will likely be preferred."
 msgstr ""
 "Esto es por compatibilidad con versiones anteriores. Probablemente se "
 "preferirá el modo 2."
 
-#: bin/calibre2jellyfin.py:1200 bin/calibre2jellyfin.py:1222
+#: bin/calibre2jellyfin.py:1204 bin/calibre2jellyfin.py:1226
 msgid "Has no effect unless foldermode is one of:"
 msgstr "No tiene efecto a menos que foldermode sea una de:"
 
-#: bin/calibre2jellyfin.py:1210
+#: bin/calibre2jellyfin.py:1214
 msgid "Controls mangling of the metadata title sort value."
 msgstr ""
 "Controla la manipulación del valor de clasificación del título de metadatos."
 
-#: bin/calibre2jellyfin.py:1213
+#: bin/calibre2jellyfin.py:1217
 msgid "Disable title sort mangling"
 msgstr "Deshabilitar la alteración de la clasificación de títulos"
 
-#: bin/calibre2jellyfin.py:1214
+#: bin/calibre2jellyfin.py:1218
 msgid "Enable title sort mangling"
 msgstr "Habilitar la alteración de la clasificación de títulos"
 
-#: bin/calibre2jellyfin.py:1218
+#: bin/calibre2jellyfin.py:1222
 msgid "This is for backward compatibility.  Mode 1 will likely be preferred."
 msgstr ""
 "Esto es por compatibilidad con versiones anteriores. Probablemente se "
 "preferirá el modo 1."
 
-#: bin/calibre2jellyfin.py:1229
+#: bin/calibre2jellyfin.py:1233
 msgid ""
 "Controls whether books are output under each of multiple authors, or only "
 "under the \"primary\" author."
@@ -348,23 +344,23 @@ msgstr ""
 "Controla si los libros se publican bajo cada uno de varios autores o solo "
 "bajo el autor « principal »."
 
-#: bin/calibre2jellyfin.py:1238
+#: bin/calibre2jellyfin.py:1242
 msgid "Disable output for additional authors."
 msgstr "Deshabilitar salida para autoras adicionales."
 
-#: bin/calibre2jellyfin.py:1239
+#: bin/calibre2jellyfin.py:1243
 msgid "Enable output for additional authors."
 msgstr "Habilitar salida para autoras adicionales."
 
-#: bin/calibre2jellyfin.py:1241
+#: bin/calibre2jellyfin.py:1245
 msgid "Default:"
 msgstr "Por defecto:"
 
-#: bin/calibre2jellyfin.py:1244
+#: bin/calibre2jellyfin.py:1248
 msgid "Has no effect unless foldermode is:"
 msgstr "No tiene ningún efecto a menos que el modo carpeta sea:"
 
-#: bin/calibre2jellyfin.py:1250
+#: bin/calibre2jellyfin.py:1254
 msgid ""
 "Multiline list of book file extensions, in order of preference first to "
 "last, and excluding \".\" separator."
@@ -372,7 +368,7 @@ msgstr ""
 "Lista multilínea de extensiones de archivos de libros, en orden de "
 "preferencia del primero al último y excluyendo el separador \".\"."
 
-#: bin/calibre2jellyfin.py:1258
+#: bin/calibre2jellyfin.py:1262
 msgid ""
 "Calibre2jellyfin will only output a single file for the text of each book.  "
 "Outputting books in multiple formats results in a suboptimal Jellyfin "
@@ -382,7 +378,7 @@ msgstr ""
 "La producción de libros en múltiples formatos da como resultado una "
 "presentación de Jellyfin subóptima."
 
-#: bin/calibre2jellyfin.py:1268
+#: bin/calibre2jellyfin.py:1272
 msgid ""
 "Must be one or more of the book file extension types that Jellyfin "
 "recognizes such as: azw, azw3,epub, mobi, pdf, cbz, and cbr."
@@ -390,27 +386,27 @@ msgstr ""
 "Debe ser uno o más de los tipos de extensión de archivos de libros que "
 "Jellyfin reconoce, como: azw, azw3, epub, mobi, pdf, cbz y cbr."
 
-#: bin/calibre2jellyfin.py:1278
+#: bin/calibre2jellyfin.py:1282
 msgid "Book selection mode."
 msgstr "Modo de selección de libros."
 
-#: bin/calibre2jellyfin.py:1281
+#: bin/calibre2jellyfin.py:1285
 msgid "select by author folder"
 msgstr "seleccionar por carpeta de autor"
 
-#: bin/calibre2jellyfin.py:1282
+#: bin/calibre2jellyfin.py:1286
 msgid "select by metadata subject (aka tag)"
 msgstr "seleccionar por tema de metadatos (también conocido como etiqueta)"
 
-#: bin/calibre2jellyfin.py:1283
+#: bin/calibre2jellyfin.py:1287
 msgid "select all books in source library"
 msgstr "seleccionar todos los libros en la biblioteca fuente"
 
-#: bin/calibre2jellyfin.py:1285
+#: bin/calibre2jellyfin.py:1289
 msgid "If not present defaults to:"
 msgstr "Si no está presente, el valor predeterminado es:"
 
-#: bin/calibre2jellyfin.py:1289
+#: bin/calibre2jellyfin.py:1293
 msgid ""
 "Note that in the case of selection by subject, if the Calibre metadata file "
 "cannot be found then the book cannot be selected."
@@ -419,7 +415,7 @@ msgstr ""
 "encontrar el archivo de metadatos de Calibre, no se podrá seleccionar el "
 "libro."
 
-#: bin/calibre2jellyfin.py:1300
+#: bin/calibre2jellyfin.py:1304
 msgid ""
 "Multiline list of author folders within the source Calibre library.  All "
 "books in these author folders will be selected and output."
@@ -428,22 +424,22 @@ msgstr ""
 "origen. Se seleccionarán y exportarán todos los libros contenidos en dichas "
 "carpetas de autores."
 
-#: bin/calibre2jellyfin.py:1309
+#: bin/calibre2jellyfin.py:1313
 msgid "Required when selectionMode is author. Ignored otherwise."
 msgstr ""
 "Obligatorio cuando el modo de selección es autor. Ignorado de lo contrario."
 
-#: bin/calibre2jellyfin.py:1319
+#: bin/calibre2jellyfin.py:1323
 msgid "Multiline list of subjects (aka tags in Calibre)."
 msgstr ""
 "Lista de temas de varias líneas (también conocidas como etiquetas en "
 "Calibre)."
 
-#: bin/calibre2jellyfin.py:1327
+#: bin/calibre2jellyfin.py:1331
 msgid "Required when selectionMode is subject."
 msgstr "Obligatorio cuando el modo de selección es subject."
 
-#: bin/calibre2jellyfin.py:1332
+#: bin/calibre2jellyfin.py:1336
 msgid ""
 "Individual lines implement OR logic. Comma delimited lists implement AND "
 "logic. The example below would select any book having both \"science "
@@ -454,46 +450,46 @@ msgstr ""
 "cualquier libro que tenga etiquetas de « ciencia ficción » Y de « contacto "
 "extraterrestre », O una etiqueta de « suspenso »."
 
-#: bin/calibre2jellyfin.py:1342
+#: bin/calibre2jellyfin.py:1346
 msgid "Example:"
 msgstr "Ejemplos:"
 
-#: bin/calibre2jellyfin.py:1344
+#: bin/calibre2jellyfin.py:1348
 msgid "science fiction, alien contact"
 msgstr "ciencia ficción, contacto extraterrestre"
 
-#: bin/calibre2jellyfin.py:1345
+#: bin/calibre2jellyfin.py:1349
 msgid "thriller"
 msgstr "suspenso"
 
-#: bin/calibre2jellyfin.py:1348
+#: bin/calibre2jellyfin.py:1352
 msgid "CONFIGURATION EXAMPLES"
 msgstr "EJEMPLOS DE CONFIGURACIÓN"
 
-#: bin/calibre2jellyfin.py:1350
+#: bin/calibre2jellyfin.py:1354
 msgid "Sample configuration for fiction books:"
 msgstr "Configuración de muestra para libros de ficción:"
 
-#: bin/calibre2jellyfin.py:1373
+#: bin/calibre2jellyfin.py:1377
 msgid "Sample configuration for comic books:"
 msgstr "Configuración de muestra para cómics:"
 
-#: bin/calibre2jellyfin.py:1391
+#: bin/calibre2jellyfin.py:1395
 msgid "Sample configuration for nonfiction books:"
 msgstr "Configuración de muestra para libros de no ficción:"
 
-#: bin/calibre2jellyfin.py:1413
+#: bin/calibre2jellyfin.py:1417
 msgid "Emit debug information."
 msgstr "Emitir información de depuración."
 
-#: bin/calibre2jellyfin.py:1419
+#: bin/calibre2jellyfin.py:1423
 msgid ""
 "Displays normal console output but makes no changes to exported libraries."
 msgstr ""
 "Muestra la salida normal de la consola, pero no realiza ningún cambio en las "
 "bibliotecas exportadas."
 
-#: bin/calibre2jellyfin.py:1425
+#: bin/calibre2jellyfin.py:1429
 msgid ""
 "Inverts the sense of the --list argument, showing those items that will not "
 "be exported. "
@@ -501,15 +497,15 @@ msgstr ""
 "Invierte el sentido del argumento --list, mostrando aquellos elementos que "
 "no se exportarán."
 
-#: bin/calibre2jellyfin.py:1426
+#: bin/calibre2jellyfin.py:1430
 msgid "Only valid in combination with --list."
 msgstr "Sólo válida en combinación con --list."
 
-#: bin/calibre2jellyfin.py:1433
+#: bin/calibre2jellyfin.py:1437
 msgid "Suspends normal export behavior."
 msgstr "Suspende el comportamiento normal de exportación."
 
-#: bin/calibre2jellyfin.py:1434
+#: bin/calibre2jellyfin.py:1438
 msgid ""
 "Instead prints information from configuration sections and the file system "
 "that is useful for curation."
@@ -517,53 +513,53 @@ msgstr ""
 "En su lugar, imprime información de las secciones de configuración y del "
 "sistema de archivos que resulta útil para la curación."
 
-#: bin/calibre2jellyfin.py:1435
+#: bin/calibre2jellyfin.py:1439
 msgid ""
 "LIST_SPEC is a comma-delimited list of columns to include in the report."
 msgstr ""
 "LIST_SPEC es una lista de columnas separadas por comas que se incluirán en "
 "el informe."
 
-#: bin/calibre2jellyfin.py:1436
+#: bin/calibre2jellyfin.py:1440
 msgid ""
 "The output is tab-separated.  Columns must be one or more of the following:"
 msgstr ""
 "La salida está separada por tabuladores. Las columnas deben ser una o varias "
 "de las siguientes:"
 
-#: bin/calibre2jellyfin.py:1438
+#: bin/calibre2jellyfin.py:1442
 msgid ": display list of authors"
 msgstr ": mostrar lista de los autores"
 
-#: bin/calibre2jellyfin.py:1439
+#: bin/calibre2jellyfin.py:1443
 msgid ": display name of construct section"
 msgstr ": mostrar el nombre de la sección de construcción"
 
-#: bin/calibre2jellyfin.py:1440
+#: bin/calibre2jellyfin.py:1444
 msgid ": display book title"
 msgstr ": mostrar el título del libro"
 
-#: bin/calibre2jellyfin.py:1441
+#: bin/calibre2jellyfin.py:1445
 msgid ": display book folder"
 msgstr ": mostrar carpeta del libro"
 
-#: bin/calibre2jellyfin.py:1442
+#: bin/calibre2jellyfin.py:1446
 msgid ": display author folder"
 msgstr ": mostrar carpeta del autor"
 
-#: bin/calibre2jellyfin.py:1443
+#: bin/calibre2jellyfin.py:1447
 msgid ": display matched subject"
 msgstr ": mostrar el asunto coincidente"
 
-#: bin/calibre2jellyfin.py:1444
+#: bin/calibre2jellyfin.py:1448
 msgid ": display name of series"
 msgstr ": mostrar nombre de la serie"
 
-#: bin/calibre2jellyfin.py:1445
+#: bin/calibre2jellyfin.py:1449
 msgid ": display series index"
 msgstr ": mostrar índice de la serie"
 
-#: bin/calibre2jellyfin.py:1446
+#: bin/calibre2jellyfin.py:1450
 msgid ""
 "The report output is sorted so there will be a pause while all configured "
 "sections are processed."
@@ -571,11 +567,11 @@ msgstr ""
 "El resultado del informe se ordena, por lo que habrá una pausa mientras se "
 "procesan todas las secciones configuradas."
 
-#: bin/calibre2jellyfin.py:1447
+#: bin/calibre2jellyfin.py:1451
 msgid "Example: --list afolder,book,series"
 msgstr "Ejemplo: --list afolder,book,series"
 
-#: bin/calibre2jellyfin.py:1453
+#: bin/calibre2jellyfin.py:1457
 msgid ""
 "Useful to force a one-time update of all metadata files, for instance when "
 "configurable metadata mangling options have changed. Normally metadata files "
@@ -586,23 +582,23 @@ msgstr ""
 "de metadatos. Normalmente, los archivos de metadatos solo se actualizan "
 "cuando faltan o están desactualizados."
 
-#: bin/calibre2jellyfin.py:1463
+#: bin/calibre2jellyfin.py:1467
 msgid "Display version string."
 msgstr "Mostrar cadena de versión."
 
-#: bin/calibre2jellyfin.py:1468
+#: bin/calibre2jellyfin.py:1485
 msgid "version {version}"
 msgstr "versión {versión}"
 
-#: bin/calibre2jellyfin.py:1472
+#: bin/calibre2jellyfin.py:1489
 msgid "Incompatible arguments"
 msgstr "Argumentos incompatibles"
 
-#: bin/calibre2jellyfin.py:1476
+#: bin/calibre2jellyfin.py:1493
 msgid "Argument --invert may only be used in conjunction with --list."
 msgstr "El argumento --invert solo puede usarse junto con --list."
 
-#: bin/calibre2jellyfin.py:1484
+#: bin/calibre2jellyfin.py:1501
 msgid ""
 "--list columns must be one or more of \"section\", \"authors\", \"book\", "
 "\"bfolder\", \"afolder\", \"subject\", \"series\", \"index\""
@@ -611,24 +607,24 @@ msgstr ""
 "« authors », « book », « bfolder », « afolder », « subject », « series », « "
 "index »."
 
-#: bin/calibre2jellyfin.py:1498
+#: bin/calibre2jellyfin.py:1515
 msgid "Could not read configuration \"%s\": %s"
 msgstr "No se pudo leer la configuración « %s »: %s"
 
-#: bin/calibre2jellyfin.py:1501
+#: bin/calibre2jellyfin.py:1518
 msgid "Invalid configuration \"%s\": %s"
 msgstr "Configuración no válida « %s »: %s"
 
-#: bin/calibre2jellyfin.py:1504
+#: bin/calibre2jellyfin.py:1521
 msgid "Using configuration \"%s\""
 msgstr "Utilizando la configuración « %s »"
 
-#: bin/calibre2jellyfin.py:1519
+#: bin/calibre2jellyfin.py:1539
 msgid "Inappropriate parameter value in configuration file \"%s\": %s"
 msgstr ""
 "Valor de parámetro inapropiado en el archivo de configuración « %s »: %s"
 
-#: bin/calibre2jellyfin.py:1525
+#: bin/calibre2jellyfin.py:1545
 msgid "A required parameter (%s) is missing from configuration file \"%s\"."
 msgstr ""
 "Falta un parámetro obligatorio (%s) en el archivo de configuración « %s »."

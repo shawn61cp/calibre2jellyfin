@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-09-01 21:22-0500\n"
+"POT-Creation-Date: 2026-09-04 19:02-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -87,7 +87,7 @@ msgstr ""
 
 #: bin/calibre2jellyfin.py:537 bin/calibre2jellyfin.py:543
 msgid "{series} Series"
-msgstr "Sraith {series}"
+msgstr "{series} Sraith"
 
 #: bin/calibre2jellyfin.py:621
 msgid "Could not touch book symlink %s: %s"
@@ -107,44 +107,40 @@ msgid "Could not create cover image symlink \"%s\": %s"
 msgstr "Níorbh fhéidir nasc siombalach íomhá clúdaigh \"%s\" a chruthú: %s"
 
 #: bin/calibre2jellyfin.py:736
-msgid "Book"
-msgstr "Leabhar"
+msgid "Book {series_index} of <em>{series}</em>"
+msgstr "Leabhar {series_index} de <em>{series}</em>"
 
-#: bin/calibre2jellyfin.py:737
-msgid "of"
-msgstr "de"
+#: bin/calibre2jellyfin.py:744
+msgid "by {authors}"
+msgstr "le {authors}"
 
-#: bin/calibre2jellyfin.py:741
-msgid "by"
-msgstr "le"
-
-#: bin/calibre2jellyfin.py:845
+#: bin/calibre2jellyfin.py:849
 msgid "No book file of configured type was found in \"%s\""
 msgstr "Níor aimsíodh aon chomhad leabhair den chineál cumraithe i \"%s\""
 
-#: bin/calibre2jellyfin.py:849
+#: bin/calibre2jellyfin.py:853
 msgid "Book attributes:  {vars}"
 msgstr "Tréithe leabhair: {vars}"
 
-#: bin/calibre2jellyfin.py:851
+#: bin/calibre2jellyfin.py:855
 msgid "Book metadata:    {vars}"
 msgstr "Meiteashonraí leabhair: {vars}"
 
-#: bin/calibre2jellyfin.py:854
+#: bin/calibre2jellyfin.py:858
 msgid "No metadata was found in \"%s\""
 msgstr "Níor aimsíodh aon mheiteashonraí i \"%s\""
 
-#: bin/calibre2jellyfin.py:880
+#: bin/calibre2jellyfin.py:884
 msgid "No cover image was found in \"%s\""
 msgstr "Ní bhfuarthas aon íomhá chlúdaigh i \"%s\""
 
-#: bin/calibre2jellyfin.py:884
+#: bin/calibre2jellyfin.py:888
 msgid "Missing normally required <dc:title> element in metadata for \"%s\""
 msgstr ""
 "Eilimint <dc:title> atá riachtanach de ghnáth ar iarraidh sna meiteashonraí "
 "do \"%s\""
 
-#: bin/calibre2jellyfin.py:890
+#: bin/calibre2jellyfin.py:894
 msgid ""
 "Missing normally required <dc:creator> (i.e. author) element in metadata for "
 "\"%s\""
@@ -152,7 +148,7 @@ msgstr ""
 "Eilimint <dc:creator> (i.e. údar) atá riachtanach de ghnáth ar iarraidh sna "
 "meiteashonraí do \"%s\""
 
-#: bin/calibre2jellyfin.py:905
+#: bin/calibre2jellyfin.py:909
 msgid ""
 "Could not create book's destination folder (or a parent folder thereof) "
 "\"%s\": %s"
@@ -160,19 +156,19 @@ msgstr ""
 "Níorbh fhéidir fillteán ceann scríbe an leabhair (nó fillteán tuismitheora "
 "de) \"%s\" a chruthú: %s"
 
-#: bin/calibre2jellyfin.py:1032
+#: bin/calibre2jellyfin.py:1036
 msgid "Scanning ..."
 msgstr "Ag scanadh ..."
 
-#: bin/calibre2jellyfin.py:1043
+#: bin/calibre2jellyfin.py:1047
 msgid "excluded:"
 msgstr "eisiata:"
 
-#: bin/calibre2jellyfin.py:1045
+#: bin/calibre2jellyfin.py:1049
 msgid "selected:"
 msgstr "roghnaithe:"
 
-#: bin/calibre2jellyfin.py:1108
+#: bin/calibre2jellyfin.py:1112
 msgid ""
 "A utility to construct a Jellyfin ebook library from a Calibre library. "
 "Configuration file \"{path}\" is required (see below)."
@@ -180,36 +176,36 @@ msgstr ""
 "Fóntais chun leabharlann ríomhleabhar Jellyfin a thógáil ó leabharlann "
 "Calibre. Tá comhad cumraíochta \"{path}\" ag teastáil (féach thíos)."
 
-#: bin/calibre2jellyfin.py:1118
+#: bin/calibre2jellyfin.py:1122
 msgid "THE CONFIGURATION FILE"
 msgstr "AN COMHAD CUMRAÍOCHTA"
 
-#: bin/calibre2jellyfin.py:1120
+#: bin/calibre2jellyfin.py:1124
 msgid "Required configuration file name and location:"
 msgstr "Ainm agus suíomh an chomhaid chumraíochta riachtanach:"
 
-#: bin/calibre2jellyfin.py:1123
+#: bin/calibre2jellyfin.py:1127
 msgid "Configuration Sections:"
 msgstr "Rannóga Cumraíochta:"
 
-#: bin/calibre2jellyfin.py:1124
+#: bin/calibre2jellyfin.py:1128
 msgid ""
 "The configuration file must consist of [Construct] sections that contain "
 "parameters."
 msgstr ""
 "Ní mór don chomhad cumraíochta rannóga [Construct] ina bhfuil paraiméadair."
 
-#: bin/calibre2jellyfin.py:1125
+#: bin/calibre2jellyfin.py:1129
 msgid "There may be multiple [Construct] sections."
 msgstr "D’fhéadfadh go mbeadh roinnt rannóga [Construct] ann."
 
-#: bin/calibre2jellyfin.py:1126
+#: bin/calibre2jellyfin.py:1130
 msgid "[Construct] section names must be uniquely named or numbered."
 msgstr ""
 "Ní mór ainmneacha nó uimhriú uathúil a bheith ar ainmneacha na rannóg "
 "[Construct]."
 
-#: bin/calibre2jellyfin.py:1127
+#: bin/calibre2jellyfin.py:1131
 msgid ""
 "[Construct] section names must begin with exactly the nine letters "
 "\"Construct\""
@@ -217,23 +213,23 @@ msgstr ""
 "Ní mór ainmneacha rannóga [Construct] tosú leis na naoi litir go díreach atá "
 "leagtha síos in \"Construct\"."
 
-#: bin/calibre2jellyfin.py:1128
+#: bin/calibre2jellyfin.py:1132
 msgid "[Construct] section identifiers should not be indented."
 msgstr "Níor cheart aitheantóirí rannóige [Construct] a bheith eangaithe."
 
-#: bin/calibre2jellyfin.py:1130
+#: bin/calibre2jellyfin.py:1134
 msgid "Examples:"
 msgstr "Samplaí:"
 
-#: bin/calibre2jellyfin.py:1136
+#: bin/calibre2jellyfin.py:1140
 msgid "Configuration Parameters:"
 msgstr "Paraiméadair Chumraíochta:"
 
-#: bin/calibre2jellyfin.py:1137
+#: bin/calibre2jellyfin.py:1141
 msgid "Parameters must be indented within a preceding section."
 msgstr "Ní mór paraiméadair a bheith eangaithe laistigh de chuid roimhe sin."
 
-#: bin/calibre2jellyfin.py:1139
+#: bin/calibre2jellyfin.py:1143
 msgid ""
 "Parameters consist of the parameter label followed by \" = \" followed by "
 "the parameter value."
@@ -241,7 +237,7 @@ msgstr ""
 "Is éard atá i bparaiméadair ná lipéad an pharaiméadair agus ansin \" = \" "
 "agus luach an pharaiméadair ina dhiaidh sin."
 
-#: bin/calibre2jellyfin.py:1144
+#: bin/calibre2jellyfin.py:1148
 msgid ""
 "Multiline parameters begin on the line following the \"parameter =\" "
 "statement and must be indented."
@@ -249,31 +245,31 @@ msgstr ""
 "Tosaíonn paraiméadair il-líne ar an líne i ndiaidh an ráitis \"parameter =\" "
 "agus ní mór iad a bheith ina n-eangach."
 
-#: bin/calibre2jellyfin.py:1149
+#: bin/calibre2jellyfin.py:1153
 msgid "See below for configuration examples."
 msgstr "Féach thíos le haghaidh samplaí cumraíochta."
 
-#: bin/calibre2jellyfin.py:1154 bin/calibre2jellyfin.py:1160
-#: bin/calibre2jellyfin.py:1173 bin/calibre2jellyfin.py:1185
-#: bin/calibre2jellyfin.py:1208 bin/calibre2jellyfin.py:1226
-#: bin/calibre2jellyfin.py:1247 bin/calibre2jellyfin.py:1276
-#: bin/calibre2jellyfin.py:1297 bin/calibre2jellyfin.py:1316
+#: bin/calibre2jellyfin.py:1158 bin/calibre2jellyfin.py:1164
+#: bin/calibre2jellyfin.py:1177 bin/calibre2jellyfin.py:1189
+#: bin/calibre2jellyfin.py:1212 bin/calibre2jellyfin.py:1230
+#: bin/calibre2jellyfin.py:1251 bin/calibre2jellyfin.py:1280
+#: bin/calibre2jellyfin.py:1301 bin/calibre2jellyfin.py:1320
 msgid "Parameter:"
 msgstr "Paraiméadar:"
 
-#: bin/calibre2jellyfin.py:1156
+#: bin/calibre2jellyfin.py:1160
 msgid "The full path to the source Calibre library."
 msgstr "An cosán iomlán chuig leabharlann foinseach Calibre."
 
-#: bin/calibre2jellyfin.py:1158 bin/calibre2jellyfin.py:1171
+#: bin/calibre2jellyfin.py:1162 bin/calibre2jellyfin.py:1175
 msgid "Required."
 msgstr "Riachtanach."
 
-#: bin/calibre2jellyfin.py:1162
+#: bin/calibre2jellyfin.py:1166
 msgid "The full path to the destination Jellyfin library."
 msgstr "An cosán iomlán chuig leabharlann Jellyfin ceann scríbe."
 
-#: bin/calibre2jellyfin.py:1164
+#: bin/calibre2jellyfin.py:1168
 msgid ""
 "You may also point this to a subfolder within the Jellyfin library, for "
 "instance in the case where you are creating category subfolders."
@@ -282,67 +278,67 @@ msgstr ""
 "Jellyfin freisin, mar shampla i gcás ina bhfuil tú ag cruthú fo-fhillteáin "
 "chatagóire."
 
-#: bin/calibre2jellyfin.py:1175
+#: bin/calibre2jellyfin.py:1179
 msgid "Control file and directory structure of the output Jellyfin library."
 msgstr "Struchtúr comhaid agus eolaire rialaithe leabharlann aschuir Jellyfin."
 
-#: bin/calibre2jellyfin.py:1177 bin/calibre2jellyfin.py:1189
-#: bin/calibre2jellyfin.py:1212 bin/calibre2jellyfin.py:1237
-#: bin/calibre2jellyfin.py:1280
+#: bin/calibre2jellyfin.py:1181 bin/calibre2jellyfin.py:1193
+#: bin/calibre2jellyfin.py:1216 bin/calibre2jellyfin.py:1241
+#: bin/calibre2jellyfin.py:1284
 msgid "Must be one of:"
 msgstr "Ní mór ceann de na nithe seo a bheith ann:"
 
-#: bin/calibre2jellyfin.py:1187
+#: bin/calibre2jellyfin.py:1191
 msgid "Controls mangling of the metadata title element."
 msgstr "Rialaíonn sé seo manglú ar eilimint teidil na meiteashonraí."
 
-#: bin/calibre2jellyfin.py:1190
+#: bin/calibre2jellyfin.py:1194
 msgid "Disable title mangling"
 msgstr "Díchumasaigh an teideal a mhilleadh"
 
-#: bin/calibre2jellyfin.py:1191
+#: bin/calibre2jellyfin.py:1195
 msgid "Prefix title with formatted series index (e.g. \"007\")"
 msgstr "Réimír teidil le hinnéacs sraithe formáidithe (m.sh. \"007\")"
 
-#: bin/calibre2jellyfin.py:1192
+#: bin/calibre2jellyfin.py:1196
 msgid "Prefix title with unformatted series index (e.g. \"7\")"
 msgstr "Réimír teidil le hinnéacs sraithe neamhfhormáidithe (m.sh. \"7\")"
 
-#: bin/calibre2jellyfin.py:1194 bin/calibre2jellyfin.py:1216
+#: bin/calibre2jellyfin.py:1198 bin/calibre2jellyfin.py:1220
 msgid "If not specified, defaults to:"
 msgstr "Mura sonraítear é, réamhshocraítear é seo a leanas:"
 
-#: bin/calibre2jellyfin.py:1196
+#: bin/calibre2jellyfin.py:1200
 msgid "This is for backward compatibility.  Mode 2 will likely be preferred."
 msgstr ""
 "Tá sé seo le haghaidh comhoiriúnachta siarghabhálaí. Is dócha gurb é Mód 2 "
 "an rogha is fearr."
 
-#: bin/calibre2jellyfin.py:1200 bin/calibre2jellyfin.py:1222
+#: bin/calibre2jellyfin.py:1204 bin/calibre2jellyfin.py:1226
 msgid "Has no effect unless foldermode is one of:"
 msgstr ""
 "Níl aon éifeacht aige mura bhfuil foldermode ar cheann de na nithe seo a "
 "leanas:"
 
-#: bin/calibre2jellyfin.py:1210
+#: bin/calibre2jellyfin.py:1214
 msgid "Controls mangling of the metadata title sort value."
 msgstr "Rialaíonn sé seo miondealú ar luach sórtála teidil na meiteashonraí."
 
-#: bin/calibre2jellyfin.py:1213
+#: bin/calibre2jellyfin.py:1217
 msgid "Disable title sort mangling"
 msgstr "Díchumasaigh sórtáil teidil"
 
-#: bin/calibre2jellyfin.py:1214
+#: bin/calibre2jellyfin.py:1218
 msgid "Enable title sort mangling"
 msgstr "Cumasaigh sórtáil teidil a mhoilliú"
 
-#: bin/calibre2jellyfin.py:1218
+#: bin/calibre2jellyfin.py:1222
 msgid "This is for backward compatibility.  Mode 1 will likely be preferred."
 msgstr ""
 "Tá sé seo le haghaidh comhoiriúnachta siarghabhálaí. Is dócha gurb é Mód 1 "
 "an rogha is fearr."
 
-#: bin/calibre2jellyfin.py:1229
+#: bin/calibre2jellyfin.py:1233
 msgid ""
 "Controls whether books are output under each of multiple authors, or only "
 "under the \"primary\" author."
@@ -350,23 +346,23 @@ msgstr ""
 "Rialaíonn sé seo an aschuirtear leabhair faoi gach ceann de na húdair "
 "iolracha, nó faoin údar \"príomhúil\" amháin."
 
-#: bin/calibre2jellyfin.py:1238
+#: bin/calibre2jellyfin.py:1242
 msgid "Disable output for additional authors."
 msgstr "Díchumasaigh aschur d’údair bhreise."
 
-#: bin/calibre2jellyfin.py:1239
+#: bin/calibre2jellyfin.py:1243
 msgid "Enable output for additional authors."
 msgstr "Cumasaigh aschur do údair bhreise."
 
-#: bin/calibre2jellyfin.py:1241
+#: bin/calibre2jellyfin.py:1245
 msgid "Default:"
 msgstr "Réamhshocrú:"
 
-#: bin/calibre2jellyfin.py:1244
+#: bin/calibre2jellyfin.py:1248
 msgid "Has no effect unless foldermode is:"
 msgstr "Níl aon éifeacht aige mura bhfuil foldermode mar seo a leanas:"
 
-#: bin/calibre2jellyfin.py:1250
+#: bin/calibre2jellyfin.py:1254
 msgid ""
 "Multiline list of book file extensions, in order of preference first to "
 "last, and excluding \".\" separator."
@@ -374,7 +370,7 @@ msgstr ""
 "Liosta il-líne d'síntí comhaid leabhar, in ord tosaíochta ón gcéad cheann go "
 "dtí an ceann deireanach, agus gan an deighilteoir \".\" a áireamh."
 
-#: bin/calibre2jellyfin.py:1258
+#: bin/calibre2jellyfin.py:1262
 msgid ""
 "Calibre2jellyfin will only output a single file for the text of each book.  "
 "Outputting books in multiple formats results in a suboptimal Jellyfin "
@@ -384,7 +380,7 @@ msgstr ""
 "Má aschuirtear leabhair i bhformáidí éagsúla, ní bheidh cur i láthair "
 "Jellyfin ar fheabhas."
 
-#: bin/calibre2jellyfin.py:1268
+#: bin/calibre2jellyfin.py:1272
 msgid ""
 "Must be one or more of the book file extension types that Jellyfin "
 "recognizes such as: azw, azw3,epub, mobi, pdf, cbz, and cbr."
@@ -393,27 +389,27 @@ msgstr ""
 "leabhar a aithníonn Jellyfin a bheith ann, amhail: azw, azw3, epub, mobi, "
 "pdf, cbz, agus cbr."
 
-#: bin/calibre2jellyfin.py:1278
+#: bin/calibre2jellyfin.py:1282
 msgid "Book selection mode."
 msgstr "Mód roghnúcháin leabhar."
 
-#: bin/calibre2jellyfin.py:1281
+#: bin/calibre2jellyfin.py:1285
 msgid "select by author folder"
 msgstr "roghnaigh de réir fillteán údair"
 
-#: bin/calibre2jellyfin.py:1282
+#: bin/calibre2jellyfin.py:1286
 msgid "select by metadata subject (aka tag)"
 msgstr "roghnaigh de réir ábhair meiteashonraí (aka tag)"
 
-#: bin/calibre2jellyfin.py:1283
+#: bin/calibre2jellyfin.py:1287
 msgid "select all books in source library"
 msgstr "roghnaigh gach leabhar sa leabharlann foinse"
 
-#: bin/calibre2jellyfin.py:1285
+#: bin/calibre2jellyfin.py:1289
 msgid "If not present defaults to:"
 msgstr "Mura bhfuil sé i láthair, réamhshocraítear é seo a leanas:"
 
-#: bin/calibre2jellyfin.py:1289
+#: bin/calibre2jellyfin.py:1293
 msgid ""
 "Note that in the case of selection by subject, if the Calibre metadata file "
 "cannot be found then the book cannot be selected."
@@ -421,7 +417,7 @@ msgstr ""
 "Tabhair faoi deara, i gcás roghnúcháin de réir ábhair, mura féidir an comhad "
 "meiteashonraí Calibre a aimsiú, nach féidir an leabhar a roghnú."
 
-#: bin/calibre2jellyfin.py:1300
+#: bin/calibre2jellyfin.py:1304
 msgid ""
 "Multiline list of author folders within the source Calibre library.  All "
 "books in these author folders will be selected and output."
@@ -429,21 +425,21 @@ msgstr ""
 "Liosta il-líne de fhillteáin údair laistigh den leabharlann foinseach "
 "Calibre. Roghnófar agus aschurfar na leabhair uile sna fillteáin údair seo."
 
-#: bin/calibre2jellyfin.py:1309
+#: bin/calibre2jellyfin.py:1313
 msgid "Required when selectionMode is author. Ignored otherwise."
 msgstr ""
 "Riachtanach nuair is é selectionMode an author. Déantar neamhaird air mura "
 "ndéantar amhlaidh."
 
-#: bin/calibre2jellyfin.py:1319
+#: bin/calibre2jellyfin.py:1323
 msgid "Multiline list of subjects (aka tags in Calibre)."
 msgstr "Liosta il-líne d'ábhair (aka clibeanna i Calibre)."
 
-#: bin/calibre2jellyfin.py:1327
+#: bin/calibre2jellyfin.py:1331
 msgid "Required when selectionMode is subject."
 msgstr "Riachtanach nuair is é selectionMode subject."
 
-#: bin/calibre2jellyfin.py:1332
+#: bin/calibre2jellyfin.py:1336
 msgid ""
 "Individual lines implement OR logic. Comma delimited lists implement AND "
 "logic. The example below would select any book having both \"science "
@@ -454,46 +450,46 @@ msgstr ""
 "clibeanna \"ficsean eolaíochta\" AGUS \"teagmháil eachtrannach\" ann, NÓ "
 "clib \"scéinséir\"."
 
-#: bin/calibre2jellyfin.py:1342
+#: bin/calibre2jellyfin.py:1346
 msgid "Example:"
 msgstr "Sampla:"
 
-#: bin/calibre2jellyfin.py:1344
+#: bin/calibre2jellyfin.py:1348
 msgid "science fiction, alien contact"
 msgstr "ficsean eolaíochta, teagmháil le heachtrannaigh"
 
-#: bin/calibre2jellyfin.py:1345
+#: bin/calibre2jellyfin.py:1349
 msgid "thriller"
 msgstr "scéinséir"
 
-#: bin/calibre2jellyfin.py:1348
+#: bin/calibre2jellyfin.py:1352
 msgid "CONFIGURATION EXAMPLES"
 msgstr "SAMPLAÍ CUMRAÍOCHTA"
 
-#: bin/calibre2jellyfin.py:1350
+#: bin/calibre2jellyfin.py:1354
 msgid "Sample configuration for fiction books:"
 msgstr "Cumraíocht shamplach do leabhair ficsean:"
 
-#: bin/calibre2jellyfin.py:1373
+#: bin/calibre2jellyfin.py:1377
 msgid "Sample configuration for comic books:"
 msgstr "Cumraíocht shamplach do leabhair ghrinn:"
 
-#: bin/calibre2jellyfin.py:1391
+#: bin/calibre2jellyfin.py:1395
 msgid "Sample configuration for nonfiction books:"
 msgstr "Cumraíocht shamplach do leabhair neamhfhicsin:"
 
-#: bin/calibre2jellyfin.py:1413
+#: bin/calibre2jellyfin.py:1417
 msgid "Emit debug information."
 msgstr "Faisnéis dífhabhtaithe a eisiúint."
 
-#: bin/calibre2jellyfin.py:1419
+#: bin/calibre2jellyfin.py:1423
 msgid ""
 "Displays normal console output but makes no changes to exported libraries."
 msgstr ""
 "Taispeánann sé aschur consóil gnáth ach ní dhéanann sé aon athruithe ar "
 "leabharlanna onnmhairithe."
 
-#: bin/calibre2jellyfin.py:1425
+#: bin/calibre2jellyfin.py:1429
 msgid ""
 "Inverts the sense of the --list argument, showing those items that will not "
 "be exported. "
@@ -501,15 +497,15 @@ msgstr ""
 "Déanann sé ciall an argóint --list a aisiompú, ag taispeáint na míreanna "
 "nach n-onnmhaireofar."
 
-#: bin/calibre2jellyfin.py:1426
+#: bin/calibre2jellyfin.py:1430
 msgid "Only valid in combination with --list."
 msgstr "Bailí amháin i gcomhar le --list."
 
-#: bin/calibre2jellyfin.py:1433
+#: bin/calibre2jellyfin.py:1437
 msgid "Suspends normal export behavior."
 msgstr "Cuireann sé ar fionraí gnáth-iompar easpórtála."
 
-#: bin/calibre2jellyfin.py:1434
+#: bin/calibre2jellyfin.py:1438
 msgid ""
 "Instead prints information from configuration sections and the file system "
 "that is useful for curation."
@@ -517,53 +513,53 @@ msgstr ""
 "Ina áit sin, priontáiltear faisnéis ó rannóga cumraíochta agus ón gcóras "
 "comhad atá úsáideach le haghaidh coimeádta."
 
-#: bin/calibre2jellyfin.py:1435
+#: bin/calibre2jellyfin.py:1439
 msgid ""
 "LIST_SPEC is a comma-delimited list of columns to include in the report."
 msgstr ""
 "Is liosta colún atá scartha le camóga é LIST_SPEC le cur san áireamh sa "
 "tuarascáil."
 
-#: bin/calibre2jellyfin.py:1436
+#: bin/calibre2jellyfin.py:1440
 msgid ""
 "The output is tab-separated.  Columns must be one or more of the following:"
 msgstr ""
 "Tá an t-aschur scartha le tabanna. Ní mór do cholúin a bheith i gceann "
 "amháin nó níos mó díobh seo a leanas:"
 
-#: bin/calibre2jellyfin.py:1438
+#: bin/calibre2jellyfin.py:1442
 msgid ": display list of authors"
 msgstr ": taispeáin liosta údair"
 
-#: bin/calibre2jellyfin.py:1439
+#: bin/calibre2jellyfin.py:1443
 msgid ": display name of construct section"
 msgstr ": ainm taispeána na rannóige tógála"
 
-#: bin/calibre2jellyfin.py:1440
+#: bin/calibre2jellyfin.py:1444
 msgid ": display book title"
 msgstr ": taispeáin teideal an leabhair"
 
-#: bin/calibre2jellyfin.py:1441
+#: bin/calibre2jellyfin.py:1445
 msgid ": display book folder"
 msgstr ": fillteán leabhar taispeána"
 
-#: bin/calibre2jellyfin.py:1442
+#: bin/calibre2jellyfin.py:1446
 msgid ": display author folder"
 msgstr ": fillteán an údair a thaispeáint"
 
-#: bin/calibre2jellyfin.py:1443
+#: bin/calibre2jellyfin.py:1447
 msgid ": display matched subject"
 msgstr ": taispeáin ábhar meaitseáilte"
 
-#: bin/calibre2jellyfin.py:1444
+#: bin/calibre2jellyfin.py:1448
 msgid ": display name of series"
 msgstr ": ainm taispeána na sraithe"
 
-#: bin/calibre2jellyfin.py:1445
+#: bin/calibre2jellyfin.py:1449
 msgid ": display series index"
 msgstr ": innéacs sraith taispeána"
 
-#: bin/calibre2jellyfin.py:1446
+#: bin/calibre2jellyfin.py:1450
 msgid ""
 "The report output is sorted so there will be a pause while all configured "
 "sections are processed."
@@ -571,11 +567,11 @@ msgstr ""
 "Tá aschur na tuarascála sórtáilte mar sin beidh sos ann agus na codanna "
 "cumraithe go léir á bpróiseáil."
 
-#: bin/calibre2jellyfin.py:1447
+#: bin/calibre2jellyfin.py:1451
 msgid "Example: --list afolder,book,series"
 msgstr "Sampla: --liosta afolder,book,series"
 
-#: bin/calibre2jellyfin.py:1453
+#: bin/calibre2jellyfin.py:1457
 msgid ""
 "Useful to force a one-time update of all metadata files, for instance when "
 "configurable metadata mangling options have changed. Normally metadata files "
@@ -587,23 +583,23 @@ msgstr ""
 "meiteashonraí a nuashonrú ach amháin nuair a bhíonn siad ar iarraidh nó as "
 "dáta."
 
-#: bin/calibre2jellyfin.py:1463
+#: bin/calibre2jellyfin.py:1467
 msgid "Display version string."
 msgstr "Teaghrán leagan taispeána."
 
-#: bin/calibre2jellyfin.py:1468
+#: bin/calibre2jellyfin.py:1485
 msgid "version {version}"
 msgstr "leagan {version}"
 
-#: bin/calibre2jellyfin.py:1472
+#: bin/calibre2jellyfin.py:1489
 msgid "Incompatible arguments"
 msgstr "Argóintí neamh-chomhoiriúnacha"
 
-#: bin/calibre2jellyfin.py:1476
+#: bin/calibre2jellyfin.py:1493
 msgid "Argument --invert may only be used in conjunction with --list."
 msgstr "Ní féidir an argóint --invert a úsáid ach i gcomhar le --list."
 
-#: bin/calibre2jellyfin.py:1484
+#: bin/calibre2jellyfin.py:1501
 msgid ""
 "--list columns must be one or more of \"section\", \"authors\", \"book\", "
 "\"bfolder\", \"afolder\", \"subject\", \"series\", \"index\""
@@ -612,23 +608,23 @@ msgstr ""
 "leanas: \"section\", \"authors\", \"book\", \"bfolder\", \"afolder\", "
 "\"subject\", \"series\", \"index\""
 
-#: bin/calibre2jellyfin.py:1498
+#: bin/calibre2jellyfin.py:1515
 msgid "Could not read configuration \"%s\": %s"
 msgstr "Níorbh fhéidir an chumraíocht \"%s\" a léamh: %s"
 
-#: bin/calibre2jellyfin.py:1501
+#: bin/calibre2jellyfin.py:1518
 msgid "Invalid configuration \"%s\": %s"
 msgstr "Cumraíocht neamhbhailí \"%s\": %s"
 
-#: bin/calibre2jellyfin.py:1504
+#: bin/calibre2jellyfin.py:1521
 msgid "Using configuration \"%s\""
 msgstr "Ag baint úsáide as cumraíocht \"%s\""
 
-#: bin/calibre2jellyfin.py:1519
+#: bin/calibre2jellyfin.py:1539
 msgid "Inappropriate parameter value in configuration file \"%s\": %s"
 msgstr "Luach paraiméadair míchuí sa chomhad cumraíochta \"%s\": %s"
 
-#: bin/calibre2jellyfin.py:1525
+#: bin/calibre2jellyfin.py:1545
 msgid "A required parameter (%s) is missing from configuration file \"%s\"."
 msgstr ""
 "Tá paraiméadar riachtanach (%s) ar iarraidh ón gcomhad cumraíochta \"%s\"."

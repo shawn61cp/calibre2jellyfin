@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-09-03 22:56-0500\n"
+"POT-Creation-Date: 2026-09-04 19:05-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -587,19 +587,25 @@ msgstr ""
 msgid "Display version string."
 msgstr "Teaghrán leagan taispeána."
 
-#: bin/calibre2jellyfin.py:1472
+#: bin/calibre2jellyfin.py:1474
+msgid ""
+"Enable i18n language support during script operations. Language support is "
+"always enabled during initialization and display of -h help text."
+msgstr "Cumasaigh tacaíocht teanga i18n le linn oibríochtaí scripte. Bíonn tacaíocht teanga cumasaithe i gcónaí le linn tosaithe agus taispeántais téacs cabhrach -h."
+
+#: bin/calibre2jellyfin.py:1484
 msgid "version {version}"
 msgstr "leagan {version}"
 
-#: bin/calibre2jellyfin.py:1476
+#: bin/calibre2jellyfin.py:1488
 msgid "Incompatible arguments"
 msgstr "Argóintí neamh-chomhoiriúnacha"
 
-#: bin/calibre2jellyfin.py:1480
+#: bin/calibre2jellyfin.py:1492
 msgid "Argument --invert may only be used in conjunction with --list."
 msgstr "Ní féidir an argóint --invert a úsáid ach i gcomhar le --list."
 
-#: bin/calibre2jellyfin.py:1488
+#: bin/calibre2jellyfin.py:1500
 msgid ""
 "--list columns must be one or more of \"section\", \"authors\", \"book\", "
 "\"bfolder\", \"afolder\", \"subject\", \"series\", \"index\""
@@ -608,24 +614,23 @@ msgstr ""
 "leanas: \"section\", \"authors\", \"book\", \"bfolder\", \"afolder\", "
 "\"subject\", \"series\", \"index\""
 
-#: bin/calibre2jellyfin.py:1502
+#: bin/calibre2jellyfin.py:1514
 msgid "Could not read configuration \"%s\": %s"
 msgstr "Níorbh fhéidir an chumraíocht \"%s\" a léamh: %s"
 
-#: bin/calibre2jellyfin.py:1505
+#: bin/calibre2jellyfin.py:1517
 msgid "Invalid configuration \"%s\": %s"
 msgstr "Cumraíocht neamhbhailí \"%s\": %s"
 
-#: bin/calibre2jellyfin.py:1508
+#: bin/calibre2jellyfin.py:1520
 msgid "Using configuration \"%s\""
 msgstr "Ag baint úsáide as cumraíocht \"%s\""
 
-#: bin/calibre2jellyfin.py:1523
+#: bin/calibre2jellyfin.py:1538
 msgid "Inappropriate parameter value in configuration file \"%s\": %s"
 msgstr "Luach paraiméadair míchuí sa chomhad cumraíochta \"%s\": %s"
 
-#: bin/calibre2jellyfin.py:1529
+#: bin/calibre2jellyfin.py:1544
 msgid "A required parameter (%s) is missing from configuration file \"%s\"."
 msgstr ""
 "Tá paraiméadar riachtanach (%s) ar iarraidh ón gcomhad cumraíochta \"%s\"."
-

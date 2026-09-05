@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-09-03 22:56-0500\n"
+"POT-Creation-Date: 2026-09-04 19:05-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Shawn C. Powell <shawncp@scpowell.xyz>\n"
 "Language-Team: Google Translate\n"
@@ -586,19 +586,24 @@ msgstr ""
 msgid "Display version string."
 msgstr "Mostrar cadena de versión."
 
-#: bin/calibre2jellyfin.py:1472
+#: bin/calibre2jellyfin.py:1474
+msgid ""
+"Enable i18n language support during script operations. Language support is always enabled during initialization and display of -h help text."
+msgstr "Habilite el soporte de idiomas i18n durante las operaciones del script. El soporte de idiomas está siempre habilitado durante la inicialización y la visualización del texto de ayuda `-h`."
+
+#: bin/calibre2jellyfin.py:1484
 msgid "version {version}"
 msgstr "versión {versión}"
 
-#: bin/calibre2jellyfin.py:1476
+#: bin/calibre2jellyfin.py:1488
 msgid "Incompatible arguments"
 msgstr "Argumentos incompatibles"
 
-#: bin/calibre2jellyfin.py:1480
+#: bin/calibre2jellyfin.py:1492
 msgid "Argument --invert may only be used in conjunction with --list."
 msgstr "El argumento --invert solo puede usarse junto con --list."
 
-#: bin/calibre2jellyfin.py:1488
+#: bin/calibre2jellyfin.py:1500
 msgid ""
 "--list columns must be one or more of \"section\", \"authors\", \"book\", "
 "\"bfolder\", \"afolder\", \"subject\", \"series\", \"index\""
@@ -607,25 +612,24 @@ msgstr ""
 "« authors », « book », « bfolder », « afolder », « subject », « series », « "
 "index »."
 
-#: bin/calibre2jellyfin.py:1502
+#: bin/calibre2jellyfin.py:1514
 msgid "Could not read configuration \"%s\": %s"
 msgstr "No se pudo leer la configuración « %s »: %s"
 
-#: bin/calibre2jellyfin.py:1505
+#: bin/calibre2jellyfin.py:1517
 msgid "Invalid configuration \"%s\": %s"
 msgstr "Configuración no válida « %s »: %s"
 
-#: bin/calibre2jellyfin.py:1508
+#: bin/calibre2jellyfin.py:1520
 msgid "Using configuration \"%s\""
 msgstr "Utilizando la configuración « %s »"
 
-#: bin/calibre2jellyfin.py:1523
+#: bin/calibre2jellyfin.py:1538
 msgid "Inappropriate parameter value in configuration file \"%s\": %s"
 msgstr ""
 "Valor de parámetro inapropiado en el archivo de configuración « %s »: %s"
 
-#: bin/calibre2jellyfin.py:1529
+#: bin/calibre2jellyfin.py:1544
 msgid "A required parameter (%s) is missing from configuration file \"%s\"."
 msgstr ""
 "Falta un parámetro obligatorio (%s) en el archivo de configuración « %s »."
-

@@ -1470,12 +1470,12 @@ def main(clargs: list[str] | None = None):
 		'--i18n',
 		dest='enable_i18n',
 		action='store_true',
-		help=_(
-			custom_textwrap(
-				'Enable i18n language support during script operation.'
-				'  Language support is always enabled on -h help text.'
-				, 50, '', '\n'
-			)
+		help=custom_textwrap(
+			_(
+				'Enable i18n language support during script operations.'
+				' Language support is always enabled during initialization and'
+				' display of -h help text.'
+			), 50, '', '\n'
 		)
 	)
 	CMDARGS = cmdparser.parse_args(clargs)
@@ -1517,10 +1517,10 @@ def main(clargs: list[str] | None = None):
 		logging.critical(_('Invalid configuration "%s": %s'), CONFIG_FILE_PATH, configexcep)
 		sys.exit(-1)
 
+	logging.info(_('Using configuration "%s"'), CONFIG_FILE_PATH)
+
 	if not CMDARGS.enable_i18n:
 		_ = lambda s: s
-
-	logging.info(_('Using configuration "%s"'), CONFIG_FILE_PATH)
 
 	# Default mangling behavior to that of original script
 	config['DEFAULT']['mangleMetaTitle'] = '1'
